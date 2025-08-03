@@ -1,8 +1,8 @@
 import React, { useState, useRef } from 'react';
 
 import '../../../App.css'
-import { ButtonGroupPicker } from '../../../atoms/ButtonGroupPicker';
-import { PaginatedSolutionsSection } from '../../../atoms/PaginatedSolutionsSection';
+import { ButtonGroupPicker } from '../../../components/ButtonGroupPicker';
+import { PaginatedSolutionsSection } from '../../../components/PaginatedSolutionsSection';
 
 const TOP = "top";
 const RIGHT = "right";
@@ -14,7 +14,7 @@ type LetterSides = {
     [key in Side]: string[];
 };
 
-const buttonStyle = "rounded-full border border-slate-300 py-2 px-4 text-center text-sm transition-all shadow-sm hover:shadow-lg text-slate-600 hover:text-white hover:bg-teal hover:border-teal focus-visible:text-white focus-visible:bg-dark-teal focus-visible:border-teal active:border-dark-teal active:text-white active:bg-dark-teal disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none";
+const buttonStyle = "rounded-full border border-slate-300 py-2 px-4 text-center text-sm transition-all shadow-sm hover:shadow-lg text-slate-600 hover:text-text-contrast hover:bg-primary-base hover:border-primary-base focus-visible:text-text-contrast focus-visible:bg-primary-highlight focus-visible:border-primary-base active:border-primary-highlight active:text-text-contrast active:bg-primary-highlight disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none";
 
 const LetterBoxed = () => {
     const [hasSolved, setHasSolved] = useState(false); // if solve has run at least once
@@ -88,7 +88,7 @@ const LetterBoxed = () => {
 
     return (
         <div className="flex flex-col gap-4">
-            <h1 className="text-center text-3xl font-bold text-dark-teal mb-4">Letter Boxed!</h1>
+            <h1 className="text-center text-3xl font-bold text-primary-highlight mb-4">Letter Boxed!</h1>
             <InputSection
                 letters={letterSides}
                 onLettersChange={onLettersChange}
@@ -237,7 +237,7 @@ const LettersInputs: React.FC<LettersInputsProps> = ({
                 onChange={(e) => onLettersChange(e.target.value, TOP)}
                 maxLength={3}
                 placeholder="Top"
-                className={`input-letter-box ${invalidInputSide === TOP ? 'shake' : ''} w-36 bg-transparent placeholder:text-slate-400 text-slate-800 text-sm border-2 border-slate-200 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-teal hover:border-sky-blue shadow-sm focus:shadow`}
+                className={`input-letter-box ${invalidInputSide === TOP ? 'shake' : ''} w-36 bg-transparent placeholder:text-slate-400 text-slate-800 text-sm border-2 border-slate-200 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-primary-base hover:border-primary-accent shadow-sm focus:shadow`}
                 ref={lettersInputRefs[0]}
             />
             <input
@@ -246,7 +246,7 @@ const LettersInputs: React.FC<LettersInputsProps> = ({
                 onChange={(e) => onLettersChange(e.target.value, RIGHT)}
                 maxLength={3}
                 placeholder="Right"
-                className={`input-letter-box ${invalidInputSide === RIGHT ? 'shake' : ''} w-36 bg-transparent placeholder:text-slate-400 text-slate-800 text-sm border-2 border-slate-200 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-teal hover:border-sky-blue shadow-sm focus:shadow`}
+                className={`input-letter-box ${invalidInputSide === RIGHT ? 'shake' : ''} w-36 bg-transparent placeholder:text-slate-400 text-slate-800 text-sm border-2 border-slate-200 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-primary-base hover:border-primary-accent shadow-sm focus:shadow`}
                 ref={lettersInputRefs[1]}
             />
             <input
@@ -255,7 +255,7 @@ const LettersInputs: React.FC<LettersInputsProps> = ({
                 onChange={(e) => onLettersChange(e.target.value, BOTTOM)}
                 maxLength={3}
                 placeholder="Bottom"
-                className={`input-letter-box ${invalidInputSide === BOTTOM ? 'shake' : ''} w-36 bg-transparent placeholder:text-slate-400 text-slate-800 text-sm border-2 border-slate-200 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-teal hover:border-sky-blue shadow-sm focus:shadow`}
+                className={`input-letter-box ${invalidInputSide === BOTTOM ? 'shake' : ''} w-36 bg-transparent placeholder:text-slate-400 text-slate-800 text-sm border-2 border-slate-200 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-primary-base hover:border-primary-accent shadow-sm focus:shadow`}
                 ref={lettersInputRefs[2]}
             />
             <input
@@ -264,7 +264,7 @@ const LettersInputs: React.FC<LettersInputsProps> = ({
                 onChange={(e) => onLettersChange(e.target.value, LEFT)}
                 maxLength={3}
                 placeholder="Left"
-                className={`input-letter-box ${invalidInputSide === LEFT ? 'shake' : ''} w-36 bg-transparent placeholder:text-slate-400 text-slate-800 text-sm border-2 border-slate-200 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-teal hover:border-sky-blue shadow-sm focus:shadow`}
+                className={`input-letter-box ${invalidInputSide === LEFT ? 'shake' : ''} w-36 bg-transparent placeholder:text-slate-400 text-slate-800 text-sm border-2 border-slate-200 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-primary-base hover:border-primary-accent shadow-sm focus:shadow`}
                 ref={lettersInputRefs[3]}
             />
         </div>

@@ -1,8 +1,23 @@
-import { LoadingSpinner } from "./LoadingSpinner";
+import { LoadingSpinner } from "../atoms/LoadingSpinner";
 import { GoInfo } from "react-icons/go";
 
-const pageButtonStyle = "rounded-full border border-slate-300 py-2 px-4 text-center text-sm transition-all shadow-sm hover:shadow-lg text-slate-600 hover:text-white hover:bg-teal hover:border-teal focus-visible:text-white focus-visible:bg-dark-teal focus-visible:border-teal active:border-dark-teal active:text-white active:bg-dark-teal disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none";
+const pageButtonStyle = [
+    // General styles
+    "rounded-full", "border", "border-slate-300", "py-2", "px-4", "text-center", "text-sm",
+    "transition-all", "shadow-sm", "text-slate-600",
 
+    // Hover styles
+    "hover:shadow-lg", "hover:text-text-contrast", "hover:bg-primary-base", "hover:border-primary-base",
+
+    // Focus styles
+    "focus-visible:text-text-contrast", "focus-visible:bg-primary-highlight", "focus-visible:border-primary-base",
+
+    // Active styles
+    "active:border-primary-highlight", "active:text-text-contrast", "active:bg-primary-highlight",
+
+    // Disabled styles
+    "disabled:pointer-events-none", "disabled:opacity-50", "disabled:shadow-none",
+].join(" ");
 
 export interface PaginatedSolutionsSectionProps {
     solutions: string[][];
@@ -32,7 +47,7 @@ export const PaginatedSolutionsSection: React.FC<PaginatedSolutionsSectionProps>
 
     return (
         <div className="min-w-max flex flex-col w-full border-2 border:black rounded items-center">
-            <h2 className="rounded text-lg font-bold text-center p-2 bg-dark-teal text-white w-full">
+            <h2 className="rounded text-lg font-bold text-center p-2 bg-primary-highlight text-text-contrast w-full">
                 {isLoading
                     ? "Checking..."
                     : `Potential Solutions (${solutions.reduce((total, subArray) => total + subArray.length, 0)})`}
@@ -48,13 +63,13 @@ export const PaginatedSolutionsSection: React.FC<PaginatedSolutionsSectionProps>
                             {solutions[pageNumber].map((word, index) => (
                                 <div className="flex items-center" key={`${pageNumber}-${index}`}>
                                     {includeNumbers && (
-                                        <div className="font-bold rounded-s-lg bg-teal text-white text-center py-4 pl-6 pr-2">
+                                        <div className="font-bold rounded-s-lg bg-primary-base text-text-contrast text-center py-4 pl-6 pr-2">
                                             {useContinuousNumbers
                                                 ? getAbsolutePositionInSolutions(pageNumber, index)
                                                 : index + 1}
                                         </div>
                                     )}
-                                    <div className={`font-bold bg-teal p-4 text-white min-w-max text-center tracking-widest ${includeNumbers ? "rounded-e-lg" : "rounded-lg"}`}>
+                                    <div className={`font-bold bg-primary-base p-4 text-text-contrast min-w-max text-center tracking-widest ${includeNumbers ? "rounded-e-lg" : "rounded-lg"}`}>
                                         {word.toUpperCase()}
                                     </div>
                                 </div>

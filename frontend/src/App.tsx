@@ -4,17 +4,24 @@ import About from "./pages/About";
 import SpellingBee from "./pages/ai/nyt/SpellingBee";
 import LetterBoxed from "./pages/ai/nyt/LetterBoxed";
 import Anagrams from "./pages/ai/gamepigeon/Anagrams";
+import { ThemePicker } from "./components/ThemePicker"; // Import your ThemePicker component
 import './index.css';
 
 function App() {
   return (
     <Router>
       <div className="p-6 bg-white">
-        <nav className="mb-4 space-x-4">
-          <Link to="/about" className="text-dark-teal hover:underline">About</Link>
-          <Link to="/spelling_bee" className="text-dark-teal hover:underline">Spelling Bee</Link>
-          <Link to="/letter_boxed" className="text-dark-teal hover:underline">Letter Boxed</Link>
-          <Link to="/anagrams" className="text-dark-teal hover:underline">Anagrams</Link>
+        <nav className="mb-4 flex justify-between items-center">
+          {/* Left side: Links */}
+          <div className="space-x-4">
+            <Link to="/about" className="text-primary-highlight hover:underline">About</Link>
+            <Link to="/spelling_bee" className="text-primary-highlight hover:underline">Spelling Bee</Link>
+            <Link to="/letter_boxed" className="text-primary-highlight hover:underline">Letter Boxed</Link>
+            <Link to="/anagrams" className="text-primary-highlight hover:underline">Anagrams</Link>
+          </div>
+
+          {/* Right side: Theme Picker */}
+          <ThemePicker />
         </nav>
 
         <Routes>

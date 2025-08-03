@@ -1,10 +1,10 @@
 import React, { useState, useRef } from 'react';
-import { PaginatedSolutionsSection } from '../../../atoms/PaginatedSolutionsSection';
+import { PaginatedSolutionsSection } from '../../../components/PaginatedSolutionsSection';
 import { chunkArray } from '../../../utils/helpers';
 import '../../../App.css'
 
 const WORDS_PER_PAGE = 5;
-const buttonStyle = "rounded-full border border-slate-300 py-2 px-4 text-center text-sm transition-all shadow-sm hover:shadow-lg text-slate-600 hover:text-white hover:bg-teal hover:border-teal focus-visible:text-white focus-visible:bg-dark-teal focus-visible:border-teal active:border-dark-teal active:text-white active:bg-dark-teal disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
+const buttonStyle = "rounded-full border border-slate-300 py-2 px-4 text-center text-sm transition-all shadow-sm hover:shadow-lg text-slate-600 hover:text-text-contrast hover:bg-primary-base hover:border-primary-base focus-visible:text-text-contrast focus-visible:bg-primary-highlight focus-visible:border-primary-base active:border-primary-highlight active:text-text-contrast active:bg-primary-highlight disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
 
 const SpellingBee = () => {
     const [hasSolved, setHasSolved] = useState(false); // if solve has run at least once
@@ -47,7 +47,7 @@ const SpellingBee = () => {
 
     return (
         <div className="flex flex-col gap-4">
-            <h1 className="text-center text-3xl font-bold text-dark-teal mb-4">Spelling Bee!</h1>
+            <h1 className="text-center text-3xl font-bold text-primary-highlight mb-4">Spelling Bee!</h1>
             <InputSection
                 centerLetter={centerLetter}
                 outerLetters={outerLetters}
@@ -102,7 +102,7 @@ const InputSection: React.FC<InputSectionProps> = ({
                     onChange={onCenterLetterChange}
                     maxLength={1}
                     placeholder="Center Letter"
-                    className="w-36 bg-transparent placeholder:text-slate-400 text-slate-800 text-sm border-2 border-slate-200 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-teal hover:border-sky-blue shadow-sm focus:shadow"
+                    className="w-36 bg-transparent placeholder:text-slate-400 text-slate-800 text-sm border-2 border-slate-200 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-primary-base hover:border-primary-accent shadow-sm focus:shadow"
                 />
                 <input
                     type="text"
@@ -110,7 +110,7 @@ const InputSection: React.FC<InputSectionProps> = ({
                     onChange={onOuterLettersChange}
                     maxLength={6}
                     placeholder="Outer Letters"
-                    className="w-36 bg-transparent placeholder:text-slate-400 text-slate-800 text-sm border-2 border-slate-200 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-teal hover:border-sky-blue shadow-sm focus:shadow"
+                    className="w-36 bg-transparent placeholder:text-slate-400 text-slate-800 text-sm border-2 border-slate-200 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-primary-base hover:border-primary-accent shadow-sm focus:shadow"
                     ref={outerLettersRef}
                 />
             </div>

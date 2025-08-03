@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import '../../../App.css'
-import { ButtonGroupPicker } from '../../../atoms/ButtonGroupPicker';
-import { PaginatedSolutionsSection } from '../../../atoms/PaginatedSolutionsSection';
+import { ButtonGroupPicker } from '../../../components/ButtonGroupPicker';
+import { PaginatedSolutionsSection } from '../../../components/PaginatedSolutionsSection';
 import { chunkArray } from '../../../utils/helpers';
 
 
 const WORDS_PER_PAGE = 5;
-const buttonStyle = "rounded-full border border-slate-300 py-2 px-4 text-center text-sm transition-all shadow-sm hover:shadow-lg text-slate-600 hover:text-white hover:bg-teal hover:border-teal focus-visible:text-white focus-visible:bg-dark-teal focus-visible:border-teal active:border-dark-teal active:text-white active:bg-dark-teal disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
+const buttonStyle = "rounded-full border border-slate-300 py-2 px-4 text-center text-sm transition-all shadow-sm hover:shadow-lg text-slate-600 hover:text-text-contrast hover:bg-primary-base hover:border-primary-base focus-visible:text-text-contrast focus-visible:bg-primary-highlight focus-visible:border-primary-base active:border-primary-highlight active:text-text-contrast active:bg-primary-highlight disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
 
 const Anagrams = () => {
     const [hasSolved, setHasSolved] = useState(false); // if solve has run at least once
@@ -38,7 +38,7 @@ const Anagrams = () => {
     };
     return (
         <div className="flex flex-col gap-4">
-            <h1 className="text-center text-3xl font-bold text-dark-teal mb-4">Anagrams!</h1>
+            <h1 className="text-center text-3xl font-bold text-primary-highlight mb-4">Anagrams!</h1>
             <div className="flex flex-col gap-6 md:gap-2 md:flex-row transition-all duration-300 ease-in-out">
                 <div className={`flex flex-col gap-10 flex-shrink-0 transition-all duration-500 w-full ${hasSolved ? 'md:w-3/5' : 'md:w-full'}`}>
                     <InputSection
@@ -93,7 +93,7 @@ const InputSection: React.FC<InputSectionProps> = ({
                     onChange={onLettersChange}
                     maxLength={numLetters}
                     placeholder="Letters"
-                    className="w-36 bg-transparent placeholder:text-slate-400 text-slate-800 text-sm border-2 border-slate-200 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-teal hover:border-sky-blue shadow-sm focus:shadow"
+                    className="w-36 bg-transparent placeholder:text-text-muted text-text-base text-sm border-2 border-slate-200 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-primary-base hover:border-primary-accent shadow-sm focus:shadow"
                 />
             </div>
             <ButtonGroupPicker
