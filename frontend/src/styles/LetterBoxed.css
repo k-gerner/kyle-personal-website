@@ -1,0 +1,29 @@
+.input-letter-box {
+    transition: all 0.2s ease;
+}
+
+.input-letter-box.shake {
+    animation: shake 0.2s;
+}
+
+@keyframes shake {
+    0% {
+        transform: translateX(0);
+    }
+
+    25% {
+        transform: translateX(-0.25rem);
+    }
+
+    50% {
+        transform: translateX(0.25rem);
+    }
+
+    75% {
+        transform: translateX(-0.25rem);
+    }
+
+    100% {
+        transform: translateX(0);
+    }
+}
