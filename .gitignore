@@ -1,0 +1,49 @@
+# === PYTHON ===
+**/__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.egg-info/
+dist/
+build/
+*.log
+
+# Virtual environment (adjust path if your venv is in a subfolder)
+**/kyle-website-venv/
+**/venv/
+**/.env
+**/.env.*
+
+# === NODE / FRONTEND ===
+**/node_modules/
+**/dist/
+**/build/
+.npm/
+.yarn/
+**/.next/
+**/out/
+
+# Local development
+**/.DS_Store
+*.local
+*.swp
+
+# IDEs
+**/.vscode/
+**/.idea/
+*.sublime-workspace
+*.sublime-project
+
+# === TEST / COVERAGE ===
+.coverage
+htmlcov/
+*.cover
+*.pyc
+.mypy_cache/
+pytest_cache/
+.cache/
+
+# === Misc ===
+*.log
+*.bak
+*.tmp
