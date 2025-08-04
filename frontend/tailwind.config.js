@@ -18,7 +18,7 @@ const customColors = {
   'background-base': 'var(--background-base-color)',
   'background-muted': 'var(--background-muted-color)',
   'background-contrast': 'var(--background-contrast-color)',
-  'text-base': 'var(--text-base-color)',
+  'text-base': "rgb(var(--text-base-color), <alpha-value>)",
   'text-muted': 'var(--text-muted-color)',
   'text-contrast': 'var(--text-contrast-color)',
 }

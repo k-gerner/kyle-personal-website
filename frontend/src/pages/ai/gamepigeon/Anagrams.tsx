@@ -3,6 +3,7 @@ import '../../../App.css'
 import { ButtonGroupPicker } from '../../../components/ButtonGroupPicker';
 import { PaginatedSolutionsSection } from '../../../components/PaginatedSolutionsSection';
 import { chunkArray } from '../../../utils/helpers';
+import Input from '../../../atoms/Input';
 
 
 const WORDS_PER_PAGE = 5;
@@ -87,13 +88,13 @@ const InputSection: React.FC<InputSectionProps> = ({
     return (
         <div className="flex flex-col gap-4">
             <div className='flex flex-row gap-2 justify-center'>
-                <input
+                <Input
                     type="text"
                     value={letters}
                     onChange={onLettersChange}
                     maxLength={numLetters}
                     placeholder="Letters"
-                    className="w-36 bg-transparent placeholder:text-text-muted text-text-base text-sm border-2 border-slate-200 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-primary-base hover:border-primary-accent shadow-sm focus:shadow"
+                    className="w-36"
                 />
             </div>
             <ButtonGroupPicker

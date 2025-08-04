@@ -29,11 +29,11 @@ code {
   --secondary-contrast-color: #fb8500;
 
   --background-base-color: white;
-  --background-muted-color: #d4d4d4;
+  --background-muted-color: rgb(229, 231, 235);
   --background-contrast-color: #023047;
 
-  --text-base-color: black;
-  --text-muted-color: #94a3b8;
+  --text-base-color: rgb(0, 0, 0);
+  --text-muted-color: rgb(148, 163, 184);
   /* slate-400 */
   --text-contrast-color: white;
 }
@@ -49,10 +49,11 @@ code {
   --secondary-contrast-color: #fb8500;
 
   --background-base-color: white;
-  --background-muted-color: #d4d4d4;
+  --background-muted-color: #e8e8e8;
   --background-contrast-color: #023047;
 
-  --text-base-color: black;
+  --text-base-color: 0, 0, 0;
+  /* black; */
   --text-muted-color: #94a3b8;
   /* slate-400 */
   --text-contrast-color: white;

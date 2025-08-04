@@ -3,6 +3,7 @@ import React, { useState, useRef } from 'react';
 import '../../../App.css'
 import { ButtonGroupPicker } from '../../../components/ButtonGroupPicker';
 import { PaginatedSolutionsSection } from '../../../components/PaginatedSolutionsSection';
+import Input from '../../../atoms/Input';
 
 const TOP = "top";
 const RIGHT = "right";
@@ -231,40 +232,40 @@ const LettersInputs: React.FC<LettersInputsProps> = ({
 }) => {
     return (
         <div className='flex flex-wrap flex-row gap-2 justify-center'>
-            <input
+            <Input
                 type="text"
                 value={letters[TOP].join('')}
                 onChange={(e) => onLettersChange(e.target.value, TOP)}
                 maxLength={3}
                 placeholder="Top"
-                className={`input-letter-box ${invalidInputSide === TOP ? 'shake' : ''} w-36 bg-transparent placeholder:text-slate-400 text-slate-800 text-sm border-2 border-slate-200 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-primary-base hover:border-primary-accent shadow-sm focus:shadow`}
+                className={`input-letter-box ${invalidInputSide === TOP ? 'shake' : ''} w-36`}
                 ref={lettersInputRefs[0]}
             />
-            <input
+            <Input
                 type="text"
                 value={letters[RIGHT].join('')}
                 onChange={(e) => onLettersChange(e.target.value, RIGHT)}
                 maxLength={3}
                 placeholder="Right"
-                className={`input-letter-box ${invalidInputSide === RIGHT ? 'shake' : ''} w-36 bg-transparent placeholder:text-slate-400 text-slate-800 text-sm border-2 border-slate-200 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-primary-base hover:border-primary-accent shadow-sm focus:shadow`}
+                className={`input-letter-box ${invalidInputSide === RIGHT ? 'shake' : ''} w-36`}
                 ref={lettersInputRefs[1]}
             />
-            <input
+            <Input
                 type="text"
                 value={letters[BOTTOM].join('')}
                 onChange={(e) => onLettersChange(e.target.value, BOTTOM)}
                 maxLength={3}
                 placeholder="Bottom"
-                className={`input-letter-box ${invalidInputSide === BOTTOM ? 'shake' : ''} w-36 bg-transparent placeholder:text-slate-400 text-slate-800 text-sm border-2 border-slate-200 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-primary-base hover:border-primary-accent shadow-sm focus:shadow`}
+                className={`input-letter-box ${invalidInputSide === BOTTOM ? 'shake' : ''} w-36`}
                 ref={lettersInputRefs[2]}
             />
-            <input
+            <Input
                 type="text"
                 value={letters[LEFT].join('')}
                 onChange={(e) => onLettersChange(e.target.value, LEFT)}
                 maxLength={3}
                 placeholder="Left"
-                className={`input-letter-box ${invalidInputSide === LEFT ? 'shake' : ''} w-36 bg-transparent placeholder:text-slate-400 text-slate-800 text-sm border-2 border-slate-200 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-primary-base hover:border-primary-accent shadow-sm focus:shadow`}
+                className={`input-letter-box ${invalidInputSide === LEFT ? 'shake' : ''} w-36`}
                 ref={lettersInputRefs[3]}
             />
         </div>
