@@ -7,7 +7,7 @@ def get_valid_words(letter_dict: Dict[str, Set[str]]) -> List[str]:
     """
     Get potential words that can be formed with the given letters.
     
-    Args:
+    Parameters:
         letter_dict (Dict[str, Set[str]]): A dictionary mapping letters to sets of letters they can match with.
         
     Returns:
@@ -39,7 +39,7 @@ def build_letter_dict(letter_sides: List[Set[str]]) -> dict:
     """
     Map letters to a set of letters they can be matched with next.
     
-    Args:
+    Parameters:
         letter_sides (List[Set[str]]): A list of sets of letters from each side of the box.
     Returns:
         dict: A dictionary where keys are letters and values are sets of letters they can match with.
@@ -60,7 +60,7 @@ def get_valid_next_words(potential_words: List[str], unused_letters: Set[str]) -
     """
     Get valid next words that can be formed with the next letter and unused letters.
     
-    Args:
+    Parameters:
         potential_words (List[str]): A list of all potentially valid words.
         unused_letters (Set[str]): A set of letters that have not been used yet.
         
@@ -84,7 +84,7 @@ def solve_words(
     """
     Recursive. Find the best valid word list that includes all words in words_found.
     
-    Args:
+    Parameters:
         words_found (List[str]): A list of words that have been found so far.
         unused_letters (Set[str]): A set of letters that have not been used yet.
         letters_to_words (Dict[str, List[str]]): A dictionary where keys are letters and values are lists of words starting with that letter.
@@ -126,7 +126,7 @@ def solve(all_words: List[str], letters_to_words: Dict[str, List[str]], all_lett
     """
     Solve the Letter Boxed puzzle by finding all valid combinations of words.
     
-    Args:
+    Parameters:
         all_words (List[str]): A list of all potentially valid words that can be formed with the letters.
         letters_to_words (Dict[str, List[str]]): A dictionary where keys are letters and values are lists of words starting with that letter.
         all_letters (Set[str]): A set of letters that can be used to form words.
@@ -150,7 +150,7 @@ def run(letter_sides: List[Set[str]], max_solutions_length: int = DEFAULT_MAX_WO
     """
     Run the Letter Boxed game with the provided input.
     
-    Args:
+    Parameters:
         letter_sides (List[Set[str]]): A list of sets of letters from each side of the box
         only_length_two (bool): If True, only consider solutions of length 2.
     Returns:
