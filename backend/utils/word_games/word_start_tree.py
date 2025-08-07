@@ -1,5 +1,5 @@
 from typing import Collection
-from backend.utils.word_games.words_tree_node import WordsTreeNode
+from utils.word_games.words_tree_node import WordsTreeNode
 
 
 def build_tree(words: Collection[str]) -> WordsTreeNode:

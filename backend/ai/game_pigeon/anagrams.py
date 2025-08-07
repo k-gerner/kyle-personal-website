@@ -1,6 +1,6 @@
 from functools import cmp_to_key
 from utils.data_store import get_words_tree
-from backend.utils.word_games.words_tree_node import WordsTreeNode
+from utils.word_games.words_tree_node import WordsTreeNode
 from typing import List, Set
 
 

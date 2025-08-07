@@ -1,5 +1,5 @@
 from typing import Set
-from backend.utils.word_games.words_tree_node import WordsTreeNode
+from utils.word_games.words_tree_node import WordsTreeNode
 
 # A set of common English words typically used in word games
 _common_word_set: Set[str] = set()
