@@ -16,7 +16,6 @@ code {
 @tailwind utilities;
 
 @import './styles/SpellingBee.css';
-@import './styles/LetterBoxed.css';
 
 :root {
   --primary-accent-color: #8ecae6;
@@ -52,7 +51,7 @@ code {
   --background-muted-color: #e8e8e8;
   --background-contrast-color: #023047;
 
-  --text-base-color: 0, 0, 0;
+  --text-base-color: rgb(0, 0, 0);
   /* black; */
   --text-muted-color: #94a3b8;
   /* slate-400 */
@@ -69,14 +68,44 @@ code {
   --secondary-accent-color: #fd9e02;
   --secondary-contrast-color: #fb8500;
 
-  --background-base-color: white;
+  --background-base-color: #fcefb4;
   --background-muted-color: #d4d4d4;
   --background-contrast-color: #023047;
 
-  --text-base-color: black;
-  --text-muted-color: #94a3b8;
+  --text-base-color: rgb(0, 0, 0);
+  --text-muted-color: #525c6a;
   /* slate-400 */
   --text-contrast-color: white;
 }
 
 .theme-dark {}
+
+.input-box-transition {
+  transition: all 0.2s ease;
+}
+
+.input-box-transition.shake {
+  animation: shake 0.2s;
+}
+
+@keyframes shake {
+  0% {
+    transform: translateX(0);
+  }
+
+  25% {
+    transform: translateX(-0.25rem);
+  }
+
+  50% {
+    transform: translateX(0.25rem);
+  }
+
+  75% {
+    transform: translateX(-0.25rem);
+  }
+
+  100% {
+    transform: translateX(0);
+  }
+}
