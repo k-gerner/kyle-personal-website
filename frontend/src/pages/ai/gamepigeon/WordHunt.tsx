@@ -211,7 +211,7 @@ const InputSection: React.FC<InputSectionProps> = ({
             />
             <div className="flex justify-center">
                 <button
-                    // disabled={letters.length !== numLetters}
+                    disabled={letters.flat().length !== rowLengthsByBoardType[boardType].reduce((a, b) => a + b, 0)}
                     onClick={onSolve}
                     className={`${buttonStyle} w-48`}
                 >Solve</button>
