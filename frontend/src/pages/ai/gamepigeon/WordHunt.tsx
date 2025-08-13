@@ -160,7 +160,6 @@ const InputSection: React.FC<InputSectionProps> = ({
                     onChange={(e) => onLettersChange(e.target.value, 0)}
                     maxLength={rowLengthsByBoardType[boardType][0]}
                     placeholder="Row 1"
-                    // className={`input-box-transition ${invalidInputSide === TOP ? 'shake' : ''} w-36`}
                     ref={lettersInputRefs[0]}
                 />
                 <Input
@@ -169,7 +168,6 @@ const InputSection: React.FC<InputSectionProps> = ({
                     onChange={(e) => onLettersChange(e.target.value, 1)}
                     maxLength={rowLengthsByBoardType[boardType][1]}
                     placeholder="Row 2"
-                    // className={`input-box-transition ${invalidInputSide === RIGHT ? 'shake' : ''} w-36`}
                     ref={lettersInputRefs[1]}
                 />
                 <Input
@@ -178,7 +176,6 @@ const InputSection: React.FC<InputSectionProps> = ({
                     onChange={(e) => onLettersChange(e.target.value, 2)}
                     maxLength={rowLengthsByBoardType[boardType][2]}
                     placeholder="Row 3"
-                    // className={`input-box-transition ${invalidInputSide === BOTTOM ? 'shake' : ''} w-36`}
                     ref={lettersInputRefs[2]}
                 />
                 <Input
@@ -187,7 +184,6 @@ const InputSection: React.FC<InputSectionProps> = ({
                     onChange={(e) => onLettersChange(e.target.value, 3)}
                     maxLength={rowLengthsByBoardType[boardType][3]}
                     placeholder="Row 4"
-                    // className={`input-box-transition ${invalidInputSide === LEFT ? 'shake' : ''} w-36`}
                     ref={lettersInputRefs[3]}
                 />
                 {
@@ -259,6 +255,7 @@ const SmallSquareBoard: React.FC<Omit<BoardSectionProps, 'boardType'>> = ({
                         key={`${rowIndex}-${colIndex}`}
                         letter={letter}
                         size="lg"
+                        beforeSolve={!currentSolution}
                         indexInSolution={currentSolution?.positions.indexOf(rowIndex * 4 + colIndex)}
                     />
                 ))
@@ -279,6 +276,7 @@ const LargeSquareBoard: React.FC<Omit<BoardSectionProps, 'boardType'>> = ({
                         key={`${rowIndex}-${colIndex}`}
                         letter={letter}
                         size="sm"
+                        beforeSolve={!currentSolution}
                         indexInSolution={currentSolution?.positions.indexOf(rowIndex * 5 + colIndex)}
                     />
                 ))
@@ -313,6 +311,7 @@ const DonutBoard: React.FC<Omit<BoardSectionProps, 'boardType'>> = ({
                                         key={`${rowIndex}-${colIndex}`}
                                         letter={letter}
                                         size="sm"
+                                        beforeSolve={!currentSolution}
                                         indexInSolution={currentSolution?.positions.indexOf(positionOffset + colIndex)}
                                     />
                                 ))}
@@ -323,6 +322,7 @@ const DonutBoard: React.FC<Omit<BoardSectionProps, 'boardType'>> = ({
                                         key={`${rowIndex}-${colIndex}`}
                                         letter={letter}
                                         size="sm"
+                                        beforeSolve={!currentSolution}
                                         indexInSolution={currentSolution?.positions.indexOf((positionOffset + 2) + colIndex)}
                                     />
                                 ))}
@@ -351,6 +351,7 @@ const DonutBoard: React.FC<Omit<BoardSectionProps, 'boardType'>> = ({
                                 key={`${rowIndex}-${colIndex}`}
                                 letter={letter}
                                 size="sm"
+                                beforeSolve={!currentSolution}
                                 indexInSolution={currentSolution?.positions.indexOf(positionOffset + colIndex)}
                             />
                         ))}
@@ -395,6 +396,7 @@ const CrossBoard: React.FC<Omit<BoardSectionProps, 'boardType'>> = ({
                                         key={`${rowIndex}-${colIndex}`}
                                         letter={letter}
                                         size="sm"
+                                        beforeSolve={!currentSolution}
                                         indexInSolution={currentSolution?.positions.indexOf(positionOffset + colIndex)}
                                     />
                                 ))}
@@ -405,6 +407,7 @@ const CrossBoard: React.FC<Omit<BoardSectionProps, 'boardType'>> = ({
                                         key={`${rowIndex}-${colIndex}`}
                                         letter={letter}
                                         size="sm"
+                                        beforeSolve={!currentSolution}
                                         indexInSolution={currentSolution?.positions.indexOf((positionOffset + 2) + colIndex)}
                                     />
                                 ))}
@@ -422,6 +425,7 @@ const CrossBoard: React.FC<Omit<BoardSectionProps, 'boardType'>> = ({
                                 key={`${rowIndex}-${colIndex}`}
                                 letter={letter}
                                 size="sm"
+                                beforeSolve={!currentSolution}
                                 indexInSolution={currentSolution?.positions.indexOf(positionOffset + colIndex)}
                             />
                         ))}
@@ -439,6 +443,7 @@ interface LetterTileProps {
     letter: string;
     size: 'sm' | 'lg';
     indexInSolution?: number;
+    beforeSolve: boolean;
     key: string
 }
 
@@ -446,14 +451,15 @@ const LetterTile: React.FC<LetterTileProps> = ({
     letter,
     size,
     indexInSolution,
+    beforeSolve,
     key
 }) => {
     const inSolution = indexInSolution !== undefined && indexInSolution >= 0;
     const isStartingLetter = indexInSolution === 0;
     const baseClasses = "rounded-md flex flex-col items-center justify-center text-xl font-bold text-slate-800";
     const sizeClasses = size === 'sm' ? 'w-12 h-12' : 'w-16 h-16';
-    const bgColor = inSolution ? 'bg-secondary-contrast' : 'bg-secondary-base';
-    const borderColor = isStartingLetter ? 'border-2 border-text-base' : '';
+    const bgColor = inSolution || beforeSolve ? 'bg-secondary-base' : 'bg-secondary-base opacity-50';
+    const borderColor = isStartingLetter ? 'border-4 border-text-base' : '';
 
     return (
         <div key={key} className={`${baseClasses} ${sizeClasses} ${bgColor} ${borderColor}`}>

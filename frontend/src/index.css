@@ -23,9 +23,9 @@ code {
   --primary-highlight-color: #126782;
   --primary-contrast-color: #023047;
 
-  --secondary-base-color: #ffb703;
-  --secondary-accent-color: #fd9e02;
-  --secondary-contrast-color: #fb8500;
+  --secondary-base-color: rgb(255 183 3);
+  --secondary-accent-color: #rgb(253 158 2);
+  --secondary-contrast-color: rgb(251 133 0);
 
   --background-base-color: white;
   --background-muted-color: rgb(229, 231, 235);
@@ -43,9 +43,9 @@ code {
   --primary-highlight-color: #126782;
   --primary-contrast-color: #023047;
 
-  --secondary-base-color: #ffb703;
-  --secondary-accent-color: #fd9e02;
-  --secondary-contrast-color: #fb8500;
+  --secondary-base-color: rgb(255 183 3);
+  --secondary-accent-color: rgb(253 158 2);
+  --secondary-contrast-color: rgb(251 133 0);
 
   --background-base-color: white;
   --background-muted-color: #e8e8e8;
@@ -73,7 +73,7 @@ code {
   --background-contrast-color: #023047;
 
   --text-base-color: rgb(0, 0, 0);
-  --text-muted-color: #525c6a;
+  --text-muted-color: #727f92;
   /* slate-400 */
   --text-contrast-color: white;
 }
