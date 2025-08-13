@@ -238,7 +238,7 @@ const LettersInputs: React.FC<LettersInputsProps> = ({
                 onChange={(e) => onLettersChange(e.target.value, TOP)}
                 maxLength={3}
                 placeholder="Top"
-                className={`input-letter-box ${invalidInputSide === TOP ? 'shake' : ''} w-36`}
+                className={`input-box-transition ${invalidInputSide === TOP ? 'shake' : ''} w-36`}
                 ref={lettersInputRefs[0]}
             />
             <Input
@@ -247,7 +247,7 @@ const LettersInputs: React.FC<LettersInputsProps> = ({
                 onChange={(e) => onLettersChange(e.target.value, RIGHT)}
                 maxLength={3}
                 placeholder="Right"
-                className={`input-letter-box ${invalidInputSide === RIGHT ? 'shake' : ''} w-36`}
+                className={`input-box-transition ${invalidInputSide === RIGHT ? 'shake' : ''} w-36`}
                 ref={lettersInputRefs[1]}
             />
             <Input
@@ -256,7 +256,7 @@ const LettersInputs: React.FC<LettersInputsProps> = ({
                 onChange={(e) => onLettersChange(e.target.value, BOTTOM)}
                 maxLength={3}
                 placeholder="Bottom"
-                className={`input-letter-box ${invalidInputSide === BOTTOM ? 'shake' : ''} w-36`}
+                className={`input-box-transition ${invalidInputSide === BOTTOM ? 'shake' : ''} w-36`}
                 ref={lettersInputRefs[2]}
             />
             <Input
@@ -265,7 +265,7 @@ const LettersInputs: React.FC<LettersInputsProps> = ({
                 onChange={(e) => onLettersChange(e.target.value, LEFT)}
                 maxLength={3}
                 placeholder="Left"
-                className={`input-letter-box ${invalidInputSide === LEFT ? 'shake' : ''} w-36`}
+                className={`input-box-transition ${invalidInputSide === LEFT ? 'shake' : ''} w-36`}
                 ref={lettersInputRefs[3]}
             />
         </div>

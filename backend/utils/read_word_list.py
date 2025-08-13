@@ -5,7 +5,7 @@ def load_words(file_path: str) -> Set[str]:
     """
     Reads a word list from a file and returns it as a list of words.
     
-    Args:
+    Parameters:
         file_path (str): The path to the file containing the word list.
         
     Returns:

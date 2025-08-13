@@ -7,7 +7,7 @@ def spelling_bee_sort(word: str, center_letter: str, outer_letters: Set[str]) ->
     Words that use all the letters (pangrams) are prioritized.
     If not a pangram, words are sorted by length.
     
-    Args:
+    Parameters:
         word (str): The word to evaluate.
         center_letter (str): The center letter that must be included in each word.
         outer_letters (Set[str]): The set of outer letters.
@@ -29,7 +29,7 @@ def run(center_letter: str, outer_letters: Set[str]) -> List[str]:
     """
     Run the Spelling Bee game with the provided input.
     
-    Args:
+    Parameters:
         center_letter (str): The center letter that must be included in each word.
         outer_letters (Set[str]): A set of letters that can be used to form words, excluding the center letter.
     Returns:

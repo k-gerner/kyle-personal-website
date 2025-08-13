@@ -6,7 +6,7 @@ def run(func, *args, **kwargs):
     """
     Runs the given function with the provided arguments, profiling its execution.
 
-    Args:
+    Parameters:
         func (callable): The function to run.
         *args: Positional arguments to pass to the function.
         **kwargs: Keyword arguments to pass to the function.

@@ -7,6 +7,7 @@ const buttonClassName = [
     "text-sm",
     "border-2",
     "border-slate-200",
+    // "border-primary-accent",
     "rounded-md",
     "px-3",
     "py-2",

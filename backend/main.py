@@ -4,15 +4,15 @@ from contextlib import asynccontextmanager
 import logging
 
 from utils.read_word_list import load_words
-from utils.data_store import set_common_word_set, set_anagrams_words_tree, get_common_word_set, clear_data_store
-from utils.anagrams.word_start_tree import build_tree
+from utils.data_store import set_common_word_set, set_words_tree, get_common_word_set, clear_data_store
+from utils.word_games.word_start_tree import build_tree
 from routers import nyt_mini_games, game_pigeon
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # Load the word set
     set_common_word_set(load_words('data/common_words.txt')) 
-    set_anagrams_words_tree(build_tree(get_common_word_set()))
+    set_words_tree(build_tree(get_common_word_set()))
     logging.info("Word set loaded successfully.")
     yield
     # Clean up the word lists and release the resources

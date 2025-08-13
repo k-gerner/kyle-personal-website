@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { MdExpandLess, MdExpandMore } from "react-icons/md";
 import { PiSunHorizon } from "react-icons/pi";
 
+const defaultButtonStyle = "rounded-lg py-2 px-4 inline-flex items-center gap-x-2 border border-gray-200 hover:bg-primary-base text-center text-sm transition-all shadow-sm hover:shadow-lg text-slate-600 hover:text-text-contrast hover:bg-primary-base hover:border-primary-base focus:text-text-contrast focus:bg-primary-highlight focus:border-primary-base active:border-primary-highlight active:text-text-contrast active:bg-primary-highlight";
 
 export const ThemePicker = () => {
     const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -52,7 +53,7 @@ export const ThemePicker = () => {
             {/* Parent Button */}
             <button
                 onClick={toggleDropdown}
-                className="px-4 py-2 bg-background-base text-primary-highlight rounded hover:bg-gray-300 border"
+                className={`px-4 py-2 bg-background-base text-primary-highlight rounded hover:bg-gray-300 border ${defaultButtonStyle}`}
             >
                 <div className="flex flex-row gap-2 items-center">
                     <span>Theme</span>

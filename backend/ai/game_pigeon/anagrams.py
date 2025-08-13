@@ -1,21 +1,21 @@
 from functools import cmp_to_key
-from utils.data_store import get_anagrams_words_tree
-from utils.anagrams.anagrams_tree_node import AnagramsTreeNode
+from utils.data_store import get_words_tree
+from utils.word_games.words_tree_node import WordsTreeNode
 from typing import List, Set
 
 
 def find_words(
     remaining_letters: List[str],
     current_str: str,
-    current_node: AnagramsTreeNode
+    current_node: WordsTreeNode
 ) -> Set[str]:	
 	"""
 	Finds all the words that can be made with the given letters.
 
-	Args:
+	Parameters:
 		remaining_letters (List[str]): The letters that can still be used to form words.
 		current_str (str): The current string being formed.
-		current_node (AnagramsTreeNode): The current node in the tree structure.
+		current_node (WordsTreeNode): The current node in the tree structure.
 	"""
 	if current_node is None:
 		return set()
@@ -41,7 +41,7 @@ def compare_words(a, b):
 	
 
 def run(letters: List[str]):
-	found_words = find_words(letters, "", get_anagrams_words_tree())
+	found_words = find_words(letters, "", get_words_tree())
 	word_cmp_key = cmp_to_key(compare_words)
 	valid_words = sorted(list(found_words), key=word_cmp_key)
 	return valid_words
