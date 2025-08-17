@@ -21,6 +21,7 @@ const customColors = {
   'text-base': "rgb(var(--text-base-color), <alpha-value>)",
   'text-muted': 'var(--text-muted-color)',
   'text-contrast': 'var(--text-contrast-color)',
+  'danger': 'var(--danger-color)',
 }
 
 module.exports = {
@@ -35,9 +36,15 @@ module.exports = {
           '0%': { opacity: '0', transform: 'scaleY(0.95)' },
           '100%': { opacity: '1', transform: 'scaleY(1)' },
         },
+        pop: {
+          '0%': { transform: 'scale(1)', opacity: '1' },
+          '50%': { transform: 'scale(1.2)', opacity: '0.8' },
+          '100%': { transform: 'scale(0)', opacity: '0' },
+        },
       },
       animation: {
         dropdown: 'dropdown 0.1s ease-out',
+        pop: 'pop 0.3s ease forwards',
       },
     },
   },
