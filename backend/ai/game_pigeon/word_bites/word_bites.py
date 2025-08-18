@@ -135,7 +135,7 @@ def find_words_in_direction(
 		return []
 	
 	solutions = []
-	if current_node.isEndOfWord() and (min_length is None or len(solution_pieces) >= min_length):
+	if current_node.isEndOfWord() and (min_length is None or sum(len(piece.indices_in_use) for piece in solution_pieces) >= min_length):
 		# shallow copy is okay because SolutionPiece is immutable
 		solutions.append(solution_pieces.copy())
 
