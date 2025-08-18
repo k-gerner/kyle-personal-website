@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import Input from '../../../atoms/Input';
+import { PageButtons, NoSolutions } from '../../../components/PaginatedSolutionsSection';
 import { MdOutlineCancel } from "react-icons/md";
 import { LoadingSpinner } from "../../../atoms/LoadingSpinner";
 import { GoInfo } from "react-icons/go";
@@ -40,6 +41,7 @@ const WordBites = () => {
         vertical: ''
     });
     const [solutions, setSolutions] = useState<Solution[]>([]);
+    const [pageNumber, setPageNumber] = useState(0);
 
     const handleSolve = async () => {
         setHasSolved(true);
@@ -55,6 +57,7 @@ const WordBites = () => {
         });
 
         const data = await res.json();
+        setPageNumber(0);
         setShowSolutions(true);
         setSolutions(convertBackendResponseToSolutions(data));
         console.log(data);
@@ -139,9 +142,8 @@ const WordBites = () => {
                     <SolutionsSection
                         solutions={solutions}
                         isLoading={false}
-                        pageNumber={0}
-                        setPageNumber={() => { }}
-                    // onBack={() => setShowSolutions(false)} // Go back to LetterTilesSection
+                        pageNumber={pageNumber}
+                        setPageNumber={setPageNumber}
                     />
                 </div>
             </div>
@@ -438,6 +440,45 @@ const SolutionsSection: React.FC<SolutionsSectionProps> = ({
     pageNumber,
     setPageNumber
 }) => {
+
+
+
+
+
+
+    const containerRef = useRef<HTMLDivElement>(null);
+    const [scaleFactor, setScaleFactor] = useState(1);
+
+    useEffect(() => {
+        const handleResize = () => {
+            if (containerRef.current) {
+                const container = containerRef.current;
+                const parent = container.parentElement;
+
+                if (parent) {
+                    const parentWidth = parent.clientWidth;
+                    const parentHeight = parent.clientHeight;
+                    const containerWidth = container.scrollWidth;
+                    const containerHeight = container.scrollHeight;
+
+                    // Calculate scale factor to fit within parent bounds
+                    const widthScale = (parentWidth / containerWidth) * 0.9;
+                    console.log('parentWidth:', parentWidth, 'containerWidth:', containerWidth, 'widthScale:', widthScale);
+                    const heightScale = parentHeight / containerHeight;
+                    const newScaleFactor = Math.min(1, widthScale, heightScale);
+                    console.log('widthScale:', widthScale, 'heightScale:', heightScale, 'newScaleFactor:', newScaleFactor);
+                    setScaleFactor(newScaleFactor);
+                }
+            }
+        };
+
+        handleResize(); // Initial calculation
+        window.addEventListener("resize", handleResize); // Recalculate on window resize
+        return () => window.removeEventListener("resize", handleResize);
+    }, [pageNumber]);
+
+
+
     if (isLoading) {
         return (
             <div className="flex justify-center items-center pt-20">
@@ -447,40 +488,64 @@ const SolutionsSection: React.FC<SolutionsSectionProps> = ({
     }
 
     if (solutions.length === 0) {
-        return (
-            <div className="flex gap-2 items-center justify-center w-full h-40 bg-gray-100 rounded-lg shadow-md">
-                <GoInfo />
-                <span className="text-xl text-gray-600 font-semibold">
-                    No solutions found!
-                </span>
-            </div>
-        )
+        return <NoSolutions />;
     }
 
+
     return (
-        <div className="flex flex-col gap-4 rounded-lg">
+        <div className="flex flex-col gap-4 rounded-lg items-center">
             <h2 className="text-center text-lg font-semibold text-primary-highlight">{`Solutions (${solutions.length})`}</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                <SolutionCard solution={solutions[pageNumber]} />
+            <div className="flex flex-shrink-0 w-full md:w-1/2 lg:w-1/3">
+                <PageButtons
+                    pageNumber={pageNumber}
+                    setPageNumber={setPageNumber}
+                    totalPages={solutions.length} // Since we are showing only one solution at a time
+                />
+            </div>
+            <div className={`font-bold bg-primary-base p-4 text-text-contrast min-w-max text-center tracking-widest rounded-lg`}>
+                {solutions[pageNumber].word.toUpperCase()}
+            </div>
+            <div className="gap-4 flex justify-center items-center overflow-hidden w-screen">
+                <div
+                    ref={containerRef}
+                    className="relative"
+                    style={{
+                        transform: `scale(${scaleFactor})`,
+                        transformOrigin: "center",
+                    }}
+                >
+                    <SolutionTiles solution={solutions[pageNumber]} />
+                </div>
             </div>
         </div>
     );
 }
 
 
-const SolutionCard: React.FC<{ solution: Solution }> = ({ solution }) => {
+const SolutionTiles: React.FC<{ solution: Solution }> = ({ solution }) => {
+    const tileComponents: React.ReactElement<LetterTileProps>[] = []
+    solution.pieces.forEach((piece, index) => {
+        let tileType: PieceType;
+        if (piece.letters.length === 1) {
+            tileType = "single";
+        } else {
+            const isSingleIndex = piece.indicesInUse.length === 1;
+            tileType = solution.isHorizontal
+                ? (isSingleIndex ? "vertical" : "horizontal")
+                : (isSingleIndex ? "horizontal" : "vertical");
+        }
+        const tile = <LetterTile
+            key={`${solution.word}-${index}`}
+            value={piece.letters}
+            type={tileType}
+            canDelete={false}
+            tileIndex={index}
+        />
+        tileComponents.push(tile);
+    });
     return (
-        <div className="p-4 border border-primary-base rounded-lg shadow-lg bg-secondary-base">
-            <h3 className="text-lg font-semibold text-primary-highlight">{solution.word}</h3>
-            <div className="mt-2">
-                {solution.pieces.map((piece, index) => (
-                    <div key={index} className="flex items-center gap-2">
-                        <span className="text-sm text-text-base">{piece.letters}</span>
-                        <span className="text-xs text-text-muted">({piece.indicesInUse.join(', ')})</span>
-                    </div>
-                ))}
-            </div>
-            <p className="mt-2 text-sm text-text-muted">{solution.isHorizontal ? 'Horizontal' : 'Vertical'}</p>
+        <div className={`flex ${solution.isHorizontal ? "flex-row" : "flex-col"} gap-2 items-center justify-center`}>
+            {tileComponents}
         </div>
     );
 }
