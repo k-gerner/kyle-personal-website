@@ -66,7 +66,6 @@ const WordBites = () => {
         setPageNumber(0);
         setShowSolutions(true);
         setSolutions(convertBackendResponseToSolutions(data));
-        console.log(data);
     };
 
     const handleInputChange = (value: string, pieceType: PieceType) => {
@@ -476,10 +475,8 @@ const SolutionsSection: React.FC<SolutionsSectionProps> = ({
 
                     // Calculate scale factor to fit within parent bounds
                     const widthScale = (parentWidth / containerWidth) * 0.9;
-                    console.log('parentWidth:', parentWidth, 'containerWidth:', containerWidth, 'widthScale:', widthScale);
                     const heightScale = parentHeight / containerHeight;
                     const newScaleFactor = Math.min(1, widthScale, heightScale);
-                    console.log('widthScale:', widthScale, 'heightScale:', heightScale, 'newScaleFactor:', newScaleFactor);
                     setScaleFactor(newScaleFactor);
                 }
             }
