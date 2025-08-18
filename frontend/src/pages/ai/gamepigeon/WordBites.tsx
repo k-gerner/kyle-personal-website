@@ -24,6 +24,12 @@ type Solution = {
     pieces: SolutionPiece[];
 }
 
+type LetterTileBufferProps = {
+    bufferFront: boolean;
+    bufferBack: boolean;
+    solutionIsHorizontal: boolean
+}
+
 const buttonStyle = "rounded-full border border-slate-300 py-2 px-4 text-center text-sm transition-all shadow-sm hover:shadow-lg text-slate-600 hover:text-text-contrast hover:bg-primary-base hover:border-primary-base focus-visible:text-text-contrast focus-visible:bg-primary-highlight focus-visible:border-primary-base active:border-primary-highlight active:text-text-contrast active:bg-primary-highlight disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
 
 
@@ -341,6 +347,7 @@ interface LetterTileProps {
     canDelete?: boolean;
     onDelete?: () => void;
     tileIndex: number;
+    bufferProps?: LetterTileBufferProps;
 }
 
 const LetterTile: React.FC<LetterTileProps> = ({
@@ -348,7 +355,8 @@ const LetterTile: React.FC<LetterTileProps> = ({
     type,
     canDelete = false,
     onDelete,
-    tileIndex
+    tileIndex,
+    bufferProps
 }) => {
     const baseClasses = "flex items-center justify-center text-xl font-bold text-text-base";
     const sizeClasses = 'w-16 h-16' //size === 'sm' ? 'w-12 h-12' : 'w-16 h-16';
@@ -359,12 +367,12 @@ const LetterTile: React.FC<LetterTileProps> = ({
     const bgColor = 'bg-secondary-base' // inSolution || beforeSolve ? 'bg-secondary-base' : 'bg-secondary-base opacity-50';
 
 
-    let parentDivWidthClass = 'w-16';
+    let parentDivWidthClass = (bufferProps && !bufferProps.solutionIsHorizontal) ? 'w-48' : 'w-16';
     let groupingClasses = '';
     let letterPairFlexClasses = '';
     let tileComponent = null;
     if (type === "single") {
-        groupingClasses = 'first:rounded-t-md first:ms-0 last:rounded-b-md';
+        groupingClasses = canDelete ? 'first:rounded-t-md first:ms-0 last:rounded-b-md' : "rounded-md";
         tileComponent = (
             <div key={`${value}-${tileIndex}`} className={`${baseClasses} ${sizeClasses} ${bgColor} ${groupingClasses}`}>
                 <span>{value}</span>
@@ -372,7 +380,7 @@ const LetterTile: React.FC<LetterTileProps> = ({
         );
     } else {
         if (type === "horizontal") {
-            parentDivWidthClass = 'w-32';
+            parentDivWidthClass = (bufferProps && !bufferProps.solutionIsHorizontal) ? 'w-48' : 'w-32';
             letterPairFlexClasses = 'flex flex-row';
             groupingClasses = `first:rounded-tl-md last:rounded-tr-md ${!canDelete && 'first:rounded-bl-md last:rounded-br-md'}`;
         } else {
@@ -391,6 +399,12 @@ const LetterTile: React.FC<LetterTileProps> = ({
             </div>
         );
     }
+
+    // Invisible buffer tile to enable offsetting the visible tile in the solutions view
+    const bufferTile = (
+        <div className={`${baseClasses} ${sizeClasses}`}>
+        </div>
+    )
 
     const id = `${value}-${tileIndex}-${type}`;
     const deleteButton = canDelete ? (
@@ -420,7 +434,11 @@ const LetterTile: React.FC<LetterTileProps> = ({
 
     return (
         <div id={id} key={id} className={`flex flex-col gap-0 ${parentDivWidthClass}`}>
-            {tileComponent}
+            <div className={`flex ${bufferProps?.solutionIsHorizontal ? "flex-col" : "flex-row"}`}>
+                {bufferProps?.bufferFront && bufferTile}
+                {tileComponent}
+                {bufferProps?.bufferBack && bufferTile}
+            </div>
             {deleteButton}
         </div>
     );
@@ -440,11 +458,6 @@ const SolutionsSection: React.FC<SolutionsSectionProps> = ({
     pageNumber,
     setPageNumber
 }) => {
-
-
-
-
-
 
     const containerRef = useRef<HTMLDivElement>(null);
     const [scaleFactor, setScaleFactor] = useState(1);
@@ -534,12 +547,37 @@ const SolutionTiles: React.FC<{ solution: Solution }> = ({ solution }) => {
                 ? (isSingleIndex ? "vertical" : "horizontal")
                 : (isSingleIndex ? "horizontal" : "vertical");
         }
+        let bufferFront;
+        let bufferBack;
+        if (solution.isHorizontal) {
+            if (tileType === "horizontal" || tileType === "single") {
+                bufferFront = true;
+                bufferBack = true
+            } else {
+                bufferFront = piece.indicesInUse.includes(0);
+                bufferBack = piece.indicesInUse.includes(1);
+            }
+        } else {
+            if (tileType === "vertical" || tileType === "single") {
+                bufferFront = true;
+                bufferBack = true;
+            } else {
+                bufferFront = piece.indicesInUse.includes(0);
+                bufferBack = piece.indicesInUse.includes(1);
+            }
+        }
+        const bufferProps: LetterTileBufferProps = {
+            bufferFront: bufferFront,
+            bufferBack: bufferBack,
+            solutionIsHorizontal: solution.isHorizontal
+        };
         const tile = <LetterTile
             key={`${solution.word}-${index}`}
-            value={piece.letters}
+            value={piece.letters.toUpperCase()}
             type={tileType}
             canDelete={false}
             tileIndex={index}
+            bufferProps={bufferProps}
         />
         tileComponents.push(tile);
     });
