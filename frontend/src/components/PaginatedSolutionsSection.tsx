@@ -105,6 +105,13 @@ export const PageButtons: React.FC<PageButtonsProps> = ({
     const nextActive = pageNumber < totalPages - 1;
     useEffect(() => {
         const handleKeyDown = (event: KeyboardEvent) => {
+            const target = event.target as HTMLElement;
+
+            // Skip if the user is focused on an input or textarea
+            if (target.tagName === "INPUT" || target.tagName === "TEXTAREA") {
+                return;
+            }
+
             if (event.key === "ArrowRight" && nextActive) {
                 setPageNumber(pageNumber + 1);
             } else if (event.key === "ArrowLeft" && previousActive) {
@@ -116,7 +123,7 @@ export const PageButtons: React.FC<PageButtonsProps> = ({
         return () => {
             window.removeEventListener("keydown", handleKeyDown);
         };
-    }, [pageNumber, setPageNumber, totalPages]);
+    }, [pageNumber, setPageNumber, totalPages, previousActive, nextActive]);
 
     return (
         <div className="w-full flex flex-row py-2 px-6 gap-6">
