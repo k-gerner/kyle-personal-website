@@ -225,7 +225,6 @@ const InputSection: React.FC<InputSectionProps> = ({
             }
             <div className="flex justify-center">
                 <button
-                    // disabled={letters.flat().length !== rowLengthsByBoardType[boardType].reduce((a, b) => a + b, 0)}
                     onClick={onSolve}
                     className={`${buttonStyle} w-48`}
                 >Solve</button>
@@ -356,46 +355,64 @@ const LetterTile: React.FC<LetterTileProps> = ({
     bufferProps
 }) => {
     const baseClasses = "flex items-center justify-center text-xl font-bold text-text-base";
-    const sizeClasses = 'w-16 h-16' //size === 'sm' ? 'w-12 h-12' : 'w-16 h-16';
-    // const deleteButtonClasses = 'bg-red-500 text-white rounded-full flex items-center justify-center hover:bg-red-600 transition-colors';
-    const deleteButtonClasses = 'bg-background-base text-danger flex items-center justify-center hover:bg-danger hover:text-background-base transition-colors border-danger border-2 rounded-b-md';
-    const deleteIconClasses = 'w-8 h-8';
-    // const deleteIconClasses = 'w-4 h-4'; // Adjust size of the delete icon
-    const bgColor = 'bg-secondary-base' // inSolution || beforeSolve ? 'bg-secondary-base' : 'bg-secondary-base opacity-50';
+    const sizeClasses = "w-16 h-16"; // size === 'sm' ? 'w-12 h-12' : 'w-16 h-16';
+    const deleteButtonClasses = "bg-background-base text-danger flex items-center justify-center hover:bg-danger hover:text-background-base transition-colors border-danger border-2 rounded-b-md";
+    const deleteIconClasses = "w-8 h-8";
+    const bgColor = "bg-secondary-base";
 
-
-    let parentDivWidthClass = (bufferProps && !bufferProps.solutionIsHorizontal) ? 'w-48' : 'w-16';
-    let groupingClasses = '';
-    let letterPairFlexClasses = '';
-    let tileComponent = null;
-    if (type === "single") {
-        groupingClasses = canDelete ? 'first:rounded-t-md first:ms-0 last:rounded-b-md' : "rounded-md";
-        tileComponent = (
-            <div key={`${value}-${tileIndex}`} className={`${baseClasses} ${sizeClasses} ${bgColor} ${groupingClasses}`}>
-                <span>{value}</span>
-            </div>
-        );
-    } else {
-        if (type === "horizontal") {
-            parentDivWidthClass = (bufferProps && !bufferProps.solutionIsHorizontal) ? 'w-48' : 'w-32';
-            letterPairFlexClasses = 'flex flex-row';
-            groupingClasses = `first:rounded-tl-md last:rounded-tr-md ${!canDelete && 'first:rounded-bl-md last:rounded-br-md'}`;
-        } else {
-            letterPairFlexClasses = 'flex flex-col';
-            groupingClasses = `first:rounded-t-md ${!canDelete && 'last:rounded-b-md'}`;
+    const getParentDivWidthClass = () => {
+        if (bufferProps && !bufferProps.solutionIsHorizontal) {
+            return type === "horizontal" ? "w-48" : "w-48";
         }
-        tileComponent = (
+        return type === "horizontal" ? "w-32" : "w-16";
+    };
+
+    const getGroupingClasses = () => {
+        if (type === "single") {
+            return canDelete ? "first:rounded-t-md first:ms-0" : "rounded-md";
+        }
+        if (type === "horizontal") {
+            return `first:rounded-tl-md last:rounded-tr-md ${!canDelete ? "first:rounded-bl-md last:rounded-br-md" : ""
+                }`;
+        }
+        return `first:rounded-t-md ${!canDelete ? "last:rounded-b-md" : ""}`;
+    };
+
+    const getLetterPairFlexClasses = () => {
+        return type === "horizontal" ? "flex flex-row" : "flex flex-col";
+    };
+
+    const renderTileComponent = () => {
+        if (type === "single") {
+            return (
+                <div
+                    key={`${value}-${tileIndex}`}
+                    className={`${baseClasses} ${sizeClasses} ${bgColor} ${groupingClasses}`}
+                >
+                    <span>{value}</span>
+                </div>
+            );
+        }
+
+        const letterPairFlexClasses = getLetterPairFlexClasses();
+        return (
             <div className={letterPairFlexClasses}>
-                {
-                    value.split('').map((char, charIndex) => (
-                        <div key={`${value}-${tileIndex}-${charIndex}-${type}`} className={`${baseClasses} ${sizeClasses} ${bgColor} ${groupingClasses}`}>
-                            <span>{char}</span>
-                        </div>
-                    ))
-                }
+                {value.split("").map((char, charIndex) => (
+                    <div
+                        key={`${value}-${tileIndex}-${charIndex}-${type}`}
+                        className={`${baseClasses} ${sizeClasses} ${bgColor} ${groupingClasses}`}
+                    >
+                        <span>{char}</span>
+                    </div>
+                ))}
             </div>
         );
-    }
+    };
+
+    // Main logic
+    const parentDivWidthClass = getParentDivWidthClass();
+    const groupingClasses = getGroupingClasses();
+    const tileComponent = renderTileComponent();
 
     // Invisible buffer tile to enable offsetting the visible tile in the solutions view
     const bufferTile = (
@@ -483,7 +500,7 @@ const SolutionsSection: React.FC<SolutionsSectionProps> = ({
         handleResize(); // Initial calculation
         window.addEventListener("resize", handleResize); // Recalculate on window resize
         return () => window.removeEventListener("resize", handleResize);
-    }, [pageNumber]);
+    }, [pageNumber, solutions]);
 
 
 
@@ -588,17 +605,6 @@ function convertBackendResponseToSolutions(response: any): Solution[] {
         }))
     }));
 }
-//
-//
-//
-//
-//
-//
-// TODO: ConfigDict alais_generator=to_camel?? 
-//
-//
-//
-//
-//
+
 
 export default WordBites;
