@@ -7,6 +7,7 @@ import ai.game_pigeon.word_hunt.word_hunt as word_hunt
 import ai.game_pigeon.word_bites.word_bites as word_bites
 from utils.ai_runner import run
 from utils.error import BackendError
+from utils.model import CamelAliasModel
 
 router = APIRouter()
 
@@ -68,7 +69,7 @@ async def solve_word_hunt(input: WordHuntInput) -> WordHuntOutput:
 ##############
 # Word Bites #
 ##############
-class WordBitesInput(BaseModel):
+class WordBitesInput(CamelAliasModel):
     single_pieces: List[str]
     horizontal_pieces: List[str]
     vertical_pieces: List[str]
@@ -80,16 +81,16 @@ class WordBitesInput(BaseModel):
     def ensure_lowercase(cls, value: List[str]) -> List[str]:
         return [letter.lower() for letter in value]
 
-class WordBitesSolutionPiece(BaseModel):
+class WordBitesSolutionPiece(CamelAliasModel):
     letters: str
     indices_in_use: List[int]  # indices of the letters that are in use in the solution
     
-class WordBitesSolution(BaseModel):
+class WordBitesSolution(CamelAliasModel):
     word: str
     pieces: List[WordBitesSolutionPiece]
     horizontal: bool
     
-class WordBitesOutput(BaseModel):
+class WordBitesOutput(CamelAliasModel):
     solutions: List[WordBitesSolution]
 
 

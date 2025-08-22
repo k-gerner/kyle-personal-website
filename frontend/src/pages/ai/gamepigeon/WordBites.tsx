@@ -3,7 +3,6 @@ import Input from '../../../atoms/Input';
 import { PageButtons, NoSolutions } from '../../../components/PaginatedSolutionsSection';
 import { MdOutlineCancel } from "react-icons/md";
 import { LoadingSpinner } from "../../../atoms/LoadingSpinner";
-import { GoInfo } from "react-icons/go";
 
 
 const INPUT_DELAY_MS = 500; // Delay in milliseconds for input reset
@@ -55,10 +54,12 @@ const WordBites = () => {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-                single_pieces: inputPieces.single,
-                horizontal_pieces: inputPieces.horizontal,
-                vertical_pieces: inputPieces.vertical,
-                min_length: 3,
+                singlePieces: inputPieces.single,
+                horizontalPieces: inputPieces.horizontal,
+                verticalPieces: inputPieces.vertical,
+                minLength: 3,
+                maxLengthHorizontal: 8,
+                maxLengthVertical: 9
             })
         });
 
@@ -128,7 +129,6 @@ const WordBites = () => {
                 setShowSolutions={setShowSolutions}
             />
             <div className="relative">
-                {/* LetterTilesSection */}
                 <div
                     className={`transition-opacity duration-500 ${showSolutions ? 'opacity-0 pointer-events-none' : 'opacity-100'
                         }`}
@@ -138,8 +138,6 @@ const WordBites = () => {
                         deleteInputPiece={deleteInputPiece}
                     />
                 </div>
-
-                {/* SolutionsSection */}
                 <div
                     className={`absolute top-0 left-0 w-full transition-opacity duration-500 ${showSolutions ? 'opacity-100' : 'opacity-0 pointer-events-none'
                         }`}
@@ -546,22 +544,16 @@ const SolutionTiles: React.FC<{ solution: Solution }> = ({ solution }) => {
         }
         let bufferFront;
         let bufferBack;
-        if (solution.isHorizontal) {
-            if (tileType === "horizontal" || tileType === "single") {
-                bufferFront = true;
-                bufferBack = true
-            } else {
-                bufferFront = piece.indicesInUse.includes(0);
-                bufferBack = piece.indicesInUse.includes(1);
-            }
+        const isPrimaryDirection = solution.isHorizontal
+            ? tileType === "horizontal" || tileType === "single"
+            : tileType === "vertical" || tileType === "single";
+
+        if (isPrimaryDirection) {
+            bufferFront = true;
+            bufferBack = true;
         } else {
-            if (tileType === "vertical" || tileType === "single") {
-                bufferFront = true;
-                bufferBack = true;
-            } else {
-                bufferFront = piece.indicesInUse.includes(0);
-                bufferBack = piece.indicesInUse.includes(1);
-            }
+            bufferFront = piece.indicesInUse.includes(0);
+            bufferBack = piece.indicesInUse.includes(1);
         }
         const bufferProps: LetterTileBufferProps = {
             bufferFront: bufferFront,
@@ -592,9 +584,21 @@ function convertBackendResponseToSolutions(response: any): Solution[] {
         isHorizontal: sol.horizontal,
         pieces: sol.pieces.map((piece: any) => ({
             letters: piece.letters,
-            indicesInUse: piece.indices_in_use
+            indicesInUse: piece.indicesInUse
         }))
     }));
 }
+//
+//
+//
+//
+//
+//
+// TODO: ConfigDict alais_generator=to_camel?? 
+//
+//
+//
+//
+//
 
 export default WordBites;
