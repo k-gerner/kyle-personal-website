@@ -9,27 +9,10 @@ from functools import cmp_to_key
 from typing import List, Optional
 from dataclasses import dataclass
 
-# directional constants
-HORIZONTAL = 'H'
-VERTICAL = 'V'
-
-# display mode constants
-LIST = 0
-DIAGRAM = 1
-
-# globals
-MAX_LENGTHS = {HORIZONTAL: 8, VERTICAL: 9}  # max length of the words in each direction
-DISPLAY_MODE = DIAGRAM  # default display mode
-horizPieces = []  # list of horizontal letter groupings
-vertPieces = []   # list of vertical letter groupings
-singleLetterPieces = []  # list of letter groupings made up of a single letter
-englishWords = set()  # LARGE set that will contain every possible word. Using set for O(1) lookup
-wordStarts = set()  # set that holds every starting character sequence of every valid word
-validWordsOnly = set()  # set of only the valid word strings (no tuple pairing)
-validsWithDetails = set()  # contains the words and direction, as well as index of list of pieces from piecesList if in DIAGRAM mode
-piecesList = []  # used to keep the list of pieces for a valid word (in DIAGRAM mode), since lists cannot be hashed in the set
-
 DEFAULT_MIN_LENGTH = 3
+DEFAULT_MAX_HORIZONTAL_LENGTH = 8
+DEFAULT_MAX_VERTICAL_LENGTH = 9
+
 
 @dataclass(frozen=True)
 class SolutionPiece:
@@ -76,7 +59,9 @@ def find_words(
 		horizontal_pieces: List[str],
 		vertical_pieces: List[str],
 		root_node: WordsTreeNode,
-		min_length: Optional[int]
+		min_length: Optional[int],
+		horizontal_max_length: Optional[int],
+		vertical_max_length: Optional[int]
 ) -> List[WordBitesSolution]:
 	"""
 	Find all the valid words for a board given the pieces and the root node of the words tree.
@@ -87,6 +72,8 @@ def find_words(
 		vertical_pieces (List[str]): List of vertical letter groupings (each is 2 letters).
 		root_node (WordsTreeNode): The root node of the words tree.
 		min_length (Optional[int]): The minimum length of words to consider.
+		horizontal_max_length (Optional[int]): The maximum length of horizontal words.
+		vertical_max_length (Optional[int]): The maximum length of vertical words.
 	"""
 	solutions = []
 	horizontal_solutions = find_words_in_direction(
@@ -94,16 +81,18 @@ def find_words(
 		one_of_pieces=vertical_pieces, 
 		both_of_pieces=horizontal_pieces, 
 		solution_pieces=[], 
+		current_node=root_node,
 		min_length=min_length, 
-		current_node=root_node
+		max_length=horizontal_max_length
 	)
 	vertical_solutions = find_words_in_direction(
 		single_pieces=single_pieces, 
 		one_of_pieces=horizontal_pieces, 
 		both_of_pieces=vertical_pieces, 
 		solution_pieces=[], 
+		current_node=root_node,
 		min_length=min_length, 
-		current_node=root_node
+		max_length=vertical_max_length
 	)
 	solutions.extend(build_word_bites_solutions(horizontal_solutions, is_horizontal=True))
 	solutions.extend(build_word_bites_solutions(vertical_solutions, is_horizontal=False))
@@ -115,8 +104,9 @@ def find_words_in_direction(
 		one_of_pieces: List[str], 
 		both_of_pieces: List[str], 
 		solution_pieces: List[SolutionPiece],
-		min_length: Optional[int],
 		current_node: WordsTreeNode,
+		min_length: Optional[int],
+		max_length: Optional[int]
 	) -> List[List[SolutionPiece]]:
 	"""
 	Find all the valid words for a board in a certain direction.
@@ -126,8 +116,9 @@ def find_words_in_direction(
 		one_of_pieces (List[str]): List of pieces in which only one letter can be used if part of solution.
 		both_of_pieces (List[str]): List of pieces in which both letters must be used if part of solution.
 		solution_pieces (List[SolutionPiece]): The current solution pieces being formed.
-		min_length (Optional[int]): The minimum length of words to consider.
 		current_node (WordsTreeNode): The current node in the words tree.
+		min_length (Optional[int]): The minimum length of words to consider.
+		max_length (Optional[int]): The maximum length of words to consider.
 	Returns:
 		List[List[SolutionPiece]]: List of solutions represented as lists of SolutionPiece.
 	"""
@@ -135,9 +126,13 @@ def find_words_in_direction(
 		return []
 	
 	solutions = []
-	if current_node.isEndOfWord() and (min_length is None or sum(len(piece.indices_in_use) for piece in solution_pieces) >= min_length):
-		# shallow copy is okay because SolutionPiece is immutable
-		solutions.append(solution_pieces.copy())
+	if current_node.isEndOfWord():
+		word_length = sum(len(piece.indices_in_use) for piece in solution_pieces)
+		if max_length is not None and word_length > max_length:
+			return []
+		elif min_length is None or word_length >= min_length:
+			# shallow copy is okay because SolutionPiece is immutable
+			solutions.append(solution_pieces.copy())
 
 	for piece_index, letter in enumerate(single_pieces):
 		new_single_pieces = single_pieces[:piece_index] + single_pieces[piece_index+1:]
@@ -145,7 +140,7 @@ def find_words_in_direction(
 		new_solution_pieces = solution_pieces.copy()
 		new_solution_pieces.append(SolutionPiece(letters=letter, indices_in_use=[0]))
 		solutions_from_expansion = find_words_in_direction(
-			new_single_pieces, one_of_pieces, both_of_pieces, new_solution_pieces, min_length, next_node
+			new_single_pieces, one_of_pieces, both_of_pieces, new_solution_pieces, next_node, min_length, max_length
 		)
 		solutions.extend(solutions_from_expansion)
 	
@@ -157,7 +152,7 @@ def find_words_in_direction(
 			new_solution_pieces = solution_pieces.copy()
 			new_solution_pieces.append(SolutionPiece(letters=piece, indices_in_use=[letter_index]))
 			solutions_from_expansion = find_words_in_direction(
-				single_pieces, new_one_of_pieces, both_of_pieces, new_solution_pieces, min_length, next_node
+				single_pieces, new_one_of_pieces, both_of_pieces, new_solution_pieces, next_node, min_length, max_length
 			)
 			solutions.extend(solutions_from_expansion)
 
@@ -170,7 +165,7 @@ def find_words_in_direction(
 		new_solution_pieces = solution_pieces.copy()
 		new_solution_pieces.append(SolutionPiece(letters=piece, indices_in_use=[0, 1]))
 		solutions_from_expansion = find_words_in_direction(
-			single_pieces, one_of_pieces, new_both_of_pieces, new_solution_pieces, min_length, next_node
+			single_pieces, one_of_pieces, new_both_of_pieces, new_solution_pieces, next_node, min_length, max_length
 		)
 		solutions.extend(solutions_from_expansion)
 
@@ -244,7 +239,9 @@ def run(
 		single_pieces: List[str], 
 		horizontal_pieces: List[str], 
 		vertical_pieces: List[str], 
-		min_length: int = DEFAULT_MIN_LENGTH
+		min_length: int = DEFAULT_MIN_LENGTH,
+		horizontal_max_length: int = DEFAULT_MAX_HORIZONTAL_LENGTH,
+		vertical_max_length: int = DEFAULT_MAX_VERTICAL_LENGTH,
 	) -> List[dict]:
 	"""
 	Run the Word Bites solver with the given pieces.
@@ -254,6 +251,8 @@ def run(
 		horizontal_pieces (List[str]): List of horizontal letter groupings (each is 2 letters).
 		vertical_pieces (List[str]): List of vertical letter groupings (each is 2 letters).
 		min_length (int): The minimum length of words to consider.
+		horizontal_max_length (int): The maximum length of horizontal words.
+		vertical_max_length (int): The maximum length of vertical words.
 	"""
 	validate_input(single_pieces, horizontal_pieces, vertical_pieces)
 	solutions = find_words(
@@ -261,7 +260,9 @@ def run(
 		horizontal_pieces=horizontal_pieces,
 		vertical_pieces=vertical_pieces,
 		root_node=get_words_tree(),
-		min_length=min_length
+		min_length=min_length,
+		horizontal_max_length=horizontal_max_length,
+		vertical_max_length=vertical_max_length
 	)
 	deduped_solutions = list({s.word: s for s in solutions}.values())
 	ordered_solutions = sorted(deduped_solutions, key=cmp_to_key(word_compare))

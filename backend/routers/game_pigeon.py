@@ -73,6 +73,8 @@ class WordBitesInput(BaseModel):
     horizontal_pieces: List[str]
     vertical_pieces: List[str]
     min_length: int = 3
+    max_length_horizontal: int = 8
+    max_length_vertical: int = 9
 
     @validator("single_pieces", "horizontal_pieces", "vertical_pieces", pre=True)
     def ensure_lowercase(cls, value: List[str]) -> List[str]:
@@ -103,7 +105,10 @@ async def solve_word_bites(input: WordBitesInput) -> WordBitesOutput:
             single_pieces=input.single_pieces, 
             horizontal_pieces=input.horizontal_pieces,
             vertical_pieces=input.vertical_pieces, 
-            min_length=input.min_length)
+            min_length=input.min_length,
+            horizontal_max_length=input.max_length_horizontal,
+            vertical_max_length=input.max_length_vertical
+        )
     except BackendError as e:
         raise HTTPException(status_code=400, detail=str(e))
     except Exception as e:
