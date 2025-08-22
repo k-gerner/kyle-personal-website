@@ -5,10 +5,9 @@ from typing import List
 
 class Connect4Player:
 
-    def __init__(self, color: str, is_ai: bool = True):
-        """Sets the color for this player, and indicates whether it is an AI"""
+    def __init__(self, color: str):
+        """Sets the color for this player"""
         self.color = color
-        self.is_ai = is_ai
 
     def get_move(self, board: List[List[str]]) -> int:
         """Returns the chosen move for a given board, in [rowIndex, columnIndex] format"""
