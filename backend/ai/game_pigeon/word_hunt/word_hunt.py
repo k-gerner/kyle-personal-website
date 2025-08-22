@@ -12,7 +12,7 @@ from ai.game_pigeon.word_hunt.board import Board
 from ai.game_pigeon.word_hunt.letter import Letter
 from utils.word_games.words_tree_node import WordsTreeNode
 from functools import cmp_to_key
-from typing import List, Optional, Set, Dict
+from typing import List, Optional, Dict
 from dataclasses import dataclass
 
 # Direction Constants #
@@ -122,7 +122,7 @@ def find_valid_from(
 		return []
 	
 	solutions = []
-	if current_node.isEndOfWord() and len(positions) >= min_length:
+	if current_node.isEndOfWord() and (min_length is None or len(positions) >= min_length):
 		solutions.append(WordHuntSolution(word, positions.copy()))
 
 	for dir in DIRECTIONS:
@@ -143,7 +143,7 @@ def find_valid_from(
 	return solutions
 
 
-def transform_to_dict(solutions: Set[WordHuntSolution]) -> dict:
+def transform_to_dict(solutions: List[WordHuntSolution]) -> Dict[str, List[int]]:
 	"""
 	Transform a set of WordHuntSolution objects into a dictionary.
 

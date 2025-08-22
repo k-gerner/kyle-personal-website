@@ -24,12 +24,14 @@ code {
   --primary-contrast-color: #023047;
 
   --secondary-base-color: rgb(255 183 3);
-  --secondary-accent-color: #rgb(253 158 2);
+  --secondary-accent-color: rgb(253 158 2);
   --secondary-contrast-color: rgb(251 133 0);
 
   --background-base-color: white;
   --background-muted-color: rgb(229, 231, 235);
   --background-contrast-color: #023047;
+
+  --danger-color: rgb(220 38 38);
 
   --text-base-color: rgb(0, 0, 0);
   --text-muted-color: rgb(148, 163, 184);
@@ -50,6 +52,8 @@ code {
   --background-base-color: white;
   --background-muted-color: #e8e8e8;
   --background-contrast-color: #023047;
+
+  --danger-color: rgb(220 38 38);
 
   --text-base-color: rgb(0, 0, 0);
   /* black; */

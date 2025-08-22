@@ -1,3 +1,4 @@
+import React, { useEffect } from "react";
 import { LoadingSpinner } from "../atoms/LoadingSpinner";
 import { GoInfo } from "react-icons/go";
 
@@ -89,26 +90,50 @@ export const PaginatedSolutionsSection: React.FC<PaginatedSolutionsSectionProps>
 }
 
 
-interface PageButtonsProps {
+export interface PageButtonsProps {
     pageNumber: number;
     setPageNumber: (page: number) => void;
     totalPages: number;
 }
 
-const PageButtons: React.FC<PageButtonsProps> = ({
+export const PageButtons: React.FC<PageButtonsProps> = ({
     pageNumber,
     setPageNumber,
     totalPages
 }) => {
+    const previousActive = pageNumber > 0;
+    const nextActive = pageNumber < totalPages - 1;
+    useEffect(() => {
+        const handleKeyDown = (event: KeyboardEvent) => {
+            const target = event.target as HTMLElement;
+
+            // Skip if the user is focused on an input or textarea
+            if (target.tagName === "INPUT" || target.tagName === "TEXTAREA") {
+                return;
+            }
+
+            if (event.key === "ArrowRight" && nextActive) {
+                setPageNumber(pageNumber + 1);
+            } else if (event.key === "ArrowLeft" && previousActive) {
+                setPageNumber(pageNumber - 1);
+            }
+        };
+
+        window.addEventListener("keydown", handleKeyDown);
+        return () => {
+            window.removeEventListener("keydown", handleKeyDown);
+        };
+    }, [pageNumber, setPageNumber, totalPages, previousActive, nextActive]);
+
     return (
         <div className="w-full flex flex-row py-2 px-6 gap-6">
             <button
-                disabled={pageNumber === 0}
+                disabled={!previousActive}
                 onClick={() => setPageNumber(pageNumber - 1)}
                 className={`${pageButtonStyle} w-full`}
             >{"< Previous"}</button>
             <button
-                disabled={pageNumber === totalPages - 1}
+                disabled={!nextActive}
                 onClick={() => setPageNumber(pageNumber + 1)}
                 className={`${pageButtonStyle} w-full`}
             >{"Next >"}</button>
@@ -117,7 +142,7 @@ const PageButtons: React.FC<PageButtonsProps> = ({
 }
 
 
-const NoSolutions = () => {
+export const NoSolutions = () => {
     return (
         <div className="flex gap-2 items-center justify-center w-full h-40 bg-gray-100 rounded-lg shadow-md">
             <GoInfo />

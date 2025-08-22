@@ -57,10 +57,7 @@ const WordHunt = () => {
                     positions,
                 } as WordHuntSolution))
         );
-        // setSolutions(chunkArray(data.words, WORDS_PER_PAGE));
         setPageNumber(0);
-        console.log("found solutions")
-        console.log(solutions);
     };
 
 
@@ -144,7 +141,6 @@ const InputSection: React.FC<InputSectionProps> = ({
     onSolve,
     lettersInputRefs
 }) => {
-    console.log("InputSection letters:", letters);
     const buttonGroupOptions = [
         { label: "4x4", value: "4x4" },
         { label: "5x5", value: "5x5" },
@@ -246,13 +242,12 @@ const SmallSquareBoard: React.FC<Omit<BoardSectionProps, 'boardType'>> = ({
     letters,
     currentSolution
 }) => {
-    console.log("currentSolution.positions", currentSolution?.positions);
     return (
         <div className="grid grid-cols-4 gap-y-4 gap-x-4 w-fit mx-auto">
             {letters.map((row, rowIndex) =>
                 row.concat(Array(4 - row.length).fill("")).map((letter, colIndex) => (
                     <LetterTile
-                        key={`${rowIndex}-${colIndex}`}
+                        tileKey={`${rowIndex}-${colIndex}`}
                         letter={letter}
                         size="lg"
                         beforeSolve={!currentSolution}
@@ -273,7 +268,7 @@ const LargeSquareBoard: React.FC<Omit<BoardSectionProps, 'boardType'>> = ({
             {letters.map((row, rowIndex) =>
                 row.concat(Array(5 - row.length).fill("")).map((letter, colIndex) => (
                     <LetterTile
-                        key={`${rowIndex}-${colIndex}`}
+                        tileKey={`${rowIndex}-${colIndex}`}
                         letter={letter}
                         size="sm"
                         beforeSolve={!currentSolution}
@@ -308,7 +303,7 @@ const DonutBoard: React.FC<Omit<BoardSectionProps, 'boardType'>> = ({
                             <div className="col-start-1 col-end-3 flex flex-row gap-x-4">
                                 {adjustedRow.slice(0, 2).map((letter, colIndex) => (
                                     <LetterTile
-                                        key={`${rowIndex}-${colIndex}`}
+                                        tileKey={`${rowIndex}-${colIndex}`}
                                         letter={letter}
                                         size="sm"
                                         beforeSolve={!currentSolution}
@@ -319,7 +314,7 @@ const DonutBoard: React.FC<Omit<BoardSectionProps, 'boardType'>> = ({
                             <div className="col-start-4 col-end-6 flex flex-row gap-x-4">
                                 {adjustedRow.slice(2, 4).map((letter, colIndex) => (
                                     <LetterTile
-                                        key={`${rowIndex}-${colIndex}`}
+                                        tileKey={`${rowIndex}-${colIndex}`}
                                         letter={letter}
                                         size="sm"
                                         beforeSolve={!currentSolution}
@@ -348,7 +343,7 @@ const DonutBoard: React.FC<Omit<BoardSectionProps, 'boardType'>> = ({
                     <div className={`${gridLayout} flex flex-row gap-x-4`}>
                         {adjustedRow.map((letter, colIndex) => (
                             <LetterTile
-                                key={`${rowIndex}-${colIndex}`}
+                                tileKey={`${rowIndex}-${colIndex}`}
                                 letter={letter}
                                 size="sm"
                                 beforeSolve={!currentSolution}
@@ -393,7 +388,7 @@ const CrossBoard: React.FC<Omit<BoardSectionProps, 'boardType'>> = ({
                             <div className="col-start-1 col-end-3 flex flex-row gap-x-4">
                                 {adjustedRow.slice(0, 2).map((letter, colIndex) => (
                                     <LetterTile
-                                        key={`${rowIndex}-${colIndex}`}
+                                        tileKey={`${rowIndex}-${colIndex}`}
                                         letter={letter}
                                         size="sm"
                                         beforeSolve={!currentSolution}
@@ -404,7 +399,7 @@ const CrossBoard: React.FC<Omit<BoardSectionProps, 'boardType'>> = ({
                             <div className="col-start-4 col-end-6 flex flex-row gap-x-4">
                                 {adjustedRow.slice(2, 4).map((letter, colIndex) => (
                                     <LetterTile
-                                        key={`${rowIndex}-${colIndex}`}
+                                        tileKey={`${rowIndex}-${colIndex}`}
                                         letter={letter}
                                         size="sm"
                                         beforeSolve={!currentSolution}
@@ -422,7 +417,7 @@ const CrossBoard: React.FC<Omit<BoardSectionProps, 'boardType'>> = ({
                     <div className={`${gridLayout} flex flex-row gap-x-4`}>
                         {adjustedRow.map((letter, colIndex) => (
                             <LetterTile
-                                key={`${rowIndex}-${colIndex}`}
+                                tileKey={`${rowIndex}-${colIndex}`}
                                 letter={letter}
                                 size="sm"
                                 beforeSolve={!currentSolution}
@@ -444,7 +439,7 @@ interface LetterTileProps {
     size: 'sm' | 'lg';
     indexInSolution?: number;
     beforeSolve: boolean;
-    key: string
+    tileKey: string
 }
 
 const LetterTile: React.FC<LetterTileProps> = ({
@@ -452,7 +447,7 @@ const LetterTile: React.FC<LetterTileProps> = ({
     size,
     indexInSolution,
     beforeSolve,
-    key
+    tileKey
 }) => {
     const inSolution = indexInSolution !== undefined && indexInSolution >= 0;
     const isStartingLetter = indexInSolution === 0;
@@ -462,7 +457,7 @@ const LetterTile: React.FC<LetterTileProps> = ({
     const borderColor = isStartingLetter ? 'border-4 border-text-base' : '';
 
     return (
-        <div key={key} className={`${baseClasses} ${sizeClasses} ${bgColor} ${borderColor}`}>
+        <div key={tileKey} className={`${baseClasses} ${sizeClasses} ${bgColor} ${borderColor}`}>
             <span>{letter || ""}</span>
             <span className="text-xs text-text-base opacity-70">{inSolution && indexInSolution + 1}</span>
         </div>
