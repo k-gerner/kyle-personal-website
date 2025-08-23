@@ -9,7 +9,10 @@ import { callEndpoint } from '../../../utils/helpers';
 const ROWS = 6;
 const COLUMNS = 7;
 
-type Player = "user" | "ai";
+enum Player {
+    User = "user",
+    AI = "ai"
+}
 
 const buttonStyle = "rounded-full border border-slate-300 py-2 px-4 text-center text-sm transition-all shadow-sm hover:shadow-lg text-slate-600 hover:text-text-contrast hover:bg-primary-base hover:border-primary-base focus-visible:text-text-contrast focus-visible:bg-primary-highlight focus-visible:border-primary-base active:border-primary-highlight active:text-text-contrast active:bg-primary-highlight disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none disabled:opacity-50 disabled:bg-slate-200 disabled:border-slate-200 disabled:text-slate-400"
 
@@ -22,7 +25,7 @@ const Connect4 = () => {
     const [loading, setLoading] = useState(false);
     const [playerTurn, setPlayerTurn] = useState(true);
     const [winner, setWinner] = useState<Player | null>(null);
-    const [startingPlayer, setStartingPlayer] = useState<Player>("user");
+    const [startingPlayer, setStartingPlayer] = useState<Player>(Player.User);
     const [gameStarted, setGameStarted] = useState(false);
     //
     //
@@ -79,7 +82,7 @@ const Connect4 = () => {
         const newAiLocations = [...aiLocations, newAiLocation];
         setAiLocations(newAiLocations);
         if (isWin) {
-            setWinner("ai");
+            setWinner(Player.AI);
         } else {
             setAllowInput(true);
         }
@@ -199,7 +202,7 @@ const InputSection: React.FC<InputSectionProps> = ({
                 setValue={setMaxDepth}
             />
             <ButtonGroupPicker
-                optionsWithLabels={[{ label: "AI", value: "ai" }, { label: "User", value: "user" }]}
+                optionsWithLabels={[{ label: "AI", value: Player.AI }, { label: "User", value: Player.User }]}
                 label="Starting Player"
                 selectedValue={startingPlayer}
                 setValue={setStartingPlayer}
