@@ -6,6 +6,7 @@ import LetterBoxed from "./pages/ai/nyt/LetterBoxed";
 import Anagrams from "./pages/ai/gamepigeon/Anagrams";
 import WordHunt from "./pages/ai/gamepigeon/WordHunt";
 import WordBites from "./pages/ai/gamepigeon/WordBites";
+import Connect4 from "./pages/ai/gamepigeon/Connect4"; // Import Connect4 if needed
 import { ThemePicker } from "./components/ThemePicker"; // Import your ThemePicker component
 import './index.css';
 
@@ -22,6 +23,7 @@ function App() {
             <Link to="/anagrams" className="text-primary-highlight hover:underline">Anagrams</Link>
             <Link to="/word_hunt" className="text-primary-highlight hover:underline">Word Hunt</Link>
             <Link to="/word_bites" className="text-primary-highlight hover:underline">Word Bites</Link>
+            <Link to="/connect4" className="text-primary-highlight hover:underline">Connect 4</Link>
           </div>
 
           {/* Right side: Theme Picker */}
@@ -36,6 +38,7 @@ function App() {
           <Route path="/anagrams" element={<Anagrams />} />
           <Route path="/word_hunt" element={<WordHunt />} />
           <Route path="/word_bites" element={<WordBites />} />
+          <Route path="/connect4" element={<Connect4 />} />
           {/* Catch-all route for 404 */}
           <Route path="*" element={<div>Page not found</div>} />
         </Routes>

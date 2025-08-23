@@ -11,3 +11,24 @@ export const chunkArray = (array: string[], chunkSize: number): string[][] => {
     }
     return chunks;
 };
+
+
+/**
+ * Call endpoint and return the response as a Promise of a JSON object
+ * @param endpoint Endpoint to call, e.g. "api/nyt/spelling_bee"
+ * @param body Body to send in the request, should be a JSON object
+ * @returns 
+ */
+export const callEndpoint = async (endpoint: string, body: any): Promise<any> => {
+    const res = await fetch('http://localhost:5001/' + endpoint, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(body),
+    });
+    if (!res.ok) {
+        throw new Error(`Error: ${res.status} ${res.statusText}`);
+    }
+    return await res.json();
+}
