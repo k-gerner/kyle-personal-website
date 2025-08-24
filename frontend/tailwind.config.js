@@ -22,6 +22,13 @@ const customColors = {
   'text-muted': 'var(--text-muted-color)',
   'text-contrast': 'var(--text-contrast-color)',
   'danger': 'var(--danger-color)',
+  'success': 'var(--success-color)',
+
+  // game specific
+  'connect-4-board': 'var(--connect-4-board-color)',
+  'connect-4-board-highlight': 'var(--connect-4-board-highlight-color)',
+  'connect-4-piece-red': 'var(--connect-4-piece-red-color)',
+  'connect-4-piece-yellow': 'var(--connect-4-piece-yellow-color)',
 }
 
 module.exports = {
@@ -41,10 +48,29 @@ module.exports = {
           '50%': { transform: 'scale(1.2)', opacity: '0.8' },
           '100%': { transform: 'scale(0)', opacity: '0' },
         },
+        slideInFromTop: {
+          '0%': { transform: 'translateY(-100%)', opacity: 0 },
+          '100%': { transform: 'translateY(0)', opacity: '1' },
+        },
+        revealFromTop: {
+          '0%': { clipPath: 'inset(0 0 100% 0)' },
+          '100%': { clipPath: 'inset(0 0 0 0)' },
+        },
+        revealFromTop2: {
+          '0%': { height: '0' },
+          // '50%': { height: '200%' },
+          '100%': { height: '200%' },
+        }
+        // expandVertically: {
+        //   '0%': { transform: 'scaleY(0)', transformOrigin: 'top' },
+        //   '100%': { transform: 'scaleY(1)%', transformOrigin: 'top' },
+        // },
       },
       animation: {
         dropdown: 'dropdown 0.1s ease-out',
         pop: 'pop 0.3s ease forwards',
+        slideInFromTop: 'slideInFromTop 0.3s ease-out forwards',
+        revealFromTop: 'revealFromTop2 1.0s ease-out forwards',
       },
     },
   },
