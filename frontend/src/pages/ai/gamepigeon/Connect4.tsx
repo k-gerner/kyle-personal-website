@@ -15,8 +15,6 @@ enum Player {
     AI = "ai"
 }
 
-const buttonStyle = "rounded-full border border-slate-300 py-2 px-4 text-center text-sm transition-all shadow-sm hover:shadow-lg text-slate-600 hover:text-text-contrast hover:bg-primary-base hover:border-primary-base focus-visible:text-text-contrast focus-visible:bg-primary-highlight focus-visible:border-primary-base active:border-primary-highlight active:text-text-contrast active:bg-primary-highlight disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none disabled:opacity-50 disabled:bg-slate-200 disabled:border-slate-200 disabled:text-slate-400"
-
 const Connect4 = () => {
     // Game settings
     const [autoplay, setAutoplay] = useState(true);
@@ -116,9 +114,9 @@ const Connect4 = () => {
 
 
     return (
-        <div className="flex flex-col gap-4 bg-background-base min-h-screen">
+        <div className="flex flex-col gap-4 bg-background-base min-h-screen items-center">
             <h1 className="text-center text-3xl font-bold text-primary-highlight mb-4">Connect 4!</h1>
-            <div className="border p-4 rounded-lg shadow-lg flex flex-col md:flex-row gap-4">
+            <div className="border p-4 rounded-lg shadow-lg flex flex-col md:flex-row gap-4 w-full">
                 <div className="flex-shrink-0 transition-all duration-500 w-full md:w-1/2 transition">
                     <Board
                         playerLocations={playerLocations}
