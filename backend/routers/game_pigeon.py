@@ -139,7 +139,7 @@ class Connect4Output(CamelAliasModel):
     
 
 @router.post("/connect4")
-async def solve_connect4(input: Connect4Input):
+async def solve_connect4(input: Connect4Input) -> Connect4Output:
     """
     Solve the Connect 4 puzzle with the provided player and opponent locations.
     """
@@ -157,3 +157,48 @@ async def solve_connect4(input: Connect4Input):
         logging.error("Unexpected error in connect 4:", exc_info=True)
         raise HTTPException(status_code=500, detail="An unexpected error occurred.")
     return Connect4Output(column=column, is_win=is_win)
+
+
+class Connect4GameOverInput(CamelAliasModel):
+    player_locations: List[Tuple[int, int]]  # List of [row, col] for player's pieces
+    ai_locations: List[Tuple[int, int]]  # List of [row, col] for AI's pieces
+
+    @validator("player_locations", "ai_locations", pre=True)
+    def ensure_valid_locations(cls, value: List[Tuple[int, int]]) -> List[Tuple[int, int]]:
+        if not all(isinstance(loc, list) and len(loc) == 2 for loc in value):
+            raise ValueError("Each location must be a tuple of two integers [row, col].")
+        return value
+    
+class Connect4GameOverOutput(CamelAliasModel):
+    is_over: bool  # True if the game is over, False otherwise
+    ai_wins: bool  # True if the AI has won, False if the player has won or no winner
+    winning_locations: List[Tuple[int, int]] = []  # Locations of the winning pieces, if any
+
+
+@router.post("/connect4/game_over")
+async def check_game_over_connect4(input: Connect4GameOverInput) -> Connect4GameOverOutput:
+    """
+    Check if the Connect 4 game is over.
+    
+    Parameters:
+        input (Connect4Input): The current game state.
+        
+    Returns:
+        bool: True if the game is over, False otherwise.
+    """
+    try:
+        is_win, ai_wins, winning_locations = run(
+            connect4.check_game_over, 
+            player_locations=input.player_locations, 
+            ai_locations=input.ai_locations
+        )
+    except BackendError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        logging.error("Unexpected error in connect 4:", exc_info=True)
+        raise HTTPException(status_code=500, detail="An unexpected error occurred.")
+    return Connect4GameOverOutput(
+        is_over=is_win, 
+        ai_wins=ai_wins, 
+        winning_locations=winning_locations
+    )

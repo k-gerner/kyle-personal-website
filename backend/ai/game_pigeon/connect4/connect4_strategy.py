@@ -11,7 +11,6 @@ from ai.game_pigeon.connect4.enums import BoardSpace, PlayerBoardSpace
 from ai.game_pigeon.connect4.constants import NUM_ROWS, NUM_COLS
 
 
-MAX_DEPTH = 6  # max number of moves ahead to calculate
 WIN_SCORE = 1000000  # large enough to always be the preferred outcome
 
 
@@ -187,38 +186,39 @@ def score_section(section: Annotated[List[str], 4], color: PlayerBoardSpace) -> 
 		return 0
 
 
-def find_winner(board: List[List[str]]) -> Union[PlayerBoardSpace, None]:
+def find_winner(board: List[List[str]]) -> Tuple[Union[PlayerBoardSpace, None], Union[List[List[int]], None]]:
 	"""
 	Determines if there is a winner on the board
 
 	Returns:
 		PlayerBoardSpace | None: The color of the winner if there is one, otherwise None
+		List[List[int]]: The coordinates of the winning pieces if there is a winner, otherwise empty list
 	"""
 	# Check horizontal
 	for c in range(NUM_COLS - 3):
 		for r in range(NUM_ROWS):
 			if board[r][c] == board[r][c + 1] == board[r][c + 2] == board[r][c + 3] != BoardSpace.EMPTY:
-				return board[r][c]
+				return board[r][c], [[r, c], [r, c + 1], [r, c + 2], [r, c + 3]]
 
 	# Check vertical
 	for c in range(NUM_COLS):
 		for r in range(NUM_ROWS - 3):
 			if board[r][c] == board[r + 1][c] == board[r + 2][c] == board[r + 3][c] != BoardSpace.EMPTY:
-				return board[r][c]
+				return board[r][c], [[r, c], [r + 1, c], [r + 2, c], [r + 3, c]]
 
 	# Check diagonal from bottom left to top right
 	for c in range(NUM_COLS - 3):
 		for r in range(NUM_ROWS - 3):
 			if board[r][c] == board[r + 1][c + 1] == board[r + 2][c + 2] == board[r + 3][c + 3] != BoardSpace.EMPTY:
-				return board[r][c]
+				return board[r][c], [[r, c], [r + 1, c + 1], [r + 2, c + 2], [r + 3, c + 3]]
 
 	# Check diagonal from bottom right to top left
 	for c in range(NUM_COLS - 3):
 		for r in range(3, NUM_ROWS):
 			if board[r][c] == board[r - 1][c + 1] == board[r - 2][c + 2] == board[r - 3][c + 3] != BoardSpace.EMPTY:
-				return board[r][c]
+				return board[r][c], [[r, c], [r - 1, c + 1], [r - 2, c + 2], [r - 3, c + 3]]
 
-	return None
+	return None, []  # no winner found
 
 
 def is_valid_move(board, col: int) -> bool:
@@ -246,7 +246,7 @@ def check_if_game_over(board: List[List[str]]) -> Tuple[bool, Union[str, None]]:
 		tuple[bool, str | None]: A tuple where the first element is True if the game is over,
 								  and the second element is the winning color (None if no winner)
 	"""
-	winner = find_winner(board)
+	winner, _ = find_winner(board)
 	if winner is not None:
 		return True, winner
 	elif len(get_valid_moves(board)) == 0:
