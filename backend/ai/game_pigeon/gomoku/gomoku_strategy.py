@@ -246,14 +246,12 @@ class GomokuStrategy(GomokuPlayer):
 			threat_dictionary = self.black_threats_scores if piece_color == BoardSpace.BLACK else self.white_threats_scores
 			if len(section_string) == 5:
 				# if the section is only 5 spaces
-				if section_string in threat_dictionary:
-					return True
-				return False
+				return section_string in threat_dictionary
 			for i in range(len(section_string) - 5):
 				section6 = section_string[i:i+6]
-				front_section5 = section6[:-1]
 				if section6 in threat_dictionary:
 					return True
+				front_section5 = section6[:-1]
 				if front_section5 in threat_dictionary:
 					return True
 				if i == len(section_string) - 6:
@@ -302,7 +300,7 @@ class GomokuStrategy(GomokuPlayer):
 							
 							if forward_piece_color == BoardSpace.EMPTY:
 								# if we have not found a player piece yet
-								forward_direction_str += curr_piece
+								forward_direction_str += str(curr_piece)
 								forward_distance_reached += 1
 								if curr_piece == BoardSpace.EMPTY:
 									num_forward_empties_before_piece += 1
@@ -314,7 +312,7 @@ class GomokuStrategy(GomokuPlayer):
 
 							elif forward_piece_color == curr_piece:
 								# current piece is the player piece that we are searching for
-								forward_direction_str += curr_piece
+								forward_direction_str += str(curr_piece)
 								forward_distance_reached += 1
 								num_forward_player_pieces += 1
 								forward_score += (5 - outward_spaces_checked) * (2 ** (2 * (num_forward_player_pieces - 1)))
@@ -322,7 +320,7 @@ class GomokuStrategy(GomokuPlayer):
 							else:
 								# the current spot does not contain the piece we are searching for
 								if curr_piece == BoardSpace.EMPTY:
-									forward_direction_str += curr_piece
+									forward_direction_str += str(curr_piece)
 									forward_distance_reached += 1
 									forward_score += (5 - outward_spaces_checked)
 								else:
@@ -339,7 +337,7 @@ class GomokuStrategy(GomokuPlayer):
 							
 							if backward_piece_color == BoardSpace.EMPTY:
 								# if we have not found a player piece yet
-								backward_direction_str += curr_piece
+								backward_direction_str += str(curr_piece)
 								backward_distance_reached += 1
 								if curr_piece == BoardSpace.EMPTY:
 									num_backward_empties_before_piece += 1
@@ -351,7 +349,7 @@ class GomokuStrategy(GomokuPlayer):
 
 							elif backward_piece_color == curr_piece:
 								# current piece is the player piece that we are searching for
-								backward_direction_str += curr_piece
+								backward_direction_str += str(curr_piece)
 								backward_distance_reached += 1
 								num_backward_player_pieces += 1
 								backward_score += (5 - outward_spaces_checked) * (2 ** (2 * (num_backward_player_pieces - 1)))
@@ -359,7 +357,7 @@ class GomokuStrategy(GomokuPlayer):
 							else:
 								# the current spot does not contain the piece we are searching for
 								if curr_piece == BoardSpace.EMPTY:
-									backward_direction_str += curr_piece
+									backward_direction_str += str(curr_piece)
 									backward_distance_reached += 1
 									backward_score += (5 - outward_spaces_checked)
 								else:
@@ -378,7 +376,7 @@ class GomokuStrategy(GomokuPlayer):
 						threat_multiplier = 1
 						if forward_piece_color != BoardSpace.EMPTY and forward_piece_color is not None:
 							# if we actually found a piece 
-							full_section_string = backward_direction_str + forward_piece_color + forward_direction_str  # add in the imaginary piece to see if a threat is produced
+							full_section_string = backward_direction_str + str(forward_piece_color) + forward_direction_str  # add in the imaginary piece to see if a threat is produced
 							if section_contains_threats(forward_piece_color, full_section_string):
 								threat_multiplier = 2
 
@@ -395,18 +393,18 @@ class GomokuStrategy(GomokuPlayer):
 							# if the pieces in each direction are opposing colors (i.e. neither are BoardSpace.EMPTY or out of bounds)
 							if num_backward_empties_before_piece == 0:
 								# if the first spot in the backward direction is a player piece
-								forward_section_str = forward_piece_color + forward_direction_str
+								forward_section_str = str(forward_piece_color) + forward_direction_str
 							else:
 								# if the first spot in the backward direction is BoardSpace.EMPTY, we want to add an BoardSpace.EMPTY
 								# spot to the front of this, since threats may have 0 or 1 spaces at the start/end
-								forward_section_str = "." + forward_piece_color + forward_direction_str
+								forward_section_str = "." + str(forward_piece_color) + forward_direction_str
 							if num_forward_empties_before_piece == 0:
 								# if the first spot in the forward direction is a player piece
-								backward_section_str = backward_piece_color + backward_direction_str
+								backward_section_str = str(backward_piece_color) + backward_direction_str
 							else:
 								# if the first spot in the forward direction is BoardSpace.EMPTY, we want to add an BoardSpace.EMPTY
 								# spot to the front of this, since threats may have 0 or 1 spaces at the start/end
-								backward_section_str = "." + backward_piece_color + backward_direction_str
+								backward_section_str = "." + str(backward_piece_color) + backward_direction_str
 
 							if section_contains_threats(forward_piece_color, forward_section_str) or section_contains_threats(backward_piece_color, backward_section_str):
 								threat_multiplier = 2
@@ -416,20 +414,20 @@ class GomokuStrategy(GomokuPlayer):
 							# OR one of the directions is out of bounds
 							if forward_piece_color is None:
 								# if the forward direction is out of bounds
-								total_section_str = backward_piece_color + backward_direction_str
+								total_section_str = str(backward_piece_color) + backward_direction_str
 								evaluating_piece_color = backward_piece_color
 							elif backward_piece_color is None:
 								# if the backward direction is out of bounds
-								total_section_str = forward_piece_color + forward_direction_str
+								total_section_str = str(forward_piece_color) + forward_direction_str
 								evaluating_piece_color = forward_piece_color
 							else:
 								if forward_piece_color == BoardSpace.EMPTY:
 									# if the forward direction is all the empties
-									total_section_str = "." + backward_piece_color + backward_direction_str
+									total_section_str = "." + str(backward_piece_color) + backward_direction_str
 									evaluating_piece_color = backward_piece_color
 								else:
 									# if the backward direction is all the empties
-									total_section_str = "." + forward_piece_color + forward_direction_str
+									total_section_str = "." + str(forward_piece_color) + forward_direction_str
 									evaluating_piece_color = forward_piece_color
 							
 							if section_contains_threats(evaluating_piece_color, total_section_str):
@@ -601,7 +599,7 @@ class GomokuStrategy(GomokuPlayer):
 		# Check horizontal
 		for c in range(BOARD_DIMENSION - 5):
 			for r in range(BOARD_DIMENSION):
-				section6 = "".join(board[r][c:c + 6])
+				section6 = "".join(str(piece) for piece in board[r][c:c + 6])
 				section5 = section6[:-1]  # first 5 spaces of section 6
 				if section6 in evaluator_scores_dict:
 					evaluator_score += evaluator_scores_dict[section6]
@@ -630,7 +628,7 @@ class GomokuStrategy(GomokuPlayer):
 			for r in range(BOARD_DIMENSION - 5):
 				section6 = ''
 				for i in range(6):
-					section6 += board[r + i][c]
+					section6 += str(board[r + i][c])
 				section5 = section6[:-1]  # first 5 spaces of section 6
 				if section6 in evaluator_scores_dict:
 					evaluator_score += evaluator_scores_dict[section6]
@@ -659,7 +657,7 @@ class GomokuStrategy(GomokuPlayer):
 			for r in range(BOARD_DIMENSION - 5):
 				section6 = ''
 				for i in range(6):
-					section6 += board[r + i][c + i]
+					section6 += str(board[r + i][c + i])
 				section5 = section6[:-1]
 				if section6 in evaluator_scores_dict:
 					evaluator_score += evaluator_scores_dict[section6]
@@ -688,7 +686,7 @@ class GomokuStrategy(GomokuPlayer):
 			for r in range(5, BOARD_DIMENSION):
 				section6 = ''
 				for i in range(6):
-					section6 += board[r - i][c + i]
+					section6 += str(board[r - i][c + i])
 				section5 = section6[:-1]
 				if section6 in evaluator_scores_dict:
 					evaluator_score += evaluator_scores_dict[section6]
@@ -715,10 +713,10 @@ class GomokuStrategy(GomokuPlayer):
 		# manually check the remaining unchecked length-5 corner sections 
 		top_left, top_right, bottom_right, bottom_left = '', '', '', ''
 		for i in range(5):
-			top_left += board[4-i][i]
-			top_right += board[i][BOARD_DIMENSION - (5-i)]
-			bottom_right += board[BOARD_DIMENSION - i - 1][BOARD_DIMENSION - (5-i)]
-			bottom_left += board[BOARD_DIMENSION - (5-i)][i]
+			top_left += str(board[4-i][i])
+			top_right += str(board[i][BOARD_DIMENSION - (5-i)])
+			bottom_right += str(board[BOARD_DIMENSION - i - 1][BOARD_DIMENSION - (5-i)])
+			bottom_left += str(board[BOARD_DIMENSION - (5-i)][i])
 		corner_counter = 1
 		for section in [top_left, top_right, bottom_right, bottom_left]:
 			if section in evaluator_scores_dict:

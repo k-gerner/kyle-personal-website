@@ -46,9 +46,9 @@ def _debug_board(board: List[List[BoardSpace]]) -> None:
     Parameters:
         board (List[List[BoardSpace]]): The game board to print.
     """
-    for row in board[::-1]:  # bottom row is at index 0
+    for row in board:  # bottom row is at index 0
         print(' '.join(space.value for space in row))
-    print('-' * 27)
+    print('-' * 25)
 
 
 def run(
@@ -56,7 +56,7 @@ def run(
 		ai_locations: List[Tuple[int, int]],
 		max_search_depth: int = DEFAULT_MAX_DEPTH
 ) -> Tuple[int, int, bool]:
-	"""
+    """
 	Main method to run the Gomoku game client.
 
 	Parameters:
@@ -67,14 +67,14 @@ def run(
 	Returns:
 		Tuple[int, int, bool]: The row and column chosen by the AI and whether it resulted in a win.
 	"""
-	board = _build_board_matrix(player_locations, ai_locations)
-	ai = GomokuStrategy(AI_PIECE)
-	best_move_row, best_move_col = ai.get_move(board, max_search_depth)
-	if best_move_row is None or best_move_col is None:
-		raise BackendError(ValueError(f"Board has no valid moves."))
-
-	winner, winning_locations = find_winner(board)
-	return best_move_row, best_move_col, winner is not None
+    board = _build_board_matrix(player_locations, ai_locations)
+    ai = GomokuStrategy(AI_PIECE)
+    _debug_board(board)
+    best_move_row, best_move_col = ai.get_move(board, max_search_depth)
+    if best_move_row is None or best_move_col is None:
+        raise BackendError(ValueError(f"Board has no valid moves."))
+    winner, winning_locations = find_winner(board)
+    return best_move_row, best_move_col, winner is not None
 
 
 def check_game_over(
