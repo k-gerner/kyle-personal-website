@@ -1,10 +1,11 @@
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel, validator
-from typing import List, Dict
+from typing import List, Dict, Tuple
 import logging
 import ai.game_pigeon.anagrams as anagrams
 import ai.game_pigeon.word_hunt.word_hunt as word_hunt
 import ai.game_pigeon.word_bites.word_bites as word_bites
+import ai.game_pigeon.connect4.connect4 as connect4
 from utils.ai_runner import run
 from utils.error import BackendError
 from utils.model import CamelAliasModel
@@ -116,3 +117,88 @@ async def solve_word_bites(input: WordBitesInput) -> WordBitesOutput:
         logging.error("Unexpected error in word bites:", exc_info=True)
         raise HTTPException(status_code=500, detail="An unexpected error occurred.")
     return WordBitesOutput(solutions=solutions)
+
+
+#############
+# Connect 4 #
+#############
+class Connect4Input(CamelAliasModel):
+    player_locations: List[Tuple[int, int]]  # List of [row, col] for player's pieces
+    ai_locations: List[Tuple[int, int]]  # List of [row, col] for AI's pieces
+    max_search_depth: int = 6  # Default search depth
+
+    @validator("player_locations", "ai_locations", pre=True)
+    def ensure_valid_locations(cls, value: List[Tuple[int, int]]) -> List[Tuple[int, int]]:
+        if not all(isinstance(loc, list) and len(loc) == 2 for loc in value):
+            raise ValueError("Each location must be a tuple of two integers [row, col].")
+        return value
+    
+class Connect4Output(CamelAliasModel):
+    column: int  # The column chosen by the AI (0-indexed)
+    is_win: bool  # Whether the move results in a win
+    
+
+@router.post("/connect4")
+async def solve_connect4(input: Connect4Input) -> Connect4Output:
+    """
+    Solve the Connect 4 puzzle with the provided player and opponent locations.
+    """
+    try:
+        # Placeholder for actual Connect 4 implementation
+        column, is_win = run(
+            connect4.run, 
+            player_locations=input.player_locations, 
+            ai_locations=input.ai_locations,
+            max_search_depth=input.max_search_depth
+        )
+    except BackendError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        logging.error("Unexpected error in connect 4:", exc_info=True)
+        raise HTTPException(status_code=500, detail="An unexpected error occurred.")
+    return Connect4Output(column=column, is_win=is_win)
+
+
+class Connect4GameOverInput(CamelAliasModel):
+    player_locations: List[Tuple[int, int]]  # List of [row, col] for player's pieces
+    ai_locations: List[Tuple[int, int]]  # List of [row, col] for AI's pieces
+
+    @validator("player_locations", "ai_locations", pre=True)
+    def ensure_valid_locations(cls, value: List[Tuple[int, int]]) -> List[Tuple[int, int]]:
+        if not all(isinstance(loc, list) and len(loc) == 2 for loc in value):
+            raise ValueError("Each location must be a tuple of two integers [row, col].")
+        return value
+    
+class Connect4GameOverOutput(CamelAliasModel):
+    is_over: bool  # True if the game is over, False otherwise
+    ai_wins: bool  # True if the AI has won, False if the player has won or no winner
+    winning_locations: List[Tuple[int, int]] = []  # Locations of the winning pieces, if any
+
+
+@router.post("/connect4/game_over")
+async def check_game_over_connect4(input: Connect4GameOverInput) -> Connect4GameOverOutput:
+    """
+    Check if the Connect 4 game is over.
+    
+    Parameters:
+        input (Connect4Input): The current game state.
+        
+    Returns:
+        bool: True if the game is over, False otherwise.
+    """
+    try:
+        is_win, ai_wins, winning_locations = run(
+            connect4.check_game_over, 
+            player_locations=input.player_locations, 
+            ai_locations=input.ai_locations
+        )
+    except BackendError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        logging.error("Unexpected error in connect 4:", exc_info=True)
+        raise HTTPException(status_code=500, detail="An unexpected error occurred.")
+    return Connect4GameOverOutput(
+        is_over=is_win, 
+        ai_wins=ai_wins, 
+        winning_locations=winning_locations
+    )

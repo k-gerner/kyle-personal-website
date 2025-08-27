@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import Input from '../../../atoms/Input';
+import { BooleanSelector } from '../../../atoms/BooleanSelector';
 import { PageButtons, NoSolutions } from '../../../components/PaginatedSolutionsSection';
 import { MdOutlineCancel } from "react-icons/md";
 import { LoadingSpinner } from "../../../atoms/LoadingSpinner";
@@ -206,21 +207,13 @@ const InputSection: React.FC<InputSectionProps> = ({
             {
                 hasSolved &&
                 <div className="flex justify-center">
-                    <label className=" gap-2 inline-flex items-center cursor-pointer">
-                        <input type="checkbox" value="" className="sr-only" />
-                        <div
-                            onClick={() => setShowSolutions(!showSolutions)}
-                            className={`relative w-11 h-6 rounded-full transition-all ${showSolutions ? 'bg-primary-highlight' : 'bg-primary-accent'}`}
-                        >
-                            <div
-                                className={`absolute top-0.5 start-0.5 h-5 w-5 rounded-full border transition-all bg-background-base border-background-base ${showSolutions
-                                    ? 'translate-x-full'
-                                    : 'translate-x-0'
-                                    }`}
-                            ></div>
-                        </div>
-                        <span className="text-sm text-text-primary">Show Solutions</span>
-                    </label>
+                    <BooleanSelector
+                        selected={showSolutions}
+                        label="Show Solutions"
+                        onChange={() => {
+                            setShowSolutions(!showSolutions);
+                        }}
+                    />
                 </div>
             }
             <div className="flex justify-center">
