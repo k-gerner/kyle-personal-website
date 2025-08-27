@@ -1,30 +1,29 @@
 # Contains AI strategy and board manipulation methods
 
+from typing import List, Tuple, Union
 import math  # for infinities
 import random  # for randomizing valid moves list in minimax
-import sys  # for better progress bar formatting
-from gomoku.gomoku_player import GomokuPlayer  # super class
-from ai.game_pigeon.gomoku.enums import BoardSpace
+from ai.game_pigeon.gomoku.gomoku_player import GomokuPlayer  # super class
+from ai.game_pigeon.gomoku.enums import BoardSpace, PlayerBoardSpace
+from ai.game_pigeon.gomoku.constants import DEFAULT_MAX_DEPTH, BOARD_DIMENSION
 
 
 #### DO NOT MODIFY ####
 BLACK_HASH_ROW_NUM, WHITE_HASH_ROW_NUM = 0, 1
-MAX, MIN = True, False  # to be used in minimax
 WIN_SCORE = 1000000000  # large enough to always be the preferred outcome
 #######################
 ####### MODIFY ########
 MAX_NEIGHBOR_DIST = 2  # max distance from an already played piece that we want to check if open
 MAX_NUM_MOVES_TO_EVALUATE = 15  # most moves we want to evaluate at once for any given board
-MAX_DEPTH = 6  # max number of moves ahead to calculate
 #######################
 
 
 # class for the A.I.
 class GomokuStrategy(GomokuPlayer):
 
-	def __init__(self, color, board_dimension=13):
+	def __init__(self, color: PlayerBoardSpace):
 		"""Initializes the board attributes"""
-		super().__init__(color, board_dimension)
+		super().__init__(color)
 		self.GAME_OVER = False
 		self.AI_COLOR = color
 		self.HUMAN_COLOR = opponent_of(color)
@@ -32,7 +31,7 @@ class GomokuStrategy(GomokuPlayer):
 		# Table has DIM * DIM * 2 entries, with each being a random number that will 
 		# represent a number for if a certain piece is played in a certain position 
 		# on the board. This will be used for XORing in the Zobrist Hashing.
-		self.RANDOM_HASH_TABLE = create_hash_table(board_dimension)
+		self.RANDOM_HASH_TABLE = create_hash_table()
 		# BOARD_STATE_DICT will be a map that maps board-state hashes to a list containing
 		# important information about the board at that board-state (the score)
 		# NOTE this transposition table will be cleared between different depth searches.
@@ -66,27 +65,31 @@ class GomokuStrategy(GomokuPlayer):
 			'.O.OO.' : 25,		# broken 3
 			'.OO.O.' : 25		# broken 3
 		}
-		self.position_weights_matrix = create_board_position_weights(board_dimension)
+		self.position_weights_matrix = create_board_position_weights()
 
-	def create_zobrist_value_for_new_move(self, move, color, prev_zobrist_value):
+	def create_zobrist_value_for_new_move(
+			self, 
+			move: Tuple[int, int], 
+			color: PlayerBoardSpace, prev_zobrist_value: int
+		) -> int:
 		"""Gives an updated Zobrist value for a board after a new move is played"""
 		row, col = move
 		hash_row = BLACK_HASH_ROW_NUM if color == BoardSpace.BLACK else WHITE_HASH_ROW_NUM
-		hash_val = self.RANDOM_HASH_TABLE[hash_row][row*self.BOARD_DIMENSION + col]
+		hash_val = self.RANDOM_HASH_TABLE[hash_row][row*BOARD_DIMENSION + col]
 		return prev_zobrist_value ^ hash_val  # ^ = XOR operator
 
-	def check_game_state(self, board):
+	def check_game_state(self, board: List[List[BoardSpace]]):
 		"""Sets the GAME_OVER var to True if there is a winner"""
 		if self.is_terminal(board)[0]:
 			self.GAME_OVER = True
 
-	def is_terminal(self, board):
+	def is_terminal(self, board: List[List[BoardSpace]]) -> Tuple[bool, Union[PlayerBoardSpace, None]]:
 		"""
 		Checks if the current board state is Game Over
 		Returns a tuple, with [0] being the True or False value
 		[1] being the winning color (None if neither color wins)
 		"""
-		winner = self.find_winner(board)
+		winner, _ = find_winner(board)
 		if winner is not None:
 			return True, winner
 		
@@ -97,53 +100,27 @@ class GomokuStrategy(GomokuPlayer):
 
 		return True, None
 
-	def find_winner(self, board):
-		"""
-		Checks if there is a winner
-		returns the color of the winner if there is one, otherwise None
-		"""
-		# Check horizontal
-		for row in board:
-			for col in range(self.BOARD_DIMENSION - 4):
-				if row[col] == row[col+1] == row[col+2] == row[col+3] == row[col+4] != BoardSpace.EMPTY:
-					return row[col]
 
-		# Check vertical
-		for c in range(self.BOARD_DIMENSION):
-			for r in range(self.BOARD_DIMENSION - 4):
-				if board[r][c] == board[r+1][c] == board[r+2][c] == board[r+3][c] == board[r+4][c] != BoardSpace.EMPTY:
-					return board[r][c]
-
-		# Check diagonal from top left to bottom right
-		for c in range(self.BOARD_DIMENSION - 4):
-			for r in range(self.BOARD_DIMENSION - 4):
-				if board[r][c] == board[r+1][c+1] == board[r+2][c+2] == board[r+3][c+3] == board[r+4][c+4] != BoardSpace.EMPTY:
-					return board[r][c]
-
-		# Check diagonal from top right to bottom left
-		for c in range(self.BOARD_DIMENSION - 4):
-			for r in range(4, self.BOARD_DIMENSION):
-				if board[r][c] == board[r-1][c+1] == board[r-2][c+2] == board[r-3][c+3] == board[r-4][c+4] != BoardSpace.EMPTY:
-					return board[r][c]
-
-		return None
-
-	def is_coordinate_in_board_range(self, coord):
+	def is_coordinate_in_board_range(self, coord: Tuple[int, int]) -> bool:
 		"""Checks if the coordinate is valid on the board"""
 		row_num = coord[0]
 		col_num = coord[1]
-		if row_num % self.BOARD_DIMENSION == row_num and col_num % self.BOARD_DIMENSION == col_num:
+		if row_num % BOARD_DIMENSION == row_num and col_num % BOARD_DIMENSION == col_num:
 			return True
 		else:
 			return False
 
-	def check_if_move_caused_game_over(self, board, move):
+	def check_if_move_caused_game_over(
+			self, 
+			board: List[List[BoardSpace]], 
+			move: Tuple[int, int]
+		) -> Tuple[Union[PlayerBoardSpace, None], bool]:
 		"""
 		Checks the spaces in outward directions to see if the move given caused a win
 		returns the winner in [0] (BLACK, WHITE, or None if no winner)
 		returns True or False in [1] whether or not the game is over
 		"""
-		BoardSpace.EMPTY_spot_seen = False
+		empty_spot_seen = False
 		color = board[move[0]][move[1]]
 		direction_vectors_list = [[1, -1], [1, 0], [1, 1], [0, 1]]
 		for direction_vector in direction_vectors_list:
@@ -164,7 +141,7 @@ class GomokuStrategy(GomokuPlayer):
 							num_in_a_row += 1
 						else:
 							if curr_forward_spot == BoardSpace.EMPTY:
-								BoardSpace.EMPTY_spot_seen = True
+								empty_spot_seen = True
 							forward_check_still_valid = False
 					else:
 						forward_check_still_valid = False
@@ -177,14 +154,14 @@ class GomokuStrategy(GomokuPlayer):
 							num_in_a_row += 1
 						else:
 							if curr_backward_spot == BoardSpace.EMPTY:
-								BoardSpace.EMPTY_spot_seen = True
+								empty_spot_seen = True
 							backward_check_still_valid = False
 					else:
 						backward_check_still_valid = False
 			if num_in_a_row >= 5:
 				return color, True
 		# if we reach here, the move did not cause a win
-		if BoardSpace.EMPTY_spot_seen:
+		if empty_spot_seen:
 			return None, False
 		for row in board:
 			for spot in row:
@@ -193,7 +170,7 @@ class GomokuStrategy(GomokuPlayer):
 					return None, False
 		return None, True
 
-	def get_valid_moves(self, board):
+	def get_valid_moves(self, board: List[List[BoardSpace]]) -> List[Tuple[int, int]]:
 		"""Returns a list of valid moves (moves in the center area or near other pieces)"""
 
 		# Will allow me to slightly prioritize checking the spots that are closer to 
@@ -206,12 +183,12 @@ class GomokuStrategy(GomokuPlayer):
 
 		# locate all the spots with pieces
 		filled_locations = []
-		for r in range(self.BOARD_DIMENSION):
-			for c in range(self.BOARD_DIMENSION):
+		for r in range(BOARD_DIMENSION):
+			for c in range(BOARD_DIMENSION):
 				if board[r][c] != BoardSpace.EMPTY:
 					filled_locations.append([r, c])
 
-		def locate_empty_near_spots(filled_coord, dist_from_piece):
+		def locate_empty_near_spots(filled_coord: Tuple[int, int], dist_from_piece: int):
 			"""Finds all the BoardSpace.EMPTY spots near this coordinate and adds them to the list of valid spots"""
 			row, col = filled_coord
 			for i in range(-dist_from_piece, dist_from_piece + 1):  # e.g. -1, 0, 1
@@ -243,21 +220,25 @@ class GomokuStrategy(GomokuPlayer):
 		# combine the lists into one big list
 		valid_locations = [item for inner_list in lists_of_valids for item in inner_list]
 
-		if len(valid_locations) == 0 and board[self.BOARD_DIMENSION//2][self.BOARD_DIMENSION//2] == BoardSpace.EMPTY:
+		if len(valid_locations) == 0 and board[BOARD_DIMENSION//2][BOARD_DIMENSION//2] == BoardSpace.EMPTY:
 			# If there are no valid moves evaluated (due to no pieces played yet), but the center is open
-			# This will occur when the AI is BoardSpace.BLACK and has the first move
-			return [[self.BOARD_DIMENSION//2, self.BOARD_DIMENSION//2]]
+			# This will occur when the AI has the first move
+			return [[BOARD_DIMENSION//2, BOARD_DIMENSION//2]]
 
 		# return the best locations from all the valid locations
 		return self.find_best_valid_moves(valid_locations, board)
 
-	def find_best_valid_moves(self, valid_moves, board):
+	def find_best_valid_moves(
+			self, 
+			valid_moves: List[Tuple[int, int]], 
+			board: List[List[BoardSpace]]
+		) -> List[Tuple[int, int]]:
 		"""Takes in all the spaces that were deemed valid and selects the ones that have the most potential"""
 		if len(valid_moves) <= MAX_NUM_MOVES_TO_EVALUATE:
 			# no need to decrease quantity
 			return valid_moves
 
-		def section_contains_threats(piece_color, section_string):
+		def section_contains_threats(piece_color: PlayerBoardSpace, section_string: str) -> bool:
 			"""
 			Evaluates each length 5 and length 6 section of spots in the board for threats
 			Returns True or False depending on whether a threat was found
@@ -466,21 +447,43 @@ class GomokuStrategy(GomokuPlayer):
 
 		return highest_evaluated_moves
 
-	def get_move(self, board):
+	def get_move(self, board: List[List[BoardSpace]], max_depth: int) -> Tuple[int, int]:
 		"""Calculates the best move for the AI for the given board"""
 		move_row, move_col, score = -123, -123, -123  # placeholders
-		for i in range(1, MAX_DEPTH + 1):  # iterative deepening
+		for i in range(1, max_depth + 1):  # iterative deepening
 			# this will prioritize game winning move sets that occur with less total moves
-			move_row, move_col, score = self.minimax(board, 0, MAX, -math.inf, math.inf, i, 0)
+			move_row, move_col, score = self.minimax(board, 0, True, -math.inf, math.inf, i, 0)
 			self.BOARD_STATE_DICT.clear()  # clear the dict after every depth increase
 			if score >= WIN_SCORE:
 				break
 		return move_row, move_col
 
-	def minimax(self, board, depth, max_or_min, alpha, beta, local_max_depth, zobrist_value_for_board):
+	def minimax(
+			self, 
+			board: List[List[BoardSpace]], 
+			depth: int, 
+			is_max: bool, 
+			alpha: int, 
+			beta: int, 
+			local_max_depth: int, 
+			zobrist_value_for_board: int
+		) -> Tuple[Union[int, None], Union[int, None], int]:
 		"""
 		Recursively finds the best move for a given board
-		Returns the row in [0], column in [1], and score of the board in [2]
+
+		Parameters:
+			board (List[List[BoardSpace]]): The current game board
+			depth (int): The current depth in the recursion
+			is_max (bool): True if maximizing player's turn, False if minimizing player's turn
+			alpha (int): The best score that the maximizing player can guarantee at this level or above
+			beta (int): The best score that the minimizing player can guarantee at this level or above
+			local_max_depth (int): The maximum depth to search for this call
+			zobrist_value_for_board (int): The Zobrist hash value for the current board state
+
+		Returns:
+			tuple[int | None, int | None, int]: A tuple where the first element is the best move row (or None if no valid moves),
+												the second element is the best move column (or None if no valid moves),
+												and the third element is the score of that move
 		"""
 		if depth == local_max_depth:
 			player_with_turn_after_max_depth = self.AI_COLOR if local_max_depth % 2 == 0 else self.HUMAN_COLOR
@@ -494,25 +497,12 @@ class GomokuStrategy(GomokuPlayer):
 			return -1, -1, 0
 		if depth == 0 and len(valid_moves) == 1:
 			return valid_moves[0][0], valid_moves[0][1], 0
-		if max_or_min == MAX:
+		if is_max:
 			# want to maximize this move
 			score = -math.inf
 			best_move = valid_moves[0]  # default best move
-			if depth == 0:
-				# on the top level of search, printing progress bar
-				percent_complete = 0
-				moves_checked = 0
-				bar_complete_multiplier = 0
-				print('\r[%s%s] %d%% (%d/%d moves checked) @ maxDepth = %d' % ("=" * bar_complete_multiplier, "-" * (25-bar_complete_multiplier), percent_complete, moves_checked, len(valid_moves), local_max_depth), end="")
 
 			for move in valid_moves:
-				if depth == 0:
-					# print progress bar
-					percent_complete = int((moves_checked/len(valid_moves))*100)
-					bar_complete_multiplier = percent_complete // 4
-					print('\r[%s%s] %d%% (%d/%d moves checked) @ maxDepth = %d' % ("=" * bar_complete_multiplier, "-" * (25-bar_complete_multiplier), percent_complete, moves_checked, len(valid_moves), local_max_depth), end="")
-					moves_checked += 1
-
 				board_copy = copy_of_board(board)  # list(map(list, board)) # copies board
 				perform_move(board_copy, move[0], move[1], self.AI_COLOR)
 				new_zobrist_value = self.create_zobrist_value_for_new_move(move, self.AI_COLOR, zobrist_value_for_board)
@@ -532,7 +522,14 @@ class GomokuStrategy(GomokuPlayer):
 							# if board filled
 							updated_score = 0
 						else:
-							_, __, updated_score = self.minimax(board_copy, depth + 1, MIN, alpha, beta, local_max_depth, new_zobrist_value)
+							_, __, updated_score = self.minimax(
+								board_copy, 
+								depth + 1,
+								False, 
+								alpha, 
+								beta, 
+								local_max_depth, 
+								new_zobrist_value)
 					if depth >= 2:
 						self.BOARD_STATE_DICT[new_zobrist_value] = updated_score
 				if updated_score > score:
@@ -541,12 +538,8 @@ class GomokuStrategy(GomokuPlayer):
 				alpha = max(alpha, score)
 				if alpha >= beta:
 					break  # pruning
-			if depth == 0:
-				# clear progress bar print-out
-				sys.stdout.write('\033[2K\033[1G')
 			return best_move[0], best_move[1], score
 		else: 
-			# maxOrMin == MIN
 			# want to minimize this move
 			score = math.inf
 			best_move_for_human = valid_moves[0]
@@ -568,7 +561,14 @@ class GomokuStrategy(GomokuPlayer):
 							# if board filled
 							updated_score = 0
 						else:
-							_, __, updated_score = self.minimax(board_copy, depth + 1, MAX, alpha, beta, local_max_depth, new_zobrist_value)
+							_, __, updated_score = self.minimax(
+								board_copy, 
+								depth + 1, 
+								True, 
+								alpha, 
+								beta, 
+								local_max_depth, 
+								new_zobrist_value)
 					if depth >= 2:
 						self.BOARD_STATE_DICT[new_zobrist_value] = updated_score
 				if updated_score < score:
@@ -579,7 +579,13 @@ class GomokuStrategy(GomokuPlayer):
 					break  # pruning
 			return best_move_for_human[0], best_move_for_human[1], score
 
-	def score_sections(self, board, color_of_evaluator, color_of_enemy, player_with_turn_after_max_depth):
+	def score_sections(
+			self, 
+			board: List[List[BoardSpace]], 
+			color_of_evaluator: PlayerBoardSpace, 
+			color_of_enemy: PlayerBoardSpace, 
+			player_with_turn_after_max_depth: PlayerBoardSpace
+		) -> Tuple[int, int]:
 		"""Scores all the different horizontal/vertical/diagonal sections on the board"""
 		evaluator_score = 0
 		enemy_score = 0
@@ -593,8 +599,8 @@ class GomokuStrategy(GomokuPlayer):
 			enemy_scores_dict = self.black_threats_scores
 
 		# Check horizontal
-		for c in range(self.BOARD_DIMENSION - 5):
-			for r in range(self.BOARD_DIMENSION):
+		for c in range(BOARD_DIMENSION - 5):
+			for r in range(BOARD_DIMENSION):
 				section6 = "".join(board[r][c:c + 6])
 				section5 = section6[:-1]  # first 5 spaces of section 6
 				if section6 in evaluator_scores_dict:
@@ -609,7 +615,7 @@ class GomokuStrategy(GomokuPlayer):
 				elif section5 in enemy_scores_dict:
 					enemy_score += enemy_scores_dict[section5]
 					enemy_trap_indicators[0] = 1
-				if c == self.BOARD_DIMENSION - 6:
+				if c == BOARD_DIMENSION - 6:
 					# if in last section of row
 					section5 = section6[1:]  # check the rightmost 5 section of the row
 					if section5 in evaluator_scores_dict:
@@ -620,8 +626,8 @@ class GomokuStrategy(GomokuPlayer):
 						enemy_trap_indicators[0] = 1
 
 		# Check vertical
-		for c in range(self.BOARD_DIMENSION):
-			for r in range(self.BOARD_DIMENSION - 5):
+		for c in range(BOARD_DIMENSION):
+			for r in range(BOARD_DIMENSION - 5):
 				section6 = ''
 				for i in range(6):
 					section6 += board[r + i][c]
@@ -638,7 +644,7 @@ class GomokuStrategy(GomokuPlayer):
 				elif section5 in enemy_scores_dict:
 					enemy_score += enemy_scores_dict[section5]
 					enemy_trap_indicators[1] = 1
-				if r == self.BOARD_DIMENSION - 6:
+				if r == BOARD_DIMENSION - 6:
 					# if in last section of col
 					section5 = section6[1:]  # check the bottom 5 section of the col
 					if section5 in evaluator_scores_dict:
@@ -649,8 +655,8 @@ class GomokuStrategy(GomokuPlayer):
 						enemy_trap_indicators[1] = 1
 
 		# Check diagonal from top left to bottom right
-		for c in range(self.BOARD_DIMENSION - 5):
-			for r in range(self.BOARD_DIMENSION - 5):
+		for c in range(BOARD_DIMENSION - 5):
+			for r in range(BOARD_DIMENSION - 5):
 				section6 = ''
 				for i in range(6):
 					section6 += board[r + i][c + i]
@@ -667,7 +673,7 @@ class GomokuStrategy(GomokuPlayer):
 				elif section5 in enemy_scores_dict:
 					enemy_score += enemy_scores_dict[section5]
 					enemy_trap_indicators[2] = 1
-				if c == self.BOARD_DIMENSION - 6 or r == self.BOARD_DIMENSION - 6:
+				if c == BOARD_DIMENSION - 6 or r == BOARD_DIMENSION - 6:
 					# if in last section of this diagonal path
 					section5 = section6[1:]  # check the border section
 					if section5 in evaluator_scores_dict:
@@ -678,8 +684,8 @@ class GomokuStrategy(GomokuPlayer):
 						enemy_trap_indicators[2] = 1
 		
 		# Check diagonal from top right to bottom left
-		for c in range(self.BOARD_DIMENSION - 5):
-			for r in range(5, self.BOARD_DIMENSION):
+		for c in range(BOARD_DIMENSION - 5):
+			for r in range(5, BOARD_DIMENSION):
 				section6 = ''
 				for i in range(6):
 					section6 += board[r - i][c + i]
@@ -696,7 +702,7 @@ class GomokuStrategy(GomokuPlayer):
 				elif section5 in enemy_scores_dict:
 					enemy_score += enemy_scores_dict[section5]
 					enemy_trap_indicators[3] = 1
-				if c == self.BOARD_DIMENSION - 6 or r == 0:
+				if c == BOARD_DIMENSION - 6 or r == 0:
 					# if in last section of this diagonal path
 					section5 = section6[1:]  # check the border section
 					if section5 in evaluator_scores_dict:
@@ -710,9 +716,9 @@ class GomokuStrategy(GomokuPlayer):
 		top_left, top_right, bottom_right, bottom_left = '', '', '', ''
 		for i in range(5):
 			top_left += board[4-i][i]
-			top_right += board[i][self.BOARD_DIMENSION - (5-i)]
-			bottom_right += board[self.BOARD_DIMENSION - i - 1][self.BOARD_DIMENSION - (5-i)]
-			bottom_left += board[self.BOARD_DIMENSION - (5-i)][i]
+			top_right += board[i][BOARD_DIMENSION - (5-i)]
+			bottom_right += board[BOARD_DIMENSION - i - 1][BOARD_DIMENSION - (5-i)]
+			bottom_left += board[BOARD_DIMENSION - (5-i)][i]
 		corner_counter = 1
 		for section in [top_left, top_right, bottom_right, bottom_left]:
 			if section in evaluator_scores_dict:
@@ -759,12 +765,17 @@ class GomokuStrategy(GomokuPlayer):
 
 		return evaluator_score, enemy_score
 
-	def score_position_weights(self, board, color_of_evaluator, color_of_enemy):
+	def score_position_weights(
+			self, 
+			board: List[List[BoardSpace]], 
+			color_of_evaluator: PlayerBoardSpace, 
+			color_of_enemy: PlayerBoardSpace
+		) -> Tuple[int, int]:
 		"""Scores the board based on the weights of the individual locations (center preferred)"""
 		evaluator_score = 0
 		enemy_score = 0
-		for row in range(self.BOARD_DIMENSION):
-			for col in range(self.BOARD_DIMENSION):
+		for row in range(BOARD_DIMENSION):
+			for col in range(BOARD_DIMENSION):
 				curr_spot = board[row][col]
 				if curr_spot == color_of_evaluator:
 					evaluator_score += self.position_weights_matrix[row][col]
@@ -772,7 +783,13 @@ class GomokuStrategy(GomokuPlayer):
 					enemy_score += self.position_weights_matrix[row][col]
 		return evaluator_score, enemy_score
 
-	def score_board(self, board, color_of_evaluator, color_of_enemy, player_with_turn_after_max_depth):
+	def score_board(
+			self, 
+			board: List[List[BoardSpace]], 
+			color_of_evaluator: PlayerBoardSpace, 
+			color_of_enemy: PlayerBoardSpace, 
+			player_with_turn_after_max_depth: PlayerBoardSpace
+		) -> Tuple[int, int]:
 		"""
 		Scores the entire board by looking at each section of spots,
 		as well as the individual piece positions
@@ -784,43 +801,77 @@ class GomokuStrategy(GomokuPlayer):
 		return evaluator_score, enemy_score
 
 
-def opponent_of(color):
+def opponent_of(color: PlayerBoardSpace) -> PlayerBoardSpace:
 	"""Get the opposing color"""
 	return BoardSpace.WHITE if color == BoardSpace.BLACK else BoardSpace.BLACK
 
 
-def perform_move(board, row, col, color):
+def perform_move(board, row: int, col: int, color: PlayerBoardSpace):
 	"""Performs a given move on the board"""
 	board[row][col] = color
 
 
-def copy_of_board(board):
+def copy_of_board(board: List[List[BoardSpace]]) -> List[List[BoardSpace]]:
 	"""Returns a copy of the given board"""
 	return list(map(list, board))
 
 
-def create_board_position_weights(dim):
+def create_board_position_weights() -> List[List[int]]:
 	"""
 	Create the position weights matrix for a board of dimension `dim`
 	Center weighted heavier
 	"""
 	position_weights_matrix = []
-	for i in range(dim):
-		position_weights_matrix.append([0]*dim)  # create dim x dim matrix of 0s
-	center_index = dim//2
-	for i in range(dim//2):
+	for i in range(BOARD_DIMENSION):
+		position_weights_matrix.append([0]*BOARD_DIMENSION)  # create dim x dim matrix of 0s
+	center_index = BOARD_DIMENSION//2
+	for i in range(BOARD_DIMENSION//2):
 		for row in range(center_index - i, center_index + i + 1):
 			for col in range(center_index - i, center_index + i + 1):
 				position_weights_matrix[row][col] += 3
 	return position_weights_matrix
 
 
-def create_hash_table(dimension):
+def create_hash_table() -> List[List[int]]:
 	"""Fills a 2 by dimension board with random 64 bit integers"""
 	table = []  # 2D
 	for color in range(2):
 		color_location_list = []
-		for boardPos in range(dimension * dimension):
+		for boardPos in range(BOARD_DIMENSION * BOARD_DIMENSION):
 			color_location_list.append(random.getrandbits(64))
 		table.append(color_location_list)
 	return table
+
+def find_winner(board: List[List[BoardSpace]]) -> Tuple[Union[PlayerBoardSpace, None], List[List[int]]]:
+	"""
+	Determines if there is a winner on the board
+
+	Returns:
+		PlayerBoardSpace | None: The color of the winner if there is one, otherwise None
+		List[List[int]]: The coordinates of the winning pieces if there is a winner, otherwise empty list
+	"""
+	# Check horizontal
+	for row in board:
+		for col in range(BOARD_DIMENSION - 4):
+			if row[col] == row[col+1] == row[col+2] == row[col+3] == row[col+4] != BoardSpace.EMPTY:
+				return row[col], [[row, col], [row, col+1], [row, col+2], [row, col+3], [row, col+4]]
+
+	# Check vertical
+	for c in range(BOARD_DIMENSION):
+		for r in range(BOARD_DIMENSION - 4):
+			if board[r][c] == board[r+1][c] == board[r+2][c] == board[r+3][c] == board[r+4][c] != BoardSpace.EMPTY:
+				return board[r][c], [[r, c], [r+1, c], [r+2, c], [r+3, c], [r+4, c]]
+
+	# Check diagonal from top left to bottom right
+	for c in range(BOARD_DIMENSION - 4):
+		for r in range(BOARD_DIMENSION - 4):
+			if board[r][c] == board[r+1][c+1] == board[r+2][c+2] == board[r+3][c+3] == board[r+4][c+4] != BoardSpace.EMPTY:
+				return board[r][c], [[r, c], [r+1, c+1], [r+2, c+2], [r+3, c+3], [r+4, c+4]]
+
+	# Check diagonal from top right to bottom left
+	for c in range(BOARD_DIMENSION - 4):
+		for r in range(4, BOARD_DIMENSION):
+			if board[r][c] == board[r-1][c+1] == board[r-2][c+2] == board[r-3][c+3] == board[r-4][c+4] != BoardSpace.EMPTY:
+				return board[r][c], [[r, c], [r-1, c+1], [r-2, c+2], [r-3, c+3], [r-4, c+4]]
+
+	return None, []

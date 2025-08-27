@@ -3,17 +3,12 @@
 # Gomoku solver, client facing
 from datetime import datetime
 from typing import List, Tuple
-from util.terminaloutput.colors import GREEN_COLOR, RED_COLOR, NO_COLOR, \
-	DARK_GREY_BACKGROUND as MOST_RECENT_HIGHLIGHT_COLOR, color_text
 from ai.game_pigeon.gomoku.constants import DEFAULT_MAX_DEPTH, BOARD_DIMENSION
 from ai.game_pigeon.gomoku.enums import BoardSpace
+from ai.game_pigeon.gomoku.gomoku_strategy import GomokuStrategy, find_winner
 
+from utils.error import BackendError
 
-from gomoku.gomoku_strategy import GomokuStrategy, opponent_of, perform_move, copy_of_board
-import time
-import os
-import sys
-from gomoku.gomoku_player import GomokuPlayer
 
 AI_PIECE = BoardSpace.BLACK  # AI will always be BLACK
 USER_PIECE = BoardSpace.WHITE  # User will always be WHITE
@@ -73,11 +68,32 @@ def run(
 		Tuple[int, int, bool]: The row and column chosen by the AI and whether it resulted in a win.
 	"""
 	board = _build_board_matrix(player_locations, ai_locations)
-	ai = GomokuStrategy(WHITE if len(ai_locations) <= len(player_locations) else BLACK, len(board))
-	best_move = ai.get_move(board, max_search_depth)
-	if best_move is None:
+	ai = GomokuStrategy(AI_PIECE)
+	best_move_row, best_move_col = ai.get_move(board, max_search_depth)
+	if best_move_row is None or best_move_col is None:
 		raise BackendError(ValueError(f"Board has no valid moves."))
 
-	perform_move(board, best_move[0], best_move[1], ai.color)
-	is_win, _ = ai.is_terminal(board)
-	return best_move[0], best_move[1], is_win
+	winner, winning_locations = find_winner(board)
+	return best_move_row, best_move_col, winner is not None
+
+
+def check_game_over(
+		player_locations: List[Tuple[int, int]],
+		ai_locations: List[Tuple[int, int]]
+) -> Tuple[bool, List[Tuple[int, int]]]:
+	"""
+	Check if the game is over and if there is a winner.
+
+	Parameters:
+		player_locations (List[Tuple[int, int]]): The locations of the player's pieces.
+		ai_locations (List[Tuple[int, int]]): The locations of the AI's pieces.
+
+	Returns:
+		Tuple[bool, bool, List[Tuple[int, int]]]: A tuple containing:
+			- A boolean indicating if the game is over.
+			- A boolean indicating if the AI won (True) or the player won (False). If no winner, this is False.
+			- A list of tuples representing the coordinates of the winning pieces. Empty if no winner.
+	"""
+	board = _build_board_matrix(player_locations, ai_locations)
+	winner, winning_locations = find_winner(board)
+	return winner is not None, winner == AI_PIECE, winning_locations

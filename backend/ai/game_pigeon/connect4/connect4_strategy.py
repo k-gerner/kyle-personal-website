@@ -186,7 +186,7 @@ def score_section(section: Annotated[List[str], 4], color: PlayerBoardSpace) -> 
 		return 0
 
 
-def find_winner(board: List[List[str]]) -> Tuple[Union[PlayerBoardSpace, None], Union[List[List[int]], None]]:
+def find_winner(board: List[List[str]]) -> Tuple[Union[PlayerBoardSpace, None], List[List[int]]]:
 	"""
 	Determines if there is a winner on the board
 

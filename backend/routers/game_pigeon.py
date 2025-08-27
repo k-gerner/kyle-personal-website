@@ -6,6 +6,7 @@ import ai.game_pigeon.anagrams as anagrams
 import ai.game_pigeon.word_hunt.word_hunt as word_hunt
 import ai.game_pigeon.word_bites.word_bites as word_bites
 import ai.game_pigeon.connect4.connect4 as connect4
+import ai.game_pigeon.gomoku.gomoku as gomoku
 from utils.ai_runner import run
 from utils.error import BackendError
 from utils.model import CamelAliasModel
@@ -184,7 +185,7 @@ async def check_game_over_connect4(input: Connect4GameOverInput) -> Connect4Game
         input (Connect4Input): The current game state.
         
     Returns:
-        bool: True if the game is over, False otherwise.
+        Connect4GameOverOutput: The game over status, winner, and winning locations.
     """
     try:
         is_win, ai_wins, winning_locations = run(
@@ -198,6 +199,91 @@ async def check_game_over_connect4(input: Connect4GameOverInput) -> Connect4Game
         logging.error("Unexpected error in connect 4:", exc_info=True)
         raise HTTPException(status_code=500, detail="An unexpected error occurred.")
     return Connect4GameOverOutput(
+        is_over=is_win, 
+        ai_wins=ai_wins, 
+        winning_locations=winning_locations
+    )
+
+##########
+# Gomoku #
+##########
+class GomokuInput(CamelAliasModel):
+    player_locations: List[Tuple[int, int]]  # List of [row, col] for player's pieces
+    ai_locations: List[Tuple[int, int]]  # List of [row, col] for AI's pieces
+    max_search_depth: int = 6  # Default search depth
+
+    @validator("player_locations", "ai_locations", pre=True)
+    def ensure_valid_locations(cls, value: List[Tuple[int, int]]) -> List[Tuple[int, int]]:
+        if not all(isinstance(loc, list) and len(loc) == 2 for loc in value):
+            raise ValueError("Each location must be a tuple of two integers [row, col].")
+        return value
+    
+class GomokuOutput(CamelAliasModel):
+    row: int # The row chosen by the AI (0-indexed)
+    column: int  # The column chosen by the AI (0-indexed)
+    is_win: bool  # Whether the move results in a win
+    
+
+@router.post("/gomoku")
+async def solve_connect4(input: GomokuInput) -> GomokuOutput:
+    """
+    Solve the Gomoku puzzle with the provided player and opponent locations.
+    """
+    try:
+        # Placeholder for actual Connect 4 implementation
+        row, column, is_win = run(
+            gomoku.run, 
+            player_locations=input.player_locations, 
+            ai_locations=input.ai_locations,
+            max_search_depth=input.max_search_depth
+        )
+    except BackendError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        logging.error("Unexpected error in gomoku:", exc_info=True)
+        raise HTTPException(status_code=500, detail="An unexpected error occurred.")
+    return GomokuOutput(row=row, column=column, is_win=is_win)
+
+
+class GomokuGameOverInput(CamelAliasModel):
+    player_locations: List[Tuple[int, int]]  # List of [row, col] for player's pieces
+    ai_locations: List[Tuple[int, int]]  # List of [row, col] for AI's pieces
+
+    @validator("player_locations", "ai_locations", pre=True)
+    def ensure_valid_locations(cls, value: List[Tuple[int, int]]) -> List[Tuple[int, int]]:
+        if not all(isinstance(loc, list) and len(loc) == 2 for loc in value):
+            raise ValueError("Each location must be a tuple of two integers [row, col].")
+        return value
+    
+class GomokuGameOverOutput(CamelAliasModel):
+    is_over: bool  # True if the game is over, False otherwise
+    ai_wins: bool  # True if the AI has won, False if the player has won or no winner
+    winning_locations: List[Tuple[int, int]] = []  # Locations of the winning pieces, if any
+
+
+@router.post("/connect4/game_over")
+async def check_game_over_gomoku(input: GomokuGameOverInput) -> GomokuGameOverOutput:
+    """
+    Check if the Gomoku game is over.
+    
+    Parameters:
+        input (GomokuGameOverInput): The current game state.
+        
+    Returns:
+        GomokuGameOverOutput: The game over status, winner, and winning locations.
+    """
+    try:
+        is_win, ai_wins, winning_locations = run(
+            gomoku.check_game_over, 
+            player_locations=input.player_locations, 
+            ai_locations=input.ai_locations
+        )
+    except BackendError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        logging.error("Unexpected error in gomoku:", exc_info=True)
+        raise HTTPException(status_code=500, detail="An unexpected error occurred.")
+    return GomokuGameOverOutput(
         is_over=is_win, 
         ai_wins=ai_wins, 
         winning_locations=winning_locations
