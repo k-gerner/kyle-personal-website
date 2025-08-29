@@ -43,6 +43,10 @@ code {
   --connect-4-board-highlight-color: #023047;
   --connect-4-piece-yellow-color: #ffd97d;
   --connect-4-piece-red-color: #ff686b;
+
+  --gomoku-piece-black-color: black;
+  --gomoku-piece-white-color: white;
+  --gomoku-board-color: #deb887;
 }
 
 .theme-light {

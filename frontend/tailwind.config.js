@@ -29,6 +29,10 @@ const customColors = {
   'connect-4-board-highlight': 'var(--connect-4-board-highlight-color)',
   'connect-4-piece-red': 'var(--connect-4-piece-red-color)',
   'connect-4-piece-yellow': 'var(--connect-4-piece-yellow-color)',
+
+  'gomoku-board': 'var(--gomoku-board-color)',
+  'gomoku-piece-black': 'var(--gomoku-piece-black-color)',
+  'gomoku-piece-white': 'var(--gomoku-piece-white-color)',
 }
 
 module.exports = {
