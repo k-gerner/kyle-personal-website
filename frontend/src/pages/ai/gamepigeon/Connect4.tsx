@@ -6,14 +6,11 @@ import { RiRobot2Line } from "react-icons/ri";
 import { LuCrown } from "react-icons/lu";
 import { VscDebugRestart } from "react-icons/vsc";
 import { callEndpoint } from '../../../utils/helpers';
+import { Player } from '../../../utils/classes';
 
 const ROWS = 6;
 const COLUMNS = 7;
 
-enum Player {
-    User = "user",
-    AI = "ai"
-}
 
 const Connect4 = () => {
     // Game settings
@@ -46,6 +43,7 @@ const Connect4 = () => {
             setWinner(Player.AI);
         }
         setAiLocations(newAiLocations);
+        setGameStarted(true);
     }
 
     const checkGameOver = async (playerLocations: number[][], aiLocations: number[][]) => {
@@ -80,7 +78,7 @@ const Connect4 = () => {
         const checkWinAndUpdate = async () => {
             const gameOverResponse = await checkGameOver(playerLocations, aiLocations);
             if (gameOverResponse.isOver) {
-                setWinningLocations(gameOverResponse.winning_locations);
+                setWinningLocations(gameOverResponse.winningLocations);
                 setWinner(gameOverResponse.aiWins ? Player.AI : Player.User);
             }
             else {
