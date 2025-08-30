@@ -166,8 +166,6 @@ const Gomoku = () => {
                                 }
                                 setStartingPlayer(player);
                             }}
-                            onGetAiMove={getAiMove}
-                            disableAiMove={playerTurn === Player.User || loading || winner !== null}
                             onReset={resetGame}
                         />
                     </div>
@@ -184,8 +182,6 @@ interface InputSectionProps {
     setAutoplay: (autoplay: boolean) => void;
     startingPlayer: Player;
     setStartingPlayer: (player: Player) => void;
-    onGetAiMove: () => void;
-    disableAiMove: boolean;
     onReset: () => void;
 }
 
@@ -196,8 +192,6 @@ const InputSection: React.FC<InputSectionProps> = ({
     setAutoplay,
     startingPlayer,
     setStartingPlayer,
-    onGetAiMove,
-    disableAiMove,
     onReset
 }) => {
     const restartButtonLabel = (
@@ -229,15 +223,6 @@ const InputSection: React.FC<InputSectionProps> = ({
                 }}
                 labelOnBottom={true}
             />
-            {/* {
-                !autoplay && (
-                    <ActionButton
-                        label="Get AI Move"
-                        onClick={onGetAiMove}
-                        disabled={disableAiMove}
-                    />
-                )
-            } */}
             <ActionButton
                 label={restartButtonLabel}
                 onClick={onReset}
