@@ -261,7 +261,7 @@ class GomokuGameOverOutput(CamelAliasModel):
     winning_locations: List[Tuple[int, int]] = []  # Locations of the winning pieces, if any
 
 
-@router.post("/connect4/game_over")
+@router.post("/gomoku/game_over")
 async def check_game_over_gomoku(input: GomokuGameOverInput) -> GomokuGameOverOutput:
     """
     Check if the Gomoku game is over.
