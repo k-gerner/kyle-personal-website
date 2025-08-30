@@ -849,10 +849,10 @@ def find_winner(board: List[List[BoardSpace]]) -> Tuple[Union[PlayerBoardSpace, 
 		List[List[int]]: The coordinates of the winning pieces if there is a winner, otherwise empty list
 	"""
 	# Check horizontal
-	for row in board:
+	for rowInd, row in enumerate(board):
 		for col in range(BOARD_DIMENSION - 4):
 			if row[col] == row[col+1] == row[col+2] == row[col+3] == row[col+4] != BoardSpace.EMPTY:
-				return row[col], [[row, col], [row, col+1], [row, col+2], [row, col+3], [row, col+4]]
+				return row[col], [[rowInd, col], [rowInd, col+1], [rowInd, col+2], [rowInd, col+3], [rowInd, col+4]]
 
 	# Check vertical
 	for c in range(BOARD_DIMENSION):
