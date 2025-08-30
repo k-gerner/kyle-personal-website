@@ -70,7 +70,7 @@ module.exports = {
           '0%': { maxHeight: '0' },
           '100%': { maxHeight: '500px' },
         },
-        enlarge: {
+        enlargeBounce: {
           '0%': { transform: 'scale(1)' },
           '50%': { transform: 'scale(1.10)' },
           '100%': { transform: 'scale(1)' },
@@ -85,7 +85,7 @@ module.exports = {
         pop: 'pop 0.3s ease forwards',
         slideInFromTop: 'slideInFromTop 0.3s ease-out forwards',
         revealFromTop: 'revealFromTop2 0.5s ease-out forwards',
-        enlargeBounce: 'enlarge 1.0s ease-in-out infinite',
+        enlargeBounce: 'enlargeBounce 1.0s ease-in-out infinite',
       },
     },
   },
