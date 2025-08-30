@@ -42,6 +42,9 @@ module.exports = {
   theme: {
     extend: {
       colors: customColors,
+      transitionProperty: {
+        'height': 'height'
+      },
       keyframes: {
         dropdown: {
           '0%': { opacity: '0', transform: 'scaleY(0.95)' },
@@ -61,9 +64,16 @@ module.exports = {
           '100%': { clipPath: 'inset(0 0 0 0)' },
         },
         revealFromTop2: {
-          '0%': { height: '0' },
-          // '50%': { height: '200%' },
-          '100%': { height: '200%' },
+          // CSS needs a defined value for height in order to animate,
+          // so as a workaround, we animate maxHeight instead. A larger 
+          // value will make the animation faster
+          '0%': { maxHeight: '0' },
+          '100%': { maxHeight: '500px' },
+        },
+        enlarge: {
+          '0%': { transform: 'scale(1)' },
+          '50%': { transform: 'scale(1.10)' },
+          '100%': { transform: 'scale(1)' },
         }
         // expandVertically: {
         //   '0%': { transform: 'scaleY(0)', transformOrigin: 'top' },
@@ -74,7 +84,8 @@ module.exports = {
         dropdown: 'dropdown 0.1s ease-out',
         pop: 'pop 0.3s ease forwards',
         slideInFromTop: 'slideInFromTop 0.3s ease-out forwards',
-        revealFromTop: 'revealFromTop2 1.0s ease-out forwards',
+        revealFromTop: 'revealFromTop2 0.5s ease-out forwards',
+        enlargeBounce: 'enlarge 1.0s ease-in-out infinite',
       },
     },
   },
