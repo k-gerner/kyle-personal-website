@@ -1,4 +1,5 @@
 import React from 'react';
+import { twMerge } from 'tailwind-merge';
 
 const defaultStyle = [
     "rounded-full",
@@ -46,11 +47,12 @@ export const ActionButton: React.FC<ActionButtonProps> = ({
     className = "",
     ...props
 }: ActionButtonProps) => {
+    const combinedClasses = twMerge(defaultStyle, className);
     return (
         <button
             onClick={onClick}
             disabled={disabled}
-            className={`${defaultStyle} ${className}`}
+            className={combinedClasses}
             {...props}
         >
             {label}
