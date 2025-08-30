@@ -5,7 +5,7 @@ from datetime import datetime
 from typing import List, Tuple
 from ai.game_pigeon.gomoku.constants import DEFAULT_MAX_DEPTH, BOARD_DIMENSION
 from ai.game_pigeon.gomoku.enums import BoardSpace
-from ai.game_pigeon.gomoku.gomoku_strategy import GomokuStrategy, find_winner
+from ai.game_pigeon.gomoku.gomoku_strategy import GomokuStrategy, find_winner, perform_move
 
 from utils.error import BackendError
 
@@ -69,10 +69,10 @@ def run(
 	"""
     board = _build_board_matrix(player_locations, ai_locations)
     ai = GomokuStrategy(AI_PIECE)
-    _debug_board(board)
     best_move_row, best_move_col = ai.get_move(board, max_search_depth)
     if best_move_row is None or best_move_col is None:
         raise BackendError(ValueError(f"Board has no valid moves."))
+    perform_move(board, best_move_row, best_move_col, AI_PIECE)
     winner, winning_locations = find_winner(board)
     return best_move_row, best_move_col, winner is not None
 
