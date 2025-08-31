@@ -2,17 +2,12 @@
 # Started 7.15.22
 # Contains AI strategy and board manipulation methods
 import math
-from othello.othello_player import OthelloPlayer
+from ai.game_pigeon.othello.othello_player import OthelloPlayer
 from functools import cmp_to_key
-from typing import List, Tuple
+from typing import List, Tuple, Union
 from collections import defaultdict
 from ai.game_pigeon.othello.constants import BOARD_DIMENSION, DEFAULT_MAX_DEPTH
-from ai.game_pigeon.othello.enums import BoardSpace, PlayerBoardSpace, BoardType
-
-# String representations of the board pieces
-BLACK = "0"
-WHITE = "O"
-EMPTY = "."
+from ai.game_pigeon.othello.enums import BoardSpace, PlayerBoardSpace, Board
 
 ##### MODIFIABLE #####
 MAX_VALID_MOVES_TO_EVALUATE = 20    # Recommended: 12 to 20
@@ -47,15 +42,36 @@ class OthelloStrategy(OthelloPlayer):
                 position_score = evaluate_position(row, col)
                 self.positions_scores[(row, col)] = position_score
 
-    def get_move(self, board: BoardType):
+    def get_move(self, board: Board, max_depth: int) -> Tuple[int, int]:
         """Gets the best move for the AI on the given board"""
-        self.moves_played = BOARD_DIMENSION ** 2 - number_of_piece_on_board(EMPTY, board)
-        row, col = self.minimax(self.ai_color, -math.inf, math.inf, 0, board)[:2]
+        self.moves_played = BOARD_DIMENSION ** 2 - number_of_piece_on_board(BoardSpace.EMPTY, board)
+        row, col = self.minimax(self.ai_color, -math.inf, math.inf, 0, board, max_depth)[:2]
         return row, col
 
-    def minimax(self, turn, alpha, beta, depth, board: BoardType, no_move_for_opponent=False):
-        """Recursively searches the move tree to find the best move. Prunes when optimal."""
-        if depth == DEFAULT_MAX_DEPTH or depth + self.moves_played == BOARD_DIMENSION ** 2:
+    def minimax(
+            self, 
+            turn: PlayerBoardSpace,
+            alpha: int,
+            beta: int,
+            depth: int,
+            board: Board,
+            max_depth: int = DEFAULT_MAX_DEPTH,
+            no_move_for_opponent:bool=False
+        ) -> Tuple[int, int, int]:
+        """
+        Minimax algorithm with alpha-beta pruning to determine the best move for the AI
+        Parameters:
+            turn (PlayerBoardSpace): The color whose turn it is
+            alpha (int): The best score that the maximizer currently can guarantee at that level or above
+            beta (int): The best score that the minimizer currently can guarantee at that level or above
+            depth (int): The current depth of the search tree
+            board (Board): The current board state
+            max_depth (int): The maximum depth to search
+            no_move_for_opponent (bool): Whether the opponent has no valid moves
+        Returns:
+            Tuple[int, int, int]: The row and column of the best move, and the score of that move
+        """
+        if depth == max_depth or depth + self.moves_played == BOARD_DIMENSION ** 2:
             return -1, -1, self.evaluate_board(board, depth)
         valid_moves = get_valid_moves(turn, board)
         valid_moves.sort(key=validMoveSortKey)
@@ -99,8 +115,8 @@ class OthelloStrategy(OthelloPlayer):
                     break
             return best_row, best_col, low_score
 
-    def evaluate_board(self, board: BoardType, additional_pieces_played):
-        """Assigns a value to the board state based on how good it is for the AI"""
+    def evaluate_board(self, board: Board, additional_pieces_played: int) -> int:
+        """Returns a value for the board state based on how good it is for the AI"""
         spots_remaining = BOARD_DIMENSION**2 - (additional_pieces_played + self.moves_played)
         if spots_remaining == 0:
             ai_score, human_score = current_score(self.ai_color, board)
@@ -128,12 +144,12 @@ class OthelloStrategy(OthelloPlayer):
         return scores[self.ai_color] - scores[self.enemy_color]
 
 
-def copy_of_board(board: BoardType):
+def copy_of_board(board: Board) -> Board:
     """Returns a copy of the given board"""
     return list(map(list, board))  # use numpy if this becomes bottleneck
 
 
-def evaluate_position(row, col):
+def evaluate_position(row: int, col: int) -> int:
     """Gets the score of a position on the board"""
     move = row, col
     if move in CORNER_COORDINATES:
@@ -150,10 +166,16 @@ def evaluate_position(row, col):
         return 0
 
 
-def evaluate_board_by_filled_rows(board: BoardType, color):
+def evaluate_board_by_filled_rows(board: Board, color: PlayerBoardSpace) -> int:
     """
     Evaluates all the stretches of length BOARD_DIMENSION (rows, columns, and the two longest diagonals), as
     it is very beneficial to have long stretches of friendly pieces in the same row/column/diagonal
+
+    Parameters:
+        board (Board): The current board state
+        color (PlayerBoardSpace): The color to evaluate for
+    Returns:
+        score (int): The score for the given color based on filled rows/columns/diagonals
     """
     score = 0
     # evaluate each row to see if any of them are completely filled or almost completely filled
@@ -204,7 +226,7 @@ def evaluate_board_by_filled_rows(board: BoardType, color):
     return score
 
 
-def valid_moves_comparator(move1, move2):
+def valid_moves_comparator(move1: Tuple[int, int], move2: Tuple[int, int]) -> int:
     """
     Defines a way to sort two possible moves.
     Penalizes corner-adjacent moves
@@ -220,22 +242,22 @@ def valid_moves_comparator(move1, move2):
         return 0
 
 
-def piece_at(row, col, board: BoardType):
+def piece_at(row: int, col: int, board: Board) -> BoardSpace:
     """Gets the piece at the given coordinate"""
     return board[row][col]
 
 
-def opponent_of(piece):
-    """Gets the string representation of the opposing piece"""
-    if piece == BLACK:
-        return WHITE
-    elif piece == WHITE:
-        return BLACK
+def opponent_of(piece: PlayerBoardSpace):
+    """Gets the opposing piece"""
+    if piece == BoardSpace.BLACK:
+        return BoardSpace.WHITE
+    elif piece == BoardSpace.WHITE:
+        return BoardSpace.BLACK
     else:
         raise ValueError(f"Invalid value passed to opponentOf({piece})")
 
 
-def number_of_piece_on_board(piece, board: BoardType):
+def number_of_piece_on_board(piece: PlayerBoardSpace, board: Board):
     """Gets the number of the given piece that are on the board"""
     count = 0
     for row in board:
@@ -243,8 +265,16 @@ def number_of_piece_on_board(piece, board: BoardType):
     return count
 
 
-def current_score(user_piece, board: BoardType):
-    """Gets the score of the game, returning {userPiece}'s score in [0] and opposing score in [1]"""
+def current_score(user_piece: PlayerBoardSpace, board: Board) -> Tuple[int, int]:
+    """
+    Gets the score of the game
+    
+    Parameters:
+        user_piece (PlayerBoardSpace): The piece of the user (either BLACK or WHITE)
+        board (Board): The current board state
+    Returns:
+        scores (Tuple[int, int]): The score of the user and the opponent, respectively
+    """
     enemy = opponent_of(user_piece)
     score, enemy_score = 0, 0
     for row in board:
@@ -256,14 +286,20 @@ def current_score(user_piece, board: BoardType):
     return score, enemy_score
 
 
-def is_move_in_range(row, col):
+def is_move_in_range(row: int, col: int) -> bool:
     """Checks if the given coordinates are in range of the board"""
     return 0 <= row < BOARD_DIMENSION and 0 <= col < BOARD_DIMENSION
 
 
-def is_move_valid(piece, row, col, board: BoardType, confirmed_in_range=False):
+def is_move_valid(
+        piece: PlayerBoardSpace,
+        row: int,
+        col: int,
+        board: Board,
+        confirmed_in_range:bool=False
+    ) -> bool:
     """Determines if a move is valid for the given color"""
-    if not confirmed_in_range and not is_move_in_range(row, col) or board[row][col] != EMPTY:
+    if not confirmed_in_range and not is_move_in_range(row, col) or board[row][col] != BoardSpace.EMPTY:
         return False
     for rowIncrement in [-1, 0, 1]:
         for colIncrement in [-1, 0, 1]:
@@ -283,7 +319,7 @@ def is_move_valid(piece, row, col, board: BoardType, confirmed_in_range=False):
     return False
 
 
-def has_valid_moves(piece, board: BoardType):
+def has_valid_moves(piece: PlayerBoardSpace, board: Board) -> bool:
     """Checks if the given color has any available moves"""
     for row in range(BOARD_DIMENSION):
         for col in range(BOARD_DIMENSION):
@@ -292,8 +328,8 @@ def has_valid_moves(piece, board: BoardType):
     return False
 
 
-def get_valid_moves(piece, board: BoardType):
-    """Gets a list of coordinates [row ,col] of valid moves for the given color"""
+def get_valid_moves(piece: PlayerBoardSpace, board: Board) -> List[Tuple[int, int]]:
+    """Gets a list of coordinates [row, col] of valid moves for the given color"""
     valid_moves = []
     for row in range(BOARD_DIMENSION):
         for col in range(BOARD_DIMENSION):
@@ -302,16 +338,26 @@ def get_valid_moves(piece, board: BoardType):
     return valid_moves
 
 
-def play_move(piece, row, col, board: BoardType):
+def play_move(
+        piece: PlayerBoardSpace,
+        row: int,
+        col: int,
+        board: Board
+    ):
     """Adds a piece to the board and flips all the captured pieces"""
-    if is_move_in_range(row, col) and board[row][col] == EMPTY:
+    if is_move_in_range(row, col) and board[row][col] == BoardSpace.EMPTY:
         board[row][col] = piece
         convert_captured_pieces(piece, row, col, board)
     else:
         raise ValueError(f"{piece} tried to play in invalid spot ({row}, {col})!")
 
 
-def convert_captured_pieces(piece, row, col, board: BoardType):
+def convert_captured_pieces(
+        piece: PlayerBoardSpace, 
+        row: int, 
+        col: int, 
+        board: Board
+    ):
     """Converts the captured opposing pieces to the given color"""
     for rowIncrement in [-1, 0, 1]:
         for colIncrement in [-1, 0, 1]:
@@ -321,7 +367,10 @@ def convert_captured_pieces(piece, row, col, board: BoardType):
             col_to_eval = col + colIncrement
             enemy_piece_coordinates = []
             while True:
-                if not is_move_in_range(row_to_eval, col_to_eval) or board[row_to_eval][col_to_eval] == EMPTY:
+                if (
+                    not is_move_in_range(row_to_eval, col_to_eval) 
+                    or board[row_to_eval][col_to_eval] == BoardSpace.EMPTY
+                ):
                     enemy_piece_coordinates.clear()
                     break
                 elif board[row_to_eval][col_to_eval] == piece:
@@ -333,41 +382,60 @@ def convert_captured_pieces(piece, row, col, board: BoardType):
                 board[r][c] = piece
 
 
-def check_game_over(board: BoardType):
-    """Checks if all spaces on the board are filled"""
+def check_game_over(board: Board) -> Tuple[bool, Union[PlayerBoardSpace, None]]:
+    """
+    Checks if all spaces on the board are filled
+    
+    Parameters:
+        board: The current board state
+    Returns:
+        Tuple[bool, PlayerBoardSpace | None]: Whether the game is over, and if so, the winning color (or None if tie)
+    """
     black_count, white_count = 0, 0
     for row in range(BOARD_DIMENSION):
         for col in range(BOARD_DIMENSION):
             piece = piece_at(row, col, board)
-            if piece == EMPTY:
+            if piece == BoardSpace.EMPTY:
                 return False, None
-            elif piece == BLACK:
+            elif piece == BoardSpace.BLACK:
                 black_count += 1
             else:
                 white_count += 1
 
     if black_count > white_count:
-        return True, BLACK
+        return True, BoardSpace.BLACK
     elif white_count > black_count:
-        return True, WHITE
+        return True, BoardSpace.WHITE
     else:
         return True, None
 
 
 def current_locations(
-        board: BoardType
+        board: Board,
+        player1_piece: PlayerBoardSpace,
+        player2_piece: PlayerBoardSpace
     ) -> Tuple[List[Tuple[int, int]], List[Tuple[int, int]]]:
-    """Gets the current locations of both players' pieces on the board"""
-    player_locations = []
-    ai_locations = []
+    """
+    Gets the current locations of both players' pieces on the board
+    Parameters:
+        board (Board): The current board state
+        player1_piece (PlayerBoardSpace): The piece of player 1
+        player2_piece (PlayerBoardSpace): The piece of player 2
+    Returns:
+        locs (Tuple[List[Tuple[int, int]], List[Tuple[int, int]]]): A tuple containing:
+        - The locations of player 1's pieces
+        - The locations of player 2's pieces
+    """
+    player1_locations = []
+    player2_locations = []
     for row in range(BOARD_DIMENSION):
         for col in range(BOARD_DIMENSION):
             piece = piece_at(row, col, board)
-            if piece == USER_PIECE:
-                player_locations.append((row, col))
-            elif piece == AI_PIECE:
-                ai_locations.append((row, col))
-    return player_locations, ai_locations
+            if piece == player1_piece:
+                player1_locations.append((row, col))
+            elif piece == player2_piece:
+                player2_locations.append((row, col))
+    return player1_locations, player2_locations
 
 
 # sets the sorting key for valid move comparisons

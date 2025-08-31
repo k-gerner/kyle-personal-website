@@ -12,4 +12,4 @@ class BoardSpace(Enum):
 # Define the type for player board spaces
 PlayerBoardSpace = Literal[BoardSpace.BLACK, BoardSpace.WHITE]
 
-BoardType = List[List[BoardSpace]]
+Board = List[List[BoardSpace]]
