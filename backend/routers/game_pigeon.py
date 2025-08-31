@@ -7,6 +7,7 @@ import ai.game_pigeon.word_hunt.word_hunt as word_hunt
 import ai.game_pigeon.word_bites.word_bites as word_bites
 import ai.game_pigeon.connect4.connect4 as connect4
 import ai.game_pigeon.gomoku.gomoku as gomoku
+import ai.game_pigeon.othello.othello as othello
 from utils.ai_runner import run
 from utils.error import BackendError
 from utils.model import CamelAliasModel
@@ -101,7 +102,6 @@ async def solve_word_bites(input: WordBitesInput) -> WordBitesOutput:
     """
     Solve the Word Bites puzzle with the provided pieces.
     """
-    # Placeholder for actual implementation
     try :
         solutions = run(
             word_bites.run, 
@@ -145,7 +145,6 @@ async def solve_connect4(input: Connect4Input) -> Connect4Output:
     Solve the Connect 4 puzzle with the provided player and opponent locations.
     """
     try:
-        # Placeholder for actual Connect 4 implementation
         column, is_win = run(
             connect4.run, 
             player_locations=input.player_locations, 
@@ -225,12 +224,11 @@ class GomokuOutput(CamelAliasModel):
     
 
 @router.post("/gomoku")
-async def solve_connect4(input: GomokuInput) -> GomokuOutput:
+async def solve_gomoku(input: GomokuInput) -> GomokuOutput:
     """
     Solve the Gomoku puzzle with the provided player and opponent locations.
     """
     try:
-        # Placeholder for actual Connect 4 implementation
         row, column, is_win = run(
             gomoku.run, 
             player_locations=input.player_locations, 
@@ -287,4 +285,90 @@ async def check_game_over_gomoku(input: GomokuGameOverInput) -> GomokuGameOverOu
         is_over=is_win, 
         ai_wins=ai_wins, 
         winning_locations=winning_locations
+    )
+
+
+###########
+# Othello #
+###########
+class OthelloInput(CamelAliasModel):
+    player_locations: List[Tuple[int, int]]  # List of [row, col] for player's pieces
+    ai_locations: List[Tuple[int, int]]  # List of [row, col] for AI's pieces
+    max_search_depth: int = 7  # Default search depth
+
+    @validator("player_locations", "ai_locations", pre=True)
+    def ensure_valid_locations(cls, value: List[Tuple[int, int]]) -> List[Tuple[int, int]]:
+        if not all(isinstance(loc, list) and len(loc) == 2 for loc in value):
+            raise ValueError("Each location must be a tuple of two integers [row, col].")
+        return value
+    
+class OthelloOutput(CamelAliasModel):
+    row: int # The row chosen by the AI (0-indexed)
+    column: int  # The column chosen by the AI (0-indexed)
+    new_player_locations: List[Tuple[int, int]]  # Updated player locations after the move
+    new_ai_locations: List[Tuple[int, int]]  # Updated AI locations after the move
+    
+
+@router.post("/othello")
+async def solve_othello(input: OthelloInput) -> OthelloOutput:
+    """
+    Solve the Othello puzzle with the provided player and opponent locations.
+    """
+    try:
+        row, column, new_player_locations, new_ai_locations = run(
+            othello.run, 
+            player_locations=input.player_locations, 
+            ai_locations=input.ai_locations,
+            max_search_depth=input.max_search_depth
+        )
+    except BackendError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        logging.error("Unexpected error in othello:", exc_info=True)
+        raise HTTPException(status_code=500, detail="An unexpected error occurred.")
+    return OthelloOutput(row=row, 
+                        column=column, 
+                        new_player_locations=new_player_locations, 
+                        new_ai_locations=new_ai_locations)
+
+class OthelloValidMovesInput(CamelAliasModel):
+    player_locations: List[Tuple[int, int]]  # List of [row, col] for player's pieces
+    ai_locations: List[Tuple[int, int]]  # List of [row, col] for AI's pieces
+
+    @validator("player_locations", "ai_locations", pre=True)
+    def ensure_valid_locations(cls, value: List[Tuple[int, int]]) -> List[Tuple[int, int]]:
+        if not all(isinstance(loc, list) and len(loc) == 2 for loc in value):
+            raise ValueError("Each location must be a tuple of two integers [row, col].")
+        return value
+    
+class OthelloValidMovesOutput(CamelAliasModel):
+    valid_player_moves: List[Tuple[int, int]]  # Valid moves for the player
+    valid_ai_moves: List[Tuple[int, int]]  # Valid moves for the AI
+
+
+@router.post("/othello/valid_moves")
+async def get_valid_moves_othello(input: OthelloValidMovesInput) -> OthelloValidMovesOutput:
+    """
+    Get valid moves for both the player and AI in Othello.
+    
+    Parameters:
+        input (OthelloValidMovesInput): The current game state.
+        
+    Returns:
+        OthelloValidMovesOutput: Valid moves for both the player and AI.
+    """
+    try:
+        valid_player_moves, valid_ai_moves = run(
+            othello.get_valid_moves, 
+            player_locations=input.player_locations, 
+            ai_locations=input.ai_locations
+        )
+    except BackendError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        logging.error("Unexpected error in othello valid moves:", exc_info=True)
+        raise HTTPException(status_code=500, detail="An unexpected error occurred.")
+    return OthelloValidMovesOutput(
+        valid_player_moves=valid_player_moves, 
+        valid_ai_moves=valid_ai_moves
     )
