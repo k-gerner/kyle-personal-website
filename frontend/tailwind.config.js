@@ -33,6 +33,10 @@ const customColors = {
   'gomoku-board': 'var(--gomoku-board-color)',
   'gomoku-piece-black': 'var(--gomoku-piece-black-color)',
   'gomoku-piece-white': 'var(--gomoku-piece-white-color)',
+
+  'othello-board': 'var(--othello-board-color)',
+  'othello-piece-black': 'var(--othello-piece-black-color)',
+  'othello-piece-white': 'var(--othello-piece-white-color)',
 }
 
 module.exports = {
@@ -74,11 +78,11 @@ module.exports = {
           '0%': { transform: 'scale(1)' },
           '50%': { transform: 'scale(1.10)' },
           '100%': { transform: 'scale(1)' },
+        },
+        customPulse: {
+          '0%, 100%': { opacity: '0.8' },
+          '50%': { opacity: '0.2' }, // Change this value to control the minimum opacity
         }
-        // expandVertically: {
-        //   '0%': { transform: 'scaleY(0)', transformOrigin: 'top' },
-        //   '100%': { transform: 'scaleY(1)%', transformOrigin: 'top' },
-        // },
       },
       animation: {
         dropdown: 'dropdown 0.1s ease-out',
@@ -86,6 +90,7 @@ module.exports = {
         slideInFromTop: 'slideInFromTop 0.3s ease-out forwards',
         revealFromTop: 'revealFromTop2 0.5s ease-out forwards',
         enlargeBounce: 'enlargeBounce 1.0s ease-in-out infinite',
+        customPulse: 'customPulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite',
       },
     },
   },

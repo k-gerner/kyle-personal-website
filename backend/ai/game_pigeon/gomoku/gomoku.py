@@ -1,7 +1,5 @@
 # Kyle Gerner
 # Started 3.22.2021
-# Gomoku solver, client facing
-from datetime import datetime
 from typing import List, Tuple
 from ai.game_pigeon.gomoku.constants import DEFAULT_MAX_DEPTH, BOARD_DIMENSION
 from ai.game_pigeon.gomoku.enums import BoardSpace
@@ -12,11 +10,8 @@ from utils.error import BackendError
 
 AI_PIECE = BoardSpace.BLACK  # AI will always be BLACK
 USER_PIECE = BoardSpace.WHITE  # User will always be WHITE
-game_board = []  # created later
-user_piece = None
 
 
-# class for the Human player
 def _build_board_matrix(
         player_locations: List[Tuple[int, int]], 
         ai_locations: List[Tuple[int, int]]
