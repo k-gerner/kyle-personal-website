@@ -1,6 +1,7 @@
 import React from "react";
+import { twMerge } from 'tailwind-merge';
 
-const buttonClassName = [
+const defaultStyle = [
     "bg-transparent",
     "placeholder:text-text-muted",
     "text-text-base",
@@ -27,10 +28,11 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
 
 const Input = React.forwardRef<HTMLInputElement, InputProps>(
     ({ className = "", ...props }, ref) => {
+        const combinedClasses = twMerge(defaultStyle, className);
         return (
             <input
                 ref={ref} // Forward the ref to the <input> element
-                className={`${buttonClassName} ${className}`} // TODO: use tailwind merge
+                className={combinedClasses}
                 {...props}
             />
         );
