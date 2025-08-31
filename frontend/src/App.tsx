@@ -8,6 +8,7 @@ import WordHunt from "./pages/ai/gamepigeon/WordHunt";
 import WordBites from "./pages/ai/gamepigeon/WordBites";
 import Connect4 from "./pages/ai/gamepigeon/Connect4";
 import Gomoku from "./pages/ai/gamepigeon/Gomoku";
+import Othello from "./pages/ai/gamepigeon/Othello";
 import { ThemePicker } from "./components/ThemePicker";
 import './index.css';
 
@@ -26,6 +27,7 @@ function App() {
             <Link to="/word_bites" className="text-primary-highlight hover:underline">Word Bites</Link>
             <Link to="/connect4" className="text-primary-highlight hover:underline">Connect 4</Link>
             <Link to="/gomoku" className="text-primary-highlight hover:underline">Gomoku</Link>
+            <Link to="/othello" className="text-primary-highlight hover:underline">Othello</Link>
           </div>
 
           {/* Right side: Theme Picker */}
@@ -42,6 +44,7 @@ function App() {
           <Route path="/word_bites" element={<WordBites />} />
           <Route path="/connect4" element={<Connect4 />} />
           <Route path="/gomoku" element={<Gomoku />} />
+          <Route path="/othello" element={<Othello />} />
           {/* Catch-all route for 404 */}
           <Route path="*" element={<div>Page not found</div>} />
         </Routes>

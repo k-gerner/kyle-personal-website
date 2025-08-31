@@ -318,6 +318,7 @@ async def solve_othello(input: OthelloInput) -> OthelloOutput:
         row, column, new_player_locations, new_ai_locations = run(
             othello.run, 
             player_locations=input.player_locations, 
+            profile=True,
             ai_locations=input.ai_locations,
             max_search_depth=input.max_search_depth
         )
@@ -331,6 +332,7 @@ async def solve_othello(input: OthelloInput) -> OthelloOutput:
                         new_player_locations=new_player_locations, 
                         new_ai_locations=new_ai_locations)
 
+
 class OthelloValidMovesInput(CamelAliasModel):
     player_locations: List[Tuple[int, int]]  # List of [row, col] for player's pieces
     ai_locations: List[Tuple[int, int]]  # List of [row, col] for AI's pieces
@@ -342,8 +344,8 @@ class OthelloValidMovesInput(CamelAliasModel):
         return value
     
 class OthelloValidMovesOutput(CamelAliasModel):
-    valid_player_moves: List[Tuple[int, int]]  # Valid moves for the player
-    valid_ai_moves: List[Tuple[int, int]]  # Valid moves for the AI
+    player: List[Tuple[int, int]]  # Valid moves for the player
+    ai: List[Tuple[int, int]]  # Valid moves for the AI
 
 
 @router.post("/othello/valid_moves")
@@ -359,7 +361,7 @@ async def get_valid_moves_othello(input: OthelloValidMovesInput) -> OthelloValid
     """
     try:
         valid_player_moves, valid_ai_moves = run(
-            othello.get_valid_moves, 
+            othello.get_valid_moves_for_players, 
             player_locations=input.player_locations, 
             ai_locations=input.ai_locations
         )
@@ -369,6 +371,51 @@ async def get_valid_moves_othello(input: OthelloValidMovesInput) -> OthelloValid
         logging.error("Unexpected error in othello valid moves:", exc_info=True)
         raise HTTPException(status_code=500, detail="An unexpected error occurred.")
     return OthelloValidMovesOutput(
-        valid_player_moves=valid_player_moves, 
-        valid_ai_moves=valid_ai_moves
+        player=valid_player_moves, 
+        ai=valid_ai_moves
+    )
+
+
+class OthelloPerformMoveInput(CamelAliasModel):
+    player_locations: List[Tuple[int, int]]  # List of [row, col] for player's pieces
+    ai_locations: List[Tuple[int, int]]  # List of [row, col] for AI's pieces
+    player_move: Tuple[int, int]  # The move to perform [row, col]
+
+    @validator("player_locations", "ai_locations", pre=True)
+    def ensure_valid_locations(cls, value: List[Tuple[int, int]]) -> List[Tuple[int, int]]:
+        if not all(isinstance(loc, list) and len(loc) == 2 for loc in value):
+            raise ValueError("Each location must be a tuple of two integers [row, col].")
+        return value
+    
+class OthelloPerformMoveOutput(CamelAliasModel):
+    player: List[Tuple[int, int]]  # new player locations after the move
+    ai: List[Tuple[int, int]]  # new AI locations after the move
+
+
+@router.post("/othello/perform_move")
+async def perform_move_othello(input: OthelloPerformMoveInput) -> OthelloPerformMoveOutput:
+    """
+    Perform a move for the AI in Othello and return the updated locations.
+    
+    Parameters:
+        input (OthelloPerformMoveInput): The current game state and the move to perform.
+        
+    Returns:
+        OthelloPerformMoveOutput: Updated player and AI locations after the move.
+    """
+    try:
+        new_player_locations, new_ai_locations = run(
+            othello.play_move_for_player,
+            player_locations=input.player_locations, 
+            ai_locations=input.ai_locations,
+            player_move=input.player_move
+        )
+    except BackendError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        logging.error("Unexpected error in othello perform move:", exc_info=True)
+        raise HTTPException(status_code=500, detail="An unexpected error occurred.")
+    return OthelloPerformMoveOutput(
+        player=new_player_locations, 
+        ai=new_ai_locations
     )

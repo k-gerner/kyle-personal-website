@@ -89,7 +89,7 @@ class OthelloStrategy(OthelloPlayer):
             for row, col in valid_moves:
                 board_copy = copy_of_board(board)  # possible bottleneck
                 play_move(turn, row, col, board_copy)
-                _, __, score = self.minimax(opponent_of(turn), alpha, beta, depth + 1, board_copy)
+                _, __, score = self.minimax(opponent_of(turn), alpha, beta, depth + 1, board_copy, max_depth)
                 if score > high_score:
                     high_score = score
                     best_row = row
@@ -105,7 +105,7 @@ class OthelloStrategy(OthelloPlayer):
             for row, col in valid_moves:
                 board_copy = copy_of_board(board)  # possible bottleneck
                 play_move(turn, row, col, board_copy)
-                _, __, score = self.minimax(opponent_of(turn), alpha, beta, depth + 1, board_copy)
+                _, __, score = self.minimax(opponent_of(turn), alpha, beta, depth + 1, board_copy, max_depth)
                 if score < low_score:
                     low_score = score
                     best_row = row
