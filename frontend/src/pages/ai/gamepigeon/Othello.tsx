@@ -18,12 +18,20 @@ const INITIAL_BOARD_STATE = {
         [Math.floor(BOARD_SIZE / 2), Math.floor(BOARD_SIZE / 2) - 1]
     ]
 };
-const INITIAL_VALID_USER_LOCATIONS: number[][] = [
-    [Math.floor(BOARD_SIZE / 2) - 1, Math.floor(BOARD_SIZE / 2) + 1], // (3, 5)
-    [Math.floor(BOARD_SIZE / 2) - 2, Math.floor(BOARD_SIZE / 2)],     // (2, 4)
-    [Math.floor(BOARD_SIZE / 2), Math.floor(BOARD_SIZE / 2) - 2],     // (4, 2)
-    [Math.floor(BOARD_SIZE / 2) + 1, Math.floor(BOARD_SIZE / 2) - 1]  // (5, 3)
-];
+const INITIAL_VALID_LOCATIONS = {
+    player: [
+        [Math.floor(BOARD_SIZE / 2) - 1, Math.floor(BOARD_SIZE / 2) + 1], // (3, 5)
+        [Math.floor(BOARD_SIZE / 2) - 2, Math.floor(BOARD_SIZE / 2)],     // (2, 4)
+        [Math.floor(BOARD_SIZE / 2), Math.floor(BOARD_SIZE / 2) - 2],     // (4, 2)
+        [Math.floor(BOARD_SIZE / 2) + 1, Math.floor(BOARD_SIZE / 2) - 1]  // (5, 3)
+    ],
+    ai: [
+        [Math.floor(BOARD_SIZE / 2) - 1, Math.floor(BOARD_SIZE / 2) - 2], // (3, 2)
+        [Math.floor(BOARD_SIZE / 2) - 2, Math.floor(BOARD_SIZE / 2) - 1], // (2, 3)
+        [Math.floor(BOARD_SIZE / 2), Math.floor(BOARD_SIZE / 2) + 1],     // (4, 5)
+        [Math.floor(BOARD_SIZE / 2) + 1, Math.floor(BOARD_SIZE / 2)]      // (5, 4)
+    ]
+}
 
 const Othello = () => {
     // Game settings
@@ -39,7 +47,7 @@ const Othello = () => {
         player: number[][]; // Array of player locations
         ai: number[][];     // Array of AI locations
     }>(INITIAL_BOARD_STATE);
-    const [validUserLocations, setValidUserLocations] = useState<number[][]>(INITIAL_VALID_USER_LOCATIONS);
+    const [validPlayerLocations, setValidPlayerLocations] = useState<number[][]>(INITIAL_VALID_LOCATIONS.player);
     const [loading, setLoading] = useState(false);
     const [winner, setWinner] = useState<Player | null>(null);
     const [recentAiMove, setRecentAiMove] = useState<number[] | null>(null);
@@ -99,11 +107,15 @@ const Othello = () => {
                 && validMovesRes.player.length > 0
             )) {
             if (playerTurn === Player.AI) {
-                setValidUserLocations(validMovesRes.player);
+                setValidPlayerLocations(validMovesRes.player);
+            } else if (playerTurn === Player.User) {
+                setValidPlayerLocations(validMovesRes.ai);
             }
             switchPlayerTurn();
         } else if (playerTurn === Player.User) {
-            setValidUserLocations(validMovesRes.player);
+            setValidPlayerLocations(validMovesRes.player);
+        } else {
+            setValidPlayerLocations(validMovesRes.ai);
         }
         setTurnCount(turnCount + 1);
     }
@@ -134,7 +146,10 @@ const Othello = () => {
         setGameActive(false);
         setSelectedPosition(null);
         setTurnCount(0);
-        setValidUserLocations(INITIAL_VALID_USER_LOCATIONS);
+        setValidPlayerLocations(startingPlayer === Player.User
+            ? INITIAL_VALID_LOCATIONS.player
+            : INITIAL_VALID_LOCATIONS.ai
+        );
     }
 
     useEffect(() => {
@@ -178,7 +193,8 @@ const Othello = () => {
                             }}
                             allowInput={playerTurn === Player.User && !winner}
                             highlightedPositions={recentAiMove ? [recentAiMove] : []}
-                            validPositions={playerTurn === Player.User ? validUserLocations : []}
+                            validPositions={validPlayerLocations}
+                            playerTurn={playerTurn}
                         />
                         <ActionButton
                             label={playerTurn === Player.User
@@ -214,6 +230,10 @@ const Othello = () => {
                             startingPlayer={startingPlayer}
                             setStartingPlayer={(player: Player) => {
                                 if (!gameActive) {
+                                    setValidPlayerLocations(player === Player.User
+                                        ? INITIAL_VALID_LOCATIONS.player
+                                        : INITIAL_VALID_LOCATIONS.ai
+                                    );
                                     setPlayerTurn(player);
                                 }
                                 setStartingPlayer(player);
@@ -294,6 +314,7 @@ interface OthelloBoardProps {
     allowInput: boolean;
     highlightedPositions: number[][];
     validPositions: number[][];
+    playerTurn: Player;
 }
 
 const OthelloBoard: React.FC<OthelloBoardProps> = ({
@@ -303,7 +324,8 @@ const OthelloBoard: React.FC<OthelloBoardProps> = ({
     previewPosition,
     allowInput,
     highlightedPositions,
-    validPositions
+    validPositions,
+    playerTurn
 }) => {
     const board = Array.from({ length: BOARD_SIZE }, () => Array(BOARD_SIZE).fill(null));
 
@@ -356,7 +378,8 @@ const OthelloBoard: React.FC<OthelloBoardProps> = ({
                                 {/* Background animation */}
                                 {locationsContain(validPositions, cellCoords) && (
                                     // Flash the cell if it's a valid position
-                                    <div className="absolute inset-0 animate-customPulse bg-primary-base z-0"></div>
+                                    // Use a key based on playerTurn to retrigger animation when turn changes
+                                    <div key={`${playerTurn}-${rowIndex}-${colIndex}`} className={`absolute inset-0 animate-customPulse ${playerTurn === Player.User ? 'bg-primary-base' : 'bg-secondary-base'} z-0`}></div>
                                 )}
 
                                 {/* Content */}

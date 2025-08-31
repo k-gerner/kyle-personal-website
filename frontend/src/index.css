@@ -51,7 +51,6 @@ code {
   --othello-board-color: rgb(104, 165, 111);
   --othello-piece-black-color: black;
   --othello-piece-white-color: white;
-  --othello-valid-move-color: rgb(206, 202, 121);
 }
 
 .theme-light {

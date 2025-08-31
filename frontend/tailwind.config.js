@@ -37,7 +37,6 @@ const customColors = {
   'othello-board': 'var(--othello-board-color)',
   'othello-piece-black': 'var(--othello-piece-black-color)',
   'othello-piece-white': 'var(--othello-piece-white-color)',
-  'othello-valid-move': 'var(--primary-base-color)',//'var(--othello-valid-move-color)',
 }
 
 module.exports = {
