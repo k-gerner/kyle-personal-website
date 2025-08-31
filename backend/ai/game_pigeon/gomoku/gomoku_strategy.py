@@ -5,7 +5,7 @@ import math  # for infinities
 import random  # for randomizing valid moves list in minimax
 from ai.game_pigeon.gomoku.gomoku_player import GomokuPlayer  # super class
 from ai.game_pigeon.gomoku.enums import BoardSpace, PlayerBoardSpace
-from ai.game_pigeon.gomoku.constants import DEFAULT_MAX_DEPTH, BOARD_DIMENSION
+from ai.game_pigeon.gomoku.constants import BOARD_DIMENSION
 
 
 #### DO NOT MODIFY ####
