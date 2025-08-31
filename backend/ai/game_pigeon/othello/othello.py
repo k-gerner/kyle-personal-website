@@ -74,7 +74,6 @@ def run(
     ai = OthelloStrategy(AI_PIECE)
     best_move_row, best_move_col = ai.get_move(board, max_search_depth)
     play_move(AI_PIECE, best_move_row, best_move_col, board)
-    _debug_board(board)
     new_player_locations, new_ai_locations = current_locations(board, USER_PIECE, AI_PIECE)
     return best_move_row, best_move_col, new_player_locations, new_ai_locations
 

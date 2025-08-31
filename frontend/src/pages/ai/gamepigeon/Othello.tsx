@@ -61,6 +61,7 @@ const Othello = () => {
         } else {
             setWinner(null);
         }
+        setValidPlayerLocations([]);
         setGameActive(false);
     }
 
@@ -93,7 +94,6 @@ const Othello = () => {
     }
 
     const advanceTurn = async () => {
-        console.log('pieceLocations', pieceLocations);
         const validMovesRes = await callEndpoint('api/game_pigeon/othello/valid_moves', {
             playerLocations: pieceLocations.player,
             aiLocations: pieceLocations.ai,
@@ -208,7 +208,7 @@ const Othello = () => {
                                 loading ||
                                 winner !== null
                             }
-                            className={`w-48 h-12 text-md ${!gameActive && startingPlayer === Player.AI ? 'animate-enlargeBounce' : ''}`}
+                            className={`w-48 h-12 text-md ${!gameActive && startingPlayer === Player.AI && turnCount === 0 ? 'animate-enlargeBounce' : ''}`}
                         />
                     </div>
                 </div>
