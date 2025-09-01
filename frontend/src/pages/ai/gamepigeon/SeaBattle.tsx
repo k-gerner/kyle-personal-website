@@ -50,6 +50,8 @@ const SeaBattle = () => {
         setMissedLocations([]);
         setSpaceDensities([]);
         populateInitialShipsRemaining();
+        setSelectedPosition(null);
+        setBestMoves([]);
     }
 
     useEffect(() => {
