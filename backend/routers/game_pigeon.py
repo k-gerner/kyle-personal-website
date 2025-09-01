@@ -8,6 +8,7 @@ import ai.game_pigeon.word_bites.word_bites as word_bites
 import ai.game_pigeon.connect4.connect4 as connect4
 import ai.game_pigeon.gomoku.gomoku as gomoku
 import ai.game_pigeon.othello.othello as othello
+import ai.game_pigeon.sea_battle.sea_battle as sea_battle
 from utils.ai_runner import run
 from utils.error import BackendError
 from utils.model import CamelAliasModel
@@ -419,3 +420,91 @@ async def perform_move_othello(input: OthelloPerformMoveInput) -> OthelloPerform
         player=new_player_locations, 
         ai=new_ai_locations
     )
+
+
+##############
+# Sea Battle #
+##############
+class SeaBattleInput(CamelAliasModel):
+    size: int
+    ships_remaining: Dict[str, int]  # Dictionary mapping ship sizes to their remaining counts
+    destroyed_locations: List[Tuple[int, int]]  # List of [row, col] for destroyed locations
+    hit_locations: List[Tuple[int, int]]  # List of [row, col] for hit locations
+    missed_locations: List[Tuple[int, int]]  # List of [row, col] for missed locations
+
+    @validator("size", pre=True)
+    def ensure_size(cls, value: List[Tuple[int, int]]) -> List[Tuple[int, int]]:
+        if not 8 <= value <= 10:
+            raise ValueError("Size must be 8, 9, or 10.")
+        return value
+
+    @validator("destroyed_locations", "hit_locations", "missed_locations", pre=True)
+    def ensure_valid_locations(cls, value: List[Tuple[int, int]]) -> List[Tuple[int, int]]:
+        if not all(isinstance(loc, list) and len(loc) == 2 for loc in value):
+            raise ValueError("Each location must be a tuple of two integers [row, col].")
+        return value
+    
+    @validator("ships_remaining", pre=True)
+    def ensure_valid_ships_remaining(cls, value: Dict[int, int]) -> Dict[int, int]:
+        if not all(size.isdigit() and isinstance(count, int) and int(size) > 0 and count >= 0 for size, count in value.items()):
+            raise ValueError("Each ship size must be a positive integer and count must be a non-negative integer.")
+        return value
+    
+
+class SeaBattleOutput(CamelAliasModel):
+    space_densities: List[List[float]]  # 2D list representing space densities
+    best_moves: List[Tuple[int, int]]   # List of best move locations
+    
+
+@router.post("/sea_battle")
+async def solve_sea_battle(input: SeaBattleInput) -> SeaBattleOutput:
+    """
+    Solve the Sea Battle puzzle with the provided player and opponent locations.
+    """
+    converted_ships_remaining = {int(key): value for key, value in input.ships_remaining.items()}
+    try:
+        space_densities, best_moves = run(
+            sea_battle.run, 
+            size=input.size,
+            ships_remaining=converted_ships_remaining,
+            destroyed_locations=input.destroyed_locations,
+            hit_locations=input.hit_locations,
+            missed_locations=input.missed_locations
+        )
+    except BackendError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        logging.error("Unexpected error in sea battle:", exc_info=True)
+        raise HTTPException(status_code=500, detail="An unexpected error occurred.")
+    return SeaBattleOutput(space_densities=space_densities, best_moves=best_moves)
+
+
+class SeaBattleInitialStateInput(CamelAliasModel):
+    size: int
+
+    @validator("size", pre=True)
+    def ensure_size(cls, value: List[Tuple[int, int]]) -> List[Tuple[int, int]]:
+        if not 8 <= value <= 10:
+            raise ValueError("Size must be 8, 9, or 10.")
+        return value
+    
+class SeaBattleInitialStateOutput(CamelAliasModel):
+    remaining_ships: Dict[int, int]  # Dictionary mapping ship sizes to their remaining counts
+
+
+@router.post("/sea_battle/initial_ships")
+async def get_initial_state_sea_battle(input: SeaBattleInitialStateInput) -> SeaBattleInitialStateOutput:
+    """
+    Get the initial ship counts for a given board size in Sea Battle.
+    """
+    try:
+        remaining_ships = run(
+            sea_battle.initial_board_state, 
+            size=input.size
+        )
+    except BackendError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        logging.error("Unexpected error in sea battle initial state:", exc_info=True)
+        raise HTTPException(status_code=500, detail="An unexpected error occurred.")
+    return SeaBattleInitialStateOutput(remaining_ships=remaining_ships)
