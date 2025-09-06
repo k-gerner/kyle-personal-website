@@ -17,8 +17,13 @@ async def solve_spelling_bee(input: SpellingBeeInput):
     """
     Solve the Spelling Bee puzzle with the provided center letter and outer letters.
     """
+    print(f"Received Spelling Bee input: center_letter={input.center_letter}, outer_letters={input.outer_letters}")
     lower_outer_letters = {letter.lower() for letter in input.outer_letters}
-    valid_words = run(spelling_bee.run, input.center_letter.lower(), lower_outer_letters)
+    valid_words = run(
+        spelling_bee.run,
+        center_letter=input.center_letter.lower(),
+        outer_letters=lower_outer_letters
+    )
     return {"words": valid_words}
 
 
@@ -34,6 +39,10 @@ async def solve_letter_boxed(input: LetterBoxedInput):
     lower_letter_sides = [[letter.lower() for letter in side] for side in input.letter_sides]
     letter_sets = [set(side) for side in lower_letter_sides]
 
-    solutions = run(letter_boxed.run, letter_sets, input.max_solutions_length)
+    solutions = run(
+        letter_boxed.run,
+        letter_sides=letter_sets,
+        max_solutions_length=input.max_solutions_length
+    )
 
     return {"solutions": solutions}
