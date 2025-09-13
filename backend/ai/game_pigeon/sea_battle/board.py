@@ -1,4 +1,4 @@
-from typing import Dict, List, Tuple
+from typing import Dict, List, Tuple, Optional
 from ai.game_pigeon.sea_battle.enums import BoardSpace
 from utils.error import BackendError
 
@@ -11,18 +11,21 @@ class SeaBattleBoard:
             remaining_ships: Dict[int, int], 
             destroyed_locations: List[Tuple[int, int]], 
             hit_locations: List[Tuple[int, int]], 
-            missed_locations: List[Tuple[int, int]]
+            missed_locations: List[Tuple[int, int]],
+            cleared_locations: List[Tuple[int, int]]
         ):
         self.size = size
         self.remaining_ships = remaining_ships
         self.destroyed_locations = destroyed_locations
         self.hit_locations = hit_locations
         self.missed_locations = missed_locations
+        self.cleared_locations = cleared_locations
         self.board = create_board_grid(
             size, 
             destroyed_locations, 
             hit_locations, 
-            missed_locations
+            missed_locations,
+            cleared_locations
         )
         self.density_pyramid = []
         self.update_density_pyramid()
@@ -36,6 +39,16 @@ class SeaBattleBoard:
     def mark_miss(self, row: int, col: int):
         self.board[row][col] = BoardSpace.MISS
         self.missed_locations.append((row, col))
+
+    def mark_cleared(self, row: int, col: int):
+        self.board[row][col] = BoardSpace.CLEAR
+        self.cleared_locations.append((row, col))
+        if (row, col) in self.missed_locations:
+            self.missed_locations.remove((row, col))
+        if (row, col) in self.hit_locations:
+            self.hit_locations.remove((row, col))
+        if (row, col) in self.destroyed_locations:
+            self.destroyed_locations.remove((row, col))
 
 
     def mark_destroy(self, row: int, col: int):
@@ -66,11 +79,13 @@ class SeaBattleBoard:
             row_incremented, col_incremented = row, col
             while 0 <= (row_incremented + vert_add) < self.size and 0 <= col_incremented + horiz_add < self.size:
                 # while in range of board
-                spot = self.board_space_at(row_incremented + vert_add, col_incremented + horiz_add)
+                new_row = row_incremented + vert_add
+                new_col = col_incremented + horiz_add
+                spot = self.board_space_at(new_row, new_col)
                 if spot == BoardSpace.HIT:
-                    self.mark_destroy(spot[0], spot[1])
+                    self.mark_destroy(new_row, new_col)
                     # game_board[row_incremented + vert_add][col_incremented + horiz_add] = BoardSpace.DESTROY
-                    sunken_coordinates.append([spot[0], spot[1]])
+                    sunken_coordinates.append([new_row, new_col])
                     row_incremented += vert_add
                     col_incremented += horiz_add
                 else:
@@ -92,11 +107,12 @@ class SeaBattleBoard:
             [1, -1],   # upper left
             [1, 1]     # upper right
         ]
+        # clear the surrounding coordinates because ships can't be adjacent
         for coord in sunken_coordinates:
             for increment in sunken_neighbor_distances:
                 new_row, new_col = coord[0] + increment[0], coord[1] + increment[1]
                 if 0 <= new_row < self.size and 0 <= new_col < self.size and self.board_space_at(new_row, new_col) == BoardSpace.EMPTY:
-                    self.mark_miss(new_row, new_col)
+                    self.mark_cleared(new_row, new_col)
 
 
     def update_density_pyramid(self):
@@ -122,11 +138,25 @@ class SeaBattleBoard:
         self.density_pyramid = density_pyramid
 
 
-    def get_space_densities(self) -> List[List[float]]:
+    def get_space_densities(self, recent_move: Optional[Tuple[int, int]]) -> List[List[float]]:
         """
-        Generate a board where each space has densities that relate to the number of ways ships could be placed there
+        Generate a board where each space has densities that relate to the number of ways ships could be placed there.
         NOTE: There is room for improvement in this implementation. It was written quickly and could be optimized.
+
+        Parameters:
+            recent_move (Optional[Tuple[int, int]]): The most recent move made (row, col), or None if no moves have been made
+        Returns:
+            densities (List[List[float]]): A 2D list of floats representing the density of each space on the board, where each inner list is a row.
         """
+        space_densities = []
+        for i in range(self.size):
+            space_densities.append([0]*self.size)
+        
+        if recent_move and recent_move in self.destroyed_locations:
+            self.sink_ship(recent_move[0], recent_move[1])
+            if all(num_left == 0 for num_left in self.remaining_ships.values()):
+                return space_densities
+            
         def fill_list_with_density_pyramid_data(arr: List[int], start_index: int, sequence_length:int):
             """
             Take data from the density pyramid and populate a portion of the given list with that data
@@ -180,10 +210,6 @@ class SeaBattleBoard:
                     ):
                         num_open += 1
             return num_open
-
-        space_densities = []
-        for i in range(self.size):
-            space_densities.append([0]*self.size)
 
         # Look at horizontal open space and fill space_densities accordingly
         for row_index in range(self.size):
@@ -305,7 +331,8 @@ def create_board_grid(
         size: int, 
         destroyed_locations: List[Tuple[int, int]], 
         hit_locations: List[Tuple[int, int]], 
-        missed_locations: List[Tuple[int, int]]
+        missed_locations: List[Tuple[int, int]],
+        cleared_locations: List[Tuple[int, int]]
     ) -> List[List[BoardSpace]]:
     grid = [[BoardSpace.EMPTY for _ in range(size)] for _ in range(size)]
     
@@ -317,5 +344,8 @@ def create_board_grid(
     
     for x, y in missed_locations:
         grid[x][y] = BoardSpace.MISS  # Missed shot
+
+    for x, y in cleared_locations:
+        grid[x][y] = BoardSpace.CLEAR # Cleared space (next to a sunk ship)
     
     return grid

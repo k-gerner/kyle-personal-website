@@ -4,6 +4,7 @@ from typing import List
 class BoardSpace(Enum):
     DESTROY = "D"
     EMPTY = "-"
+    CLEAR = "C"
     HIT = "H"
     MISS = "^"
 

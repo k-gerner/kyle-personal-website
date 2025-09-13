@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel, validator
-from typing import List, Dict, Tuple
+from typing import List, Dict, Tuple, Optional
 import logging
 import ai.game_pigeon.anagrams as anagrams
 import ai.game_pigeon.word_hunt.word_hunt as word_hunt
@@ -427,10 +427,12 @@ async def perform_move_othello(input: OthelloPerformMoveInput) -> OthelloPerform
 ##############
 class SeaBattleInput(CamelAliasModel):
     size: int
+    recent_move: Optional[Tuple[int, int]] = None # The most recent move played
     ships_remaining: Dict[str, int]  # Dictionary mapping ship sizes to their remaining counts
     destroyed_locations: List[Tuple[int, int]]  # List of [row, col] for destroyed locations
     hit_locations: List[Tuple[int, int]]  # List of [row, col] for hit locations
     missed_locations: List[Tuple[int, int]]  # List of [row, col] for missed locations
+    cleared_locations: List[Tuple[int, int]]  # List of [row, col] for cleared locations
 
     @validator("size", pre=True)
     def ensure_size(cls, value: List[Tuple[int, int]]) -> List[Tuple[int, int]]:
@@ -438,7 +440,7 @@ class SeaBattleInput(CamelAliasModel):
             raise ValueError("Size must be 8, 9, or 10.")
         return value
 
-    @validator("destroyed_locations", "hit_locations", "missed_locations", pre=True)
+    @validator("destroyed_locations", "hit_locations", "missed_locations", "cleared_locations", pre=True)
     def ensure_valid_locations(cls, value: List[Tuple[int, int]]) -> List[Tuple[int, int]]:
         if not all(isinstance(loc, list) and len(loc) == 2 for loc in value):
             raise ValueError("Each location must be a tuple of two integers [row, col].")
@@ -453,7 +455,12 @@ class SeaBattleInput(CamelAliasModel):
 
 class SeaBattleOutput(CamelAliasModel):
     space_densities: List[List[float]]  # 2D list representing space densities
-    best_moves: List[Tuple[int, int]]   # List of best move locations
+    best_moves: List[Tuple[int, int]]   # List of best move locations,
+    destroyed_locations: List[Tuple[int, int]]  # List of locations of sunk ships
+    hit_locations: List[Tuple[int, int]]  # List of locations of hit ships
+    missed_locations: List[Tuple[int, int]]  # List of locations of missed shots
+    cleared_locations: List[Tuple[int, int]]  # List of cleared locations
+    remaining_ships: Dict[int, int]  # Remaining ships after the move
     
 
 @router.post("/sea_battle")
@@ -463,20 +470,30 @@ async def solve_sea_battle(input: SeaBattleInput) -> SeaBattleOutput:
     """
     converted_ships_remaining = {int(key): value for key, value in input.ships_remaining.items()}
     try:
-        space_densities, best_moves = run(
+        output_dict = run(
             sea_battle.run, 
             size=input.size,
+            recent_move=input.recent_move,
             ships_remaining=converted_ships_remaining,
             destroyed_locations=input.destroyed_locations,
             hit_locations=input.hit_locations,
-            missed_locations=input.missed_locations
+            missed_locations=input.missed_locations,
+            cleared_locations=input.cleared_locations
         )
     except BackendError as e:
         raise HTTPException(status_code=400, detail=str(e))
     except Exception as e:
         logging.error("Unexpected error in sea battle:", exc_info=True)
         raise HTTPException(status_code=500, detail="An unexpected error occurred.")
-    return SeaBattleOutput(space_densities=space_densities, best_moves=best_moves)
+    return SeaBattleOutput(
+        space_densities=output_dict["space_densities"],
+        best_moves=output_dict["best_moves"],
+        destroyed_locations=output_dict["destroyed_locations"],
+        hit_locations=output_dict["hit_locations"],
+        missed_locations=output_dict["missed_locations"],
+        cleared_locations=output_dict["cleared_locations"],
+        remaining_ships=output_dict["remaining_ships"]
+    )
 
 
 class SeaBattleInitialStateInput(CamelAliasModel):

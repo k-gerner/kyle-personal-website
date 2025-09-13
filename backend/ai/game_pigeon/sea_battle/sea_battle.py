@@ -1,7 +1,7 @@
 # Kyle Gerner
 # Started 9.5.2021
 # Sea Battle AI (Battleship clone)
-from typing import Tuple, List, Dict
+from typing import Tuple, List, Dict, Optional
 import math
 
 from ai.game_pigeon.sea_battle.board import SeaBattleBoard
@@ -56,22 +56,52 @@ def _get_max_density_locations(space_densities: List[List[float]]) -> List[Tuple
 	return max_locations
 
 
+def _build_run_output(
+		board: SeaBattleBoard,
+		space_densities: List[List[float]],
+		best_moves: List[Tuple[int, int]]
+	) -> Dict:
+	"""
+	Build the output dictionary for the run function
+
+	Parameters:
+		board (SeaBattleBoard): The current state of the board
+		space_densities (List[List[float]]): The space densities for the current board state
+		best_moves (List[Tuple[int, int]]): The best move locations based on space densities
+	Returns:
+		Dict: A dictionary containing the space densities, best moves, and board state information
+	"""
+	return {
+		"space_densities": space_densities,
+		"best_moves": best_moves,
+		"destroyed_locations": board.destroyed_locations,
+		"hit_locations": board.hit_locations,
+		"missed_locations": board.missed_locations,
+		"cleared_locations": board.cleared_locations,
+		"remaining_ships": board.remaining_ships
+	}
+
+
 def run(
 		size: int,
+		recent_move: Optional[Tuple[int, int]],
 		ships_remaining: Dict[int, int],
 		destroyed_locations: List[Tuple[int, int]],
 		hit_locations: List[Tuple[int, int]],
-		missed_locations: List[Tuple[int, int]]
+		missed_locations: List[Tuple[int, int]],
+		cleared_locations: List[Tuple[int, int]] = []
 	) -> Tuple[List[List[float]], List[Tuple[int, int]]]:
 	"""
 	Generate space densities for a given board state
 
 	Parameters:
 		size (int): The size of the board (8, 9, or 10)
+		recent_move (Tuple[int, int]): The most recent move made (row, col), or empty if no moves have been made
 		ships_remaining (Dict[int, int]): A mapping of ship lengths to the number of ships remaining of that length
 		destroyed_locations (List[Tuple[int, int]]): A list of locations where ships have been destroyed
 		hit_locations (List[Tuple[int, int]]): A list of locations where ships have been hit but not destroyed
 		missed_locations (List[Tuple[int, int]]): A list of locations where shots have missed
+		cleared_locations (List[Tuple[int, int]]): A list of locations that have been cleared by being next to a sunken ship (no ship present)
 	Returns:
 		(space_densities, best_moves) (Tuple[List[List[float]], List[Tuple[int, int]]]): A tuple containing the space densities and the best move locations
 	"""
@@ -80,11 +110,12 @@ def run(
 		remaining_ships=ships_remaining,
 		destroyed_locations=destroyed_locations,
 		hit_locations=hit_locations,
-		missed_locations=missed_locations
+		missed_locations=missed_locations,
+		cleared_locations=cleared_locations
 	)
-	space_densities = board.get_space_densities()
+	space_densities = board.get_space_densities(recent_move)
 	best_moves = _get_max_density_locations(space_densities)
-	return space_densities, best_moves
+	return _build_run_output(board, space_densities, best_moves)
 
 
 def initial_board_state(size: int):
