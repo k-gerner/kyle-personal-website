@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { VscDebugRestart } from "react-icons/vsc";
 import { ImCross } from "react-icons/im";
-import { FaSlash } from "react-icons/fa6";
 
 import { ActionButton } from '../../../atoms/ActionButton';
 import { callEndpoint } from '../../../utils/helpers';
