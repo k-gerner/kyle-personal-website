@@ -54,7 +54,9 @@ code {
   --othello-piece-white-color: white;
 
   --sea-battle-board-color: rgb(148, 222, 252);
-  --sea-battle-ship-color: rgb(85, 85, 85);
+  --sea-battle-ship-inner-color: rgb(107, 114, 128);
+  --sea-battle-ship-base-color: rgb(31, 41, 55);
+  --sea-battle-ship-border-color: black;
 
 }
 

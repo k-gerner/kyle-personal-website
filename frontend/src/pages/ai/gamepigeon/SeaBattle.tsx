@@ -6,11 +6,20 @@ import { callEndpoint } from '../../../utils/helpers';
 import { ButtonGroupPicker } from '../../../components/ButtonGroupPicker';
 import { BooleanSelector } from '../../../atoms/BooleanSelector';
 
+enum PositionState {
+    EMPTY,
+    DESTROYED,
+    HIT,
+    MISSED,
+    CLEARED
+}
+
 
 const SeaBattle = () => {
     // Game settings
     const [boardSize, setBoardSize] = useState(10);
-    const [showDensities, setShowDensities] = useState(false);
+    const [showDensities, setShowDensities] = useState(true);
+    const [initialized, setInitialized] = useState(false);
 
     // Game state
     const [selectedPosition, setSelectedPosition] = useState<number[] | null>(null);
@@ -19,21 +28,59 @@ const SeaBattle = () => {
     const [destroyedLocations, setDestroyedLocations] = useState<number[][]>([]);
     const [hitLocations, setHitLocations] = useState<number[][]>([]);
     const [missedLocations, setMissedLocations] = useState<number[][]>([]);
+    const [clearedLocations, setClearedLocations] = useState<number[][]>([]);
     const [spaceDensities, setSpaceDensities] = useState<number[][]>([]);
+    const [gameOver, setGameOver] = useState(false);
 
-    const getSpaceDensities = async () => {
+    const getSpaceDensities = async (selectedPositionState?: PositionState) => {
+        console.log('calling getSpaceDensities')
+        const currentDestroyedLocations = [...destroyedLocations];
+        const currentHitLocations = [...hitLocations];
+        const currentMissedLocations = [...missedLocations];
+        const currentClearedLocations = [...clearedLocations];
+        if (selectedPosition && selectedPositionState !== undefined) {
+            if (selectedPositionState === PositionState.DESTROYED) {
+                currentDestroyedLocations.push(selectedPosition);
+            } else if (selectedPositionState === PositionState.HIT) {
+                currentHitLocations.push(selectedPosition);
+            } else if (selectedPositionState === PositionState.MISSED) {
+                currentMissedLocations.push(selectedPosition);
+            } else if (selectedPositionState === PositionState.CLEARED) {
+                currentClearedLocations.push(selectedPosition);
+            }
+        }
         const res = await callEndpoint('api/game_pigeon/sea_battle', {
             size: boardSize,
             shipsRemaining,
-            destroyedLocations,
-            hitLocations,
-            missedLocations
+            destroyedLocations: currentDestroyedLocations,
+            hitLocations: currentHitLocations,
+            missedLocations: currentMissedLocations,
+            clearedLocations: currentClearedLocations,
+            ...(selectedPosition ? { recentMove: selectedPosition } : {})
         });
+        // Check if any value in res.remainingShips is negative
+        // If this is the case, the user has incorrectly marked a ship as destroyed
+        if (Object.values(res.remainingShips).some(value => value as number < 0)) {
+            return;
+        }
         setSpaceDensities(res.spaceDensities);
+        setDestroyedLocations(res.destroyedLocations);
+        setHitLocations(res.hitLocations);
+        setMissedLocations(res.missedLocations);
+        setClearedLocations(res.clearedLocations);
+        setShipsRemaining(
+            Object.fromEntries(
+                Object.entries(res.remainingShips).map(([key, value]) => [parseInt(key, 10), value])
+            ) as { [key: number]: number }
+        );
+        if (Object.values(res.remainingShips).every(value => value === 0)) {
+            setGameOver(true);
+            alert('Congratulations! You have destroyed all ships!');
+        }
         setBestMoves(res.bestMoves);
     }
 
-    const populateInitialShipsRemaining = async () => {
+    const initialize = async () => {
         const res = await callEndpoint('api/game_pigeon/sea_battle/initial_ships', {
             size: boardSize
         });
@@ -42,21 +89,50 @@ const SeaBattle = () => {
                 Object.entries(res.remainingShips).map(([key, value]) => [parseInt(key, 10), value])
             ) as { [key: number]: number }
         );
+        console.log('setting ships remaining to', res.remainingShips);
+        setInitialized(true);
     }
 
     const resetGame = () => {
+        setInitialized(false);
         setDestroyedLocations([]);
         setHitLocations([]);
         setMissedLocations([]);
+        setClearedLocations([]);
         setSpaceDensities([]);
-        populateInitialShipsRemaining();
         setSelectedPosition(null);
         setBestMoves([]);
+        setGameOver(false);
+        initialize();
     }
 
     useEffect(() => {
-        populateInitialShipsRemaining();
+        initialize();
     }, [boardSize]);
+
+    useEffect(() => {
+        if (initialized) {
+            getSpaceDensities();
+        }
+    }, [initialized]);
+
+    //
+    //
+    //
+    //
+    //
+    //
+    // TODO: fix race condition of shipsRemaining when switching between board sizes
+    // sometimes the space densities call with happen before the ships have updated, and 
+    // it will cause the game to use the old shipsRemaining for the new board size
+    //
+    //
+    //
+    //
+    //
+    //
+    //
+
 
     return (
         <div className="flex flex-col gap-4 bg-background-base min-h-screen items-center">
@@ -64,22 +140,52 @@ const SeaBattle = () => {
             <div className='flex flex-col p-4 border rounded-lg'>
                 <InputSection
                     boardSize={boardSize}
-                    setBoardSize={setBoardSize}
+                    setBoardSize={(size) => {
+                        setBoardSize(size);
+                        resetGame();
+
+                    }}
                     showDensities={showDensities}
                     setShowDensities={setShowDensities}
                     onReset={resetGame}
                 />
             </div>
             <div className='border p-4 rounded-lg shadow-lg w-full flex flex-col items-center md:flex-row gap-8 transition-all duration-500 justify-center'>
-                <SeaBattleBoard
-                    boardSize={boardSize}
-                    spaceDensities={spaceDensities}
-                    selectedPosition={selectedPosition}
-                    destroyedLocations={destroyedLocations}
-                    hitLocations={hitLocations}
-                    missedLocations={missedLocations}
-                    onCellClick={(row, col) => { setSelectedPosition([row, col]) }}
-                />
+                <div className='flex flex-col'>
+                    <SeaBattleBoard
+                        boardSize={boardSize}
+                        spaceDensities={spaceDensities}
+                        bestMoves={bestMoves}
+                        selectedPosition={selectedPosition}
+                        destroyedLocations={destroyedLocations}
+                        hitLocations={hitLocations}
+                        missedLocations={missedLocations}
+                        clearedLocations={clearedLocations}
+                        onCellClick={(row, col) => { setSelectedPosition([row, col]) }}
+                        showDensities={showDensities}
+                    />
+                    <BoardMarkingSection
+                        enabled={selectedPosition !== null}
+                        onMarkDestroyed={() => {
+                            if (selectedPosition) {
+                                getSpaceDensities(PositionState.DESTROYED);
+                                setSelectedPosition(null);
+                            }
+                        }}
+                        onMarkHit={() => {
+                            if (selectedPosition) {
+                                getSpaceDensities(PositionState.HIT);
+                                setSelectedPosition(null);
+                            }
+                        }}
+                        onMarkMissed={() => {
+                            if (selectedPosition) {
+                                getSpaceDensities(PositionState.MISSED);
+                                setSelectedPosition(null);
+                            }
+                        }}
+                    />
+                </div>
                 <div className='border p-4 rounded-lg'>
                     <RemainingShipsSection
                         shipsRemaining={shipsRemaining}
@@ -87,8 +193,9 @@ const SeaBattle = () => {
                 </div>
             </div>
             <ActionButton
-                label="Get Space Densities"
+                label={showDensities ? "Hide Space Densities" : "Get Space Densities"}
                 onClick={getSpaceDensities}
+                disabled={selectedPosition === null}
             />
         </div>
     );
@@ -97,21 +204,27 @@ const SeaBattle = () => {
 interface SeaBattleBoardProps {
     boardSize: number;
     spaceDensities: number[][];
+    bestMoves: number[][];
     destroyedLocations: number[][];
     selectedPosition: number[] | null;
     hitLocations: number[][];
     missedLocations: number[][];
+    clearedLocations: number[][];
     onCellClick: (row: number, col: number) => void;
+    showDensities: boolean;
 }
 
 const SeaBattleBoard: React.FC<SeaBattleBoardProps> = ({
     boardSize,
     spaceDensities,
+    bestMoves,
     selectedPosition,
     destroyedLocations,
     hitLocations,
     missedLocations,
-    onCellClick
+    clearedLocations,
+    onCellClick,
+    showDensities
 }) => {
     const gridColsClass = boardSize === 8
         ? 'grid-cols-8'
@@ -123,18 +236,13 @@ const SeaBattleBoard: React.FC<SeaBattleBoardProps> = ({
             {Array.from({ length: boardSize }).map((_, row) => (
                 <div key={row} className="flex gap-1">
                     {Array.from({ length: boardSize }).map((_, col) => {
-                        const isDestroyed = destroyedLocations.some(
-                            ([r, c]) => r === row && c === col
-                        );
-                        const isHit = hitLocations.some(
-                            ([r, c]) => r === row && c === col
-                        );
-                        const isMissed = missedLocations.some(
-                            ([r, c]) => r === row && c === col
-                        );
+                        const isDestroyed = locationsContain(destroyedLocations, [row, col]);
+                        const isHit = locationsContain(hitLocations, [row, col]);
+                        const isMissed = locationsContain(missedLocations, [row, col]);
+                        const isCleared = locationsContain(clearedLocations, [row, col]);
                         const isSelected = selectedPosition && selectedPosition[0] === row && selectedPosition[1] === col;
                         const density = spaceDensities[row]?.[col] || 0;
-                        const selectable = !isDestroyed && !isHit && !isMissed;
+                        const selectable = !isDestroyed && !isHit && !isMissed && !isCleared;
                         const cursorClasses = selectable
                             ? 'cursor-pointer'
                             : 'cursor-not-allowed';
@@ -142,22 +250,34 @@ const SeaBattleBoard: React.FC<SeaBattleBoardProps> = ({
                             ? 'bg-success'
                             : isHit
                                 ? 'bg-warning'
-                                : isMissed
+                                : isMissed || isCleared
                                     ? 'bg-sea-battle-board opacity-50'
                                     : isSelected
                                         ? 'bg-primary-base opacity-50 border-background-contrast border-2'
                                         : 'bg-sea-battle-board';
+                        const label = showDensities
+                            ? density.toFixed(1)
+                            : isDestroyed
+                                ? 'X'
+                                : isHit
+                                    ? 'H'
+                                    : isMissed
+                                        ? 'M'
+                                        : '';
+
+                        const pulseClass = locationsContain(bestMoves, [row, col]) ? 'animate-customPulse bg-primary-base' : '';
                         return (
                             <div
                                 key={`${row}-${col}`}
                                 className={`w-10 h-10 flex items-center justify-center border 
                                     ${cursorClasses}
                                     ${colorClasses}
+                                    ${pulseClass}
                         `}
-                                onClick={() => onCellClick(row, col)}
-                                title={`Density: ${density.toFixed(2)}`}
+                                onClick={() => selectable && onCellClick(row, col)}
+                                title={`Density: ${density.toFixed(1)}`}
                             >
-                                {isDestroyed ? 'X' : isHit ? 'H' : isMissed ? 'M' : ''}
+                                {label}
                             </div>
                         );
                     })}
@@ -196,6 +316,47 @@ const SeaBattleBoard: React.FC<SeaBattleBoardProps> = ({
         </div> */}
 
 
+interface BoardMarkingSectionProps {
+    enabled: boolean;
+    onMarkDestroyed: () => void;
+    onMarkHit: () => void;
+    onMarkMissed: () => void;
+}
+
+const BoardMarkingSection: React.FC<BoardMarkingSectionProps> = ({
+    enabled,
+    onMarkDestroyed,
+    onMarkHit,
+    onMarkMissed
+}) => {
+    return (
+        <div className="flex flex-col gap-2">
+            <h2 className="text-lg font-bold text-center">Mark Selected Cell As:</h2>
+            <div className="flex flex-row gap-4 justify-center">
+                <ActionButton
+                    label="Destroyed"
+                    onClick={onMarkDestroyed}
+                    disabled={!enabled}
+                    className="bg-success"
+                />
+                <ActionButton
+                    label="Hit"
+                    onClick={onMarkHit}
+                    disabled={!enabled}
+                    className="bg-warning"
+                />
+                <ActionButton
+                    label="Missed"
+                    onClick={onMarkMissed}
+                    disabled={!enabled}
+                    className="bg-gray-400"
+                />
+            </div>
+        </div>
+    );
+}
+
+
 interface RemainingShipsSectionProps {
     shipsRemaining: { [key: number]: number };
 }
@@ -221,7 +382,6 @@ const RemainingShipsSection: React.FC<RemainingShipsSectionProps> = ({
         // Cleanup listener on unmount
         return () => mediaQuery.removeEventListener("change", handleMediaChange);
     }, []);
-    console.log('shipsRemaining in RemainingShipsSection', shipsRemaining);
     return (
         <div className="flex flex-col gap-2">
             <h2 className="text-lg font-bold text-center">Remaining Ships</h2>
@@ -229,8 +389,8 @@ const RemainingShipsSection: React.FC<RemainingShipsSectionProps> = ({
                 {Object.entries(shipsRemaining).map(([size, count]) => (
                     <div key={size} className="flex flex-col items-center gap-1">
                         {/* <span className="font-semibold">{size}-deck</span> */}
-                        <span className="text-lg">{count}</span>
-                        <Ship key={size} size={parseInt(size, 10)} isHorizontal={isHorizontal} />
+                        <span className="text-lg">x{count}</span>
+                        <Ship key={size} size={parseInt(size, 10)} isHorizontal={isHorizontal} noneRemaining={count === 0} />
                     </div>
                 ))}
             </div>
@@ -290,21 +450,24 @@ const InputSection: React.FC<InputSectionProps> = ({
 interface ShipProps {
     size: number;
     isHorizontal: boolean;
+    noneRemaining: boolean;
 }
 
-const Ship: React.FC<ShipProps> = ({ size, isHorizontal }) => {
+const Ship: React.FC<ShipProps> = ({ size, isHorizontal, noneRemaining }) => {
     const shipOrientationStyle = isHorizontal
         ? `flex-row`
         : `flex-col`;
 
     return (
         <div
-            className={`bg-gray-800 ${shipOrientationStyle} rounded-xl border-2 border-black flex items-center justify-center gap-1 p-1`}
+            className={`bg-sea-battle-ship-base ${shipOrientationStyle} rounded-xl border-2 border-sea-battle-ship-border flex items-center justify-center gap-1 p-1 ${noneRemaining ? 'opacity-30' : 'opacity-100'}`}
         >
             {Array.from({ length: size }).map((_, index) => (
                 <div
                     key={index}
-                    className="bg-gray-500 rounded-full w-6 h-6 border border-black"
+                    className={`bg-sea-battle-ship-inner rounded-full w-6 h-6 border border-sea-battle-ship-border
+                        
+                    `}
                 />
             ))}
         </div>

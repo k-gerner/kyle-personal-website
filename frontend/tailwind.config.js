@@ -40,7 +40,9 @@ const customColors = {
   'othello-piece-white': 'var(--othello-piece-white-color)',
 
   'sea-battle-board': 'var(--sea-battle-board-color)',
-  'sea-battle-ship': 'var(--sea-battle-ship-color)',
+  'sea-battle-ship-inner': 'var(--sea-battle-ship-inner-color)',
+  'sea-battle-ship-base': 'var(--sea-battle-ship-base-color)',
+  'sea-battle-ship-border': 'var(--sea-battle-ship-border-color)',
 }
 
 module.exports = {
