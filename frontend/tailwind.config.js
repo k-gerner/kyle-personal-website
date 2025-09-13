@@ -18,10 +18,11 @@ const customColors = {
   'background-base': 'var(--background-base-color)',
   'background-muted': 'var(--background-muted-color)',
   'background-contrast': 'var(--background-contrast-color)',
-  'text-base': "rgb(var(--text-base-color), <alpha-value>)",
+  'text-base': "var(--text-base-color)",
   'text-muted': 'var(--text-muted-color)',
   'text-contrast': 'var(--text-contrast-color)',
   'danger': 'var(--danger-color)',
+  'warning': 'var(--warning-color)',
   'success': 'var(--success-color)',
 
   // game specific
@@ -37,6 +38,11 @@ const customColors = {
   'othello-board': 'var(--othello-board-color)',
   'othello-piece-black': 'var(--othello-piece-black-color)',
   'othello-piece-white': 'var(--othello-piece-white-color)',
+
+  'sea-battle-board': 'var(--sea-battle-board-color)',
+  'sea-battle-ship-inner': 'var(--sea-battle-ship-inner-color)',
+  'sea-battle-ship-base': 'var(--sea-battle-ship-base-color)',
+  'sea-battle-ship-border': 'var(--sea-battle-ship-border-color)',
 }
 
 module.exports = {

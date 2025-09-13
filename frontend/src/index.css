@@ -32,6 +32,7 @@ code {
   --background-contrast-color: #023047;
 
   --success-color: rgb(16 185 129);
+  --warning-color: rgb(251 191 36);
   --danger-color: rgb(213, 86, 86);
 
   --text-base-color: rgb(0, 0, 0);
@@ -51,6 +52,12 @@ code {
   --othello-board-color: rgb(104, 165, 111);
   --othello-piece-black-color: black;
   --othello-piece-white-color: white;
+
+  --sea-battle-board-color: rgb(148, 222, 252);
+  --sea-battle-ship-inner-color: rgb(107, 114, 128);
+  --sea-battle-ship-base-color: rgb(31, 41, 55);
+  --sea-battle-ship-border-color: black;
+
 }
 
 .theme-light {

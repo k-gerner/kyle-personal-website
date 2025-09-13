@@ -66,7 +66,6 @@ const Othello = () => {
     }
 
     const getAiMove = async () => {
-        console.log("pieceLocations", pieceLocations);
         setGameActive(true);
         setLoading(true);
         const res = await callEndpoint('api/game_pigeon/othello', {

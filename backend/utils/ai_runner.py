@@ -1,6 +1,6 @@
 from utils.profiling import start_profiling, stop_profiling
 
-ENABLE_GLOBAL_PROFILING = True
+ENABLE_GLOBAL_PROFILING = False
 
 def run(func, profile=False, *args, **kwargs):
     """
