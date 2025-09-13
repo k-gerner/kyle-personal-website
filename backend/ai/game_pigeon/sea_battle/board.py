@@ -53,7 +53,10 @@ class SeaBattleBoard:
 
     def mark_destroy(self, row: int, col: int):
         self.board[row][col] = BoardSpace.DESTROY
-        self.destroyed_locations.append((row, col))
+        if (row, col) in self.hit_locations:
+            self.hit_locations.remove((row, col))
+        if (row, col) not in self.destroyed_locations:
+            self.destroyed_locations.append((row, col))
 
 
     def board_space_at(self, row: int, col: int) -> BoardSpace:
