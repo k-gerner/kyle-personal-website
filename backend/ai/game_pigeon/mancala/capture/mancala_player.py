@@ -6,9 +6,9 @@ class MancalaPlayer:
 
 	def __init__(self, bank_index):
 		"""Sets the bank indices for this player"""
-		self.bankIndex = bank_index
+		self.bank_index = bank_index
 
-	def get_move(self, board: List[int]) -> int:
+	def get_move(self, board: List[int], max_depth: int) -> int:
 		"""Returns the chosen move for a given board, in [rowIndex, columnIndex] format"""
 		print("\n<!> Function 'get_move' has not been implemented.\n" +
 			  "The program has been terminated.\n" +

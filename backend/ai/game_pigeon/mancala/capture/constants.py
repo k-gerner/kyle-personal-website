@@ -1,7 +1,5 @@
 # Constant values to be used across multiple files
-
-# Terminal text erase functionality
-ERASE_MODE_ON = True
+MAX_DEPTH = 10  # max number of moves ahead to calculate
 
 # Board size
 POCKETS_PER_SIDE = 6  # excludes bank pockets
@@ -12,8 +10,8 @@ STARTING_PEBBLES_PER_POCKET = 4
 TOTAL_PEBBLES = STARTING_PEBBLES_PER_POCKET * POCKETS_PER_SIDE * 2
 
 # Bank indices
-PLAYER1_BANK_INDEX = int(BOARD_SIZE/2 - 1)  # 6
-PLAYER2_BANK_INDEX = int(BOARD_SIZE - 1)    # 13
+PLAYER_BANK_INDEX = int(BOARD_SIZE/2 - 1)  # 6
+AI_BANK_INDEX = int(BOARD_SIZE - 1)    # 13
 
 # Board printing
 SIDE_INDENT_STR = "          "  # default 10 spaces

@@ -1,42 +1,42 @@
 # Contains board manipulation methods
-from mancalacapture.constants import PLAYER1_BANK_INDEX, PLAYER2_BANK_INDEX, POCKETS_PER_SIDE, BOARD_SIZE
-from util.terminaloutput.symbols import error
+from typing import List, Union
+from ai.game_pigeon.mancala.capture.constants import PLAYER_BANK_INDEX, AI_BANK_INDEX, POCKETS_PER_SIDE, BOARD_SIZE
+from utils.error import BackendError
 
 
-def push_all_pebbles_to_bank(board):
+def push_all_pebbles_to_bank(board: List[int]):
     """Called when one side of the board has 0 pebbles. Moves all pebbles to the corresponding bank"""
-    player1_pebbles = 0
-    for index, numPebbles in enumerate(board[:PLAYER1_BANK_INDEX]):
-        player1_pebbles += numPebbles
-        board[PLAYER1_BANK_INDEX - POCKETS_PER_SIDE + index] = 0
-    board[PLAYER1_BANK_INDEX] += player1_pebbles
-    player2_pebbles = 0
-    for index, numPebbles in enumerate(board[PLAYER1_BANK_INDEX + 1: PLAYER2_BANK_INDEX]):
-        player2_pebbles += numPebbles
-        board[PLAYER2_BANK_INDEX - POCKETS_PER_SIDE + index] = 0
-    board[PLAYER2_BANK_INDEX] += player2_pebbles
+    player_pebbles = 0
+    for index, num_pebbles in enumerate(board[:PLAYER_BANK_INDEX]):
+        player_pebbles += num_pebbles
+        board[PLAYER_BANK_INDEX - POCKETS_PER_SIDE + index] = 0
+    board[PLAYER_BANK_INDEX] += player_pebbles
+    ai_pebbles = 0
+    for index, num_pebbles in enumerate(board[PLAYER_BANK_INDEX + 1: AI_BANK_INDEX]):
+        ai_pebbles += num_pebbles
+        board[AI_BANK_INDEX - POCKETS_PER_SIDE + index] = 0
+    board[AI_BANK_INDEX] += ai_pebbles
 
 
-def is_board_terminal(board):
+def is_board_terminal(board: List[int]) -> bool:
     """Checks if the board state represents games over"""
-    return sum(board[:PLAYER1_BANK_INDEX]) == 0 or sum(board[PLAYER1_BANK_INDEX + 1: PLAYER2_BANK_INDEX]) == 0
+    return sum(board[:PLAYER_BANK_INDEX]) == 0 or sum(board[PLAYER_BANK_INDEX + 1: AI_BANK_INDEX]) == 0
 
 
-def winning_player_bank_index(board):
+def winning_player_bank_index(board: List[int]) -> Union[int, None]:
     """Returns the bank index of the player with the most pebbles, or none if it's tied"""
-    if board[PLAYER1_BANK_INDEX] > board[PLAYER2_BANK_INDEX]:
-        return PLAYER1_BANK_INDEX
-    elif board[PLAYER1_BANK_INDEX] < board[PLAYER2_BANK_INDEX]:
-        return PLAYER2_BANK_INDEX
+    if board[PLAYER_BANK_INDEX] > board[AI_BANK_INDEX]:
+        return PLAYER_BANK_INDEX
+    elif board[PLAYER_BANK_INDEX] < board[AI_BANK_INDEX]:
+        return AI_BANK_INDEX
     else:
         return None
 
 
-def perform_move(board, move, bank_index):
+def perform_move(board: List[int], move: int, bank_index: int) -> int:
     """Performs a given move on the board. Returns the index of the final pebble placed"""
     if bank_index < move:
-        error("Chosen move is on the wrong side of the board!")
-        exit(0)
+        raise BackendError(f"Invalid move: move index {move} is not on the side of the player with bank index {bank_index}.")
     num_pebbles = board[move]
     board[move] = 0
     curr_index = move
@@ -56,15 +56,15 @@ def perform_move(board, move, bank_index):
     return curr_index
 
 
-def get_index_of_opposite_hole(index):
+def get_index_of_opposite_hole(index: int) -> int:
     """Get the index of the hole on the opposite side of the board from the given index"""
     return (BOARD_SIZE - 2) - index
 
 
-def get_valid_moves(board, player_bank_index):
+def get_valid_moves(board: List[int], bank_index: int) -> List[int]:
     """Gets the indices of the valid moves for the player with the given bank index"""
     moves = []
-    for index in range(player_bank_index - POCKETS_PER_SIDE, player_bank_index):
+    for index in range(bank_index - POCKETS_PER_SIDE, bank_index):
         if board[index] > 0:
             moves.append(index)
     return moves
