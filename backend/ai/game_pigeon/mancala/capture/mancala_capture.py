@@ -8,6 +8,7 @@ from ai.game_pigeon.mancala.capture.board_functions import get_index_of_opposite
 from ai.game_pigeon.mancala.capture.constants import POCKETS_PER_SIDE, BOARD_OUTPUT_HEIGHT, PLAYER_BANK_INDEX, AI_BANK_INDEX, \
 	SIDE_INDENT_STR, LEFT_SIDE_ARROW, RIGHT_SIDE_ARROW, BOARD_SIZE, MAX_DEPTH
 from ai.game_pigeon.mancala.capture.mancala_capture_strategy import MancalaStrategy
+from utils.error import BackendError
 
 PLAYER_ID = 1
 AI_ID = 2
@@ -98,6 +99,8 @@ def run(
 	board = build_board(player_score, ai_score, player_pockets, ai_pockets)
 	_debug_board(board, player_id=AI_ID)
 	move = ai.get_move(board, max_depth)
+	if move is None:
+		raise BackendError(ValueError("AI could not find a valid move."))
 	board_states = []
 	final_pebble_location = perform_move(board, move, ai.bank_index)
 	board_states.append(MancalaCaptureBoardState(

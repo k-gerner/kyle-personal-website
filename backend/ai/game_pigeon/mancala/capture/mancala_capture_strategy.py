@@ -1,6 +1,6 @@
 # Contains AI strategy
 import math  # for infinities
-from typing import List, Tuple
+from typing import List, Tuple, Union
 import random  # for randomizing valid moves list in minimax
 from ai.game_pigeon.mancala.capture.board_functions import get_valid_moves, perform_move, is_board_terminal, push_all_pebbles_to_bank, \
 	winning_player_bank_index
@@ -14,7 +14,7 @@ class MancalaStrategy(MancalaPlayer):
 		super().__init__(bank_index)
 		self.opponent_bank_index = (bank_index + POCKETS_PER_SIDE + 1) % BOARD_SIZE
 
-	def get_move(self, board: List[int], max_depth: int) -> int:
+	def get_move(self, board: List[int], max_depth: int) -> Union[int, None]:
 		"""Calculates the best move for the AI for the given board"""
 		move, score = -123, -123  # placeholders
 		for i in range(1, max_depth + 1):  # iterative deepening
@@ -46,7 +46,7 @@ class MancalaStrategy(MancalaPlayer):
 			alpha: float,
 			beta: float,
 			local_max_depth: int
-		) -> Tuple[int, float]:
+		) -> Tuple[Union[int, None], float]:
 		"""
 		Finds the best move for the current player using the minimax algorithm with alpha-beta pruning
 		Parameters:
@@ -57,7 +57,7 @@ class MancalaStrategy(MancalaPlayer):
 			beta (float): best score that the minimizer currently can guarantee at that level or above
 			local_max_depth (int): the maximum depth to search in this call
 		Returns:
-			move_and_score (Tuple[int, float]): the best move index and its score
+			move_and_score (Tuple[Union[int, None], float]): the best move index and its score (None if no moves possible)
 		"""
 		# random.shuffle(valid_moves)
 		if is_board_terminal(board):
