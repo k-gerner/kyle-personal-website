@@ -18,6 +18,13 @@ enum GameMode {
     Avalanche = "avalanche"
 }
 
+const CAPTURE_STARTING_POCKETS = [
+    4, 4, 4, 4, 4, 0, // User Pockets
+    0, // User Score
+    4, 4, 4, 4, 4, 4, // AI Pockets
+    0 // AI Score
+];
+
 
 const Mancala = () => {
     // Game settings state
@@ -34,7 +41,7 @@ const Mancala = () => {
     // AI pockets are indexed 7-12, AI bank is index 13
     // Initial state: [4, 4, 4, 4, 4, 4, 0, 4, 4, 4, 4, 4, 4, 0]
     // Full board state: [playerPockets..., playerBank, aiPockets..., aiBank]
-    const [pockets, setPockets] = useState<number[]>([4, 4, 4, 4, 4, 4, 0, 4, 4, 4, 4, 4, 4, 0]);
+    const [pockets, setPockets] = useState<number[]>(CAPTURE_STARTING_POCKETS.concat([0], CAPTURE_STARTING_POCKETS));
     const [loading, setLoading] = useState(false);
     const [winner, setWinner] = useState<Player | null>(null);
 
@@ -54,18 +61,21 @@ const Mancala = () => {
             maxDepth: maxDepth
         });
         setPlayingAnimationActive(true);
-        for (let boardState of response.boardStates) {
+        for (let i = 0; i < response.boardStates.length; i++) {
+            const boardState = response.boardStates[i];
             await animateMove(boardState.recentMove, Player.AI); // AI pockets are offset by 7
             // set from board state to apply captures (if applicable)
-            setPocketsFromBoardState(boardState);
-            await pause(END_IN_BANK_ANIMATION_DELAY); // brief pause between moves
+            await setPocketsFromBoardState(boardState);
+            if (i < response.boardStates.length - 1) {
+                await pause(END_IN_BANK_ANIMATION_DELAY); // brief pause between moves
+            }
         }
         setPlayingAnimationActive(false);
         setCurrentPlayer(Player.User);
         setLoading(false);
     }
 
-    const setPocketsFromBoardState = (boardState: {
+    const setPocketsFromBoardState = async (boardState: {
         playerScore: number;
         aiScore: number;
         playerPockets: number[];
@@ -77,7 +87,10 @@ const Mancala = () => {
             ...boardState.aiPockets,
             boardState.aiScore
         ];
-        setPockets(newPockets);
+        if (newPockets !== pockets) {
+            setPockets(newPockets);
+            await pause(POCKET_ANIMATION_DELAY);
+        }
     }
 
     const handlePocketClick = async (index: number) => {
@@ -94,7 +107,7 @@ const Mancala = () => {
             setPlayingAnimationActive(true);
             await animateMove(response.boardState.recentMove, Player.User);
             // set from board state to apply captures (if applicable)
-            setPocketsFromBoardState(response.boardState);
+            await setPocketsFromBoardState(response.boardState);
             setPlayingAnimationActive(false);
             if (!response.boardState.endInBank) {
                 setCurrentPlayer(Player.AI);
@@ -105,7 +118,6 @@ const Mancala = () => {
 
     const animateMove = async (pocketIndex: number, turn: Player) => {
         let scoreInHand = pockets[pocketIndex];
-        console.log('animateMove:', pocketIndex, scoreInHand);
         setPockets(prev => {
             const newPockets = [...prev];
             newPockets[pocketIndex] = 0;
@@ -132,7 +144,7 @@ const Mancala = () => {
 
     const resetGame = () => {
         setGameStarted(false);
-        setPockets([4, 4, 4, 4, 4, 4, 0, 4, 4, 4, 4, 4, 4, 0]);
+        setPockets(CAPTURE_STARTING_POCKETS);
         setCurrentPlayer(startingPlayer);
         setPlayingAnimationActive(false);
         setWinner(null);
@@ -165,6 +177,7 @@ const Mancala = () => {
                             pockets={pockets}
                             selectable={currentPlayer === Player.User && !playingAnimationActive}
                             playerTurn={currentPlayer}
+                            turnInProgress={loading}
                             onPocketClick={handlePocketClick}
                         />
                         <div className="block sm:hidden h-full">
@@ -216,6 +229,7 @@ const Mancala = () => {
                             setStartingPlayer(player);
                         }}
                         loading={loading}
+                        gameStarted={gameStarted}
                         onReset={resetGame}
                     />
                 </div>
@@ -234,6 +248,7 @@ interface InputSectionProps {
     startingPlayer: Player;
     setStartingPlayer: (player: Player) => void;
     loading: boolean;
+    gameStarted: boolean;
     onReset: () => void;
 }
 
@@ -248,6 +263,7 @@ const InputSection: React.FC<InputSectionProps> = ({
     startingPlayer,
     setStartingPlayer,
     loading,
+    gameStarted,
     onReset,
 }) => {
     const restartButtonLabel = (
@@ -289,7 +305,7 @@ const InputSection: React.FC<InputSectionProps> = ({
                 label={restartButtonLabel}
                 onClick={onReset}
                 className=""
-                disabled={loading}
+                disabled={loading || !gameStarted}
             />
         </div>
     );
@@ -300,6 +316,7 @@ interface MancalaBoardProps {
     pockets: number[];
     selectable: boolean;
     playerTurn: Player;
+    turnInProgress: boolean;
     onPocketClick: (index: number) => void;
 }
 
@@ -307,6 +324,7 @@ const MancalaBoard: React.FC<MancalaBoardProps> = ({
     pockets,
     selectable,
     playerTurn,
+    turnInProgress,
     onPocketClick
 }) => {
     const playerOutlineAnimates = useOutlineAnimateArray(pockets.slice(0, 6));
@@ -329,6 +347,7 @@ const MancalaBoard: React.FC<MancalaBoardProps> = ({
                 <div className="flex flex-row-reverse sm:flex-col items-center gap-2">
                     <div className="grid grid-rows-6 sm:grid-cols-6 sm:grid-rows-1 gap-4">
                         {aiPockets.slice().reverse().map((count, index) => {
+                            const opacityClass = playerTurn === Player.AI || turnInProgress ? '' : 'opacity-30'
                             const outlineAnimateClass = aiOutlineAnimates[index]
                                 ? playerTurn === Player.User
                                     ? 'transition animate-primaryOutlineBounce'
@@ -338,6 +357,7 @@ const MancalaBoard: React.FC<MancalaBoardProps> = ({
                                 <div
                                     key={`ai-${index}-${count}-pocket`}
                                     className={`w-16 h-16 rounded-full flex items-center justify-center text-xl font-bold text-white bg-mancala-pocket
+                                        ${opacityClass}
                                         ${outlineAnimateClass}
                                         `}
                                 >
@@ -354,8 +374,11 @@ const MancalaBoard: React.FC<MancalaBoardProps> = ({
                     <div className="grid grid-rows-6 sm:grid-cols-6 sm:grid-rows-1 gap-4">
                         {playerPockets.map((count, index) => {
                             const pocketActive = selectable && count > 0;
-                            const selectableAnimateClass = pocketActive ? 'animate-pulse' : '';
-                            const hoverClass = pocketActive ? 'transition duration-300 ease-in-out hover:scale-110 cursor-pointer' : '';
+                            const animationClass = pocketActive
+                                ? 'transition duration-300 ease-in-out hover:scale-110 cursor-pointer'
+                                : turnInProgress
+                                    ? ''
+                                    : 'transition duration-500 opacity-30'
                             const outlineAnimateClass = playerOutlineAnimates[index]
                                 ? playerTurn === Player.User
                                     ? 'transition animate-primaryOutlineBounce'
@@ -365,9 +388,8 @@ const MancalaBoard: React.FC<MancalaBoardProps> = ({
                             return (
                                 <div
                                     key={`player-${index}-${count}-pocket`}
-                                    className={`w-16 h-16 rounded-full flex items-center justify-center text-xl font-bold text-white bg-mancala-pocket 
-                                        ${selectableAnimateClass} 
-                                        ${hoverClass} 
+                                    className={`w-16 h-16 rounded-full flex items-center justify-center text-xl font-bold text-white bg-mancala-pocket
+                                        ${animationClass} 
                                         ${outlineAnimateClass}
                                     `}
                                     onClick={() => pocketActive && onPocketClick(index)}
