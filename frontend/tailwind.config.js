@@ -43,6 +43,9 @@ const customColors = {
   'sea-battle-ship-inner': 'var(--sea-battle-ship-inner-color)',
   'sea-battle-ship-base': 'var(--sea-battle-ship-base-color)',
   'sea-battle-ship-border': 'var(--sea-battle-ship-border-color)',
+
+  'mancala-board': 'var(--mancala-board-color)',
+  'mancala-pocket': 'var(--mancala-pocket-color)',
 }
 
 module.exports = {
@@ -85,10 +88,23 @@ module.exports = {
           '50%': { transform: 'scale(1.10)' },
           '100%': { transform: 'scale(1)' },
         },
+        enlargeBounceBigger: {
+          '0%': { transform: 'scale(1)' },
+          '50%': { transform: 'scale(1.50)' },
+          '100%': { transform: 'scale(1)' },
+        },
         customPulse: {
           '0%, 100%': { opacity: '0.8' },
           '50%': { opacity: '0.2' }, // Change this value to control the minimum opacity
-        }
+        },
+        primaryOutlineBounce: {
+          '0%, 100%': { outline: '0px solid transparent' },
+          '50%': { outline: `0.25rem solid var(--primary-base-color)` },
+        },
+        secondaryOutlineBounce: {
+          '0%, 100%': { outline: '0px solid transparent' },
+          '50%': { outline: `0.25rem solid var(--secondary-base-color)` },
+        },
       },
       animation: {
         dropdown: 'dropdown 0.1s ease-out',
@@ -97,6 +113,10 @@ module.exports = {
         revealFromTop: 'revealFromTop2 0.5s ease-out forwards',
         enlargeBounce: 'enlargeBounce 1.0s ease-in-out infinite',
         customPulse: 'customPulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+        // Mancala specific animations (should be same duration as in Mancala.tsx)
+        enlargeBounceBigger: 'enlargeBounceBigger 0.7s ease-in-out',
+        primaryOutlineBounce: 'primaryOutlineBounce 0.7s ease-in-out',
+        secondaryOutlineBounce: 'secondaryOutlineBounce 0.7s ease-in-out',
       },
     },
   },
