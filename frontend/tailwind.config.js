@@ -114,9 +114,9 @@ module.exports = {
         enlargeBounce: 'enlargeBounce 1.0s ease-in-out infinite',
         customPulse: 'customPulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite',
         // Mancala specific animations (should be same duration as in Mancala.tsx)
-        enlargeBounceBigger: 'enlargeBounceBigger 0.7s ease-in-out',
-        primaryOutlineBounce: 'primaryOutlineBounce 0.7s ease-in-out',
-        secondaryOutlineBounce: 'secondaryOutlineBounce 0.7s ease-in-out',
+        enlargeBounceBigger: 'enlargeBounceBigger 0.5s ease-in-out',
+        primaryOutlineBounce: 'primaryOutlineBounce 0.5s ease-in-out',
+        secondaryOutlineBounce: 'secondaryOutlineBounce 0.5s ease-in-out',
       },
     },
   },

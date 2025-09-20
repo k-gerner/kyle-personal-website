@@ -3,15 +3,31 @@ import React, { useState, useEffect, useRef } from "react";
 import { callEndpoint } from "../../../utils/helpers";
 import { Player } from '../../../utils/classes';
 import { ActionButton } from '../../../atoms/ActionButton';
+import { VscDebugRestart } from "react-icons/vsc";
+import { ButtonGroupPicker } from '../../../components/ButtonGroupPicker';
+import { BooleanSelector } from '../../../atoms/BooleanSelector';
 
 const END_IN_BANK_ANIMATION_DELAY = 1000; // ms
-const POCKET_ANIMATION_DELAY = 700; // ms
+const POCKET_ANIMATION_DELAY = 500; // ms
 
 const PLAYER_BANK_INDEX = 6;
 const AI_BANK_INDEX = 13;
 
+enum GameMode {
+    Capture = "capture",
+    Avalanche = "avalanche"
+}
+
 
 const Mancala = () => {
+    // Game settings state
+    const [maxDepth, setMaxDepth] = useState(10);
+    const [gameMode, setGameMode] = useState<GameMode>(GameMode.Capture);
+    const [autoplay, setAutoplay] = useState(true);
+    const [startingPlayer, setStartingPlayer] = useState<Player>(Player.User);
+
+    // Game state
+    const [gameStarted, setGameStarted] = useState(false);
     const [currentPlayer, setCurrentPlayer] = useState<Player>(Player.User);
     const [playingAnimationActive, setPlayingAnimationActive] = useState(false);
     // Player pockets are indexed 0-5, player bank is index 6
@@ -19,6 +35,8 @@ const Mancala = () => {
     // Initial state: [4, 4, 4, 4, 4, 4, 0, 4, 4, 4, 4, 4, 4, 0]
     // Full board state: [playerPockets..., playerBank, aiPockets..., aiBank]
     const [pockets, setPockets] = useState<number[]>([4, 4, 4, 4, 4, 4, 0, 4, 4, 4, 4, 4, 4, 0]);
+    const [loading, setLoading] = useState(false);
+    const [winner, setWinner] = useState<Player | null>(null);
 
     const getPlayerPockets = () => pockets.slice(0, 6);
     const getAiPockets = () => pockets.slice(7, 13);
@@ -26,14 +44,15 @@ const Mancala = () => {
     const getAiScore = () => pockets[AI_BANK_INDEX];
 
     const getAiMove = async () => {
+        setGameStarted(true);
+        setLoading(true);
         const response = await callEndpoint('api/game_pigeon/mancala_capture', {
             playerScore: getPlayerScore(),
             aiScore: getAiScore(),
             playerPockets: getPlayerPockets(),
             aiPockets: getAiPockets(),
-            maxDepth: 10
+            maxDepth: maxDepth
         });
-        console.log('getAiMove:', response);
         setPlayingAnimationActive(true);
         for (let boardState of response.boardStates) {
             await animateMove(boardState.recentMove, Player.AI); // AI pockets are offset by 7
@@ -43,6 +62,7 @@ const Mancala = () => {
         }
         setPlayingAnimationActive(false);
         setCurrentPlayer(Player.User);
+        setLoading(false);
     }
 
     const setPocketsFromBoardState = (boardState: {
@@ -61,6 +81,8 @@ const Mancala = () => {
     }
 
     const handlePocketClick = async (index: number) => {
+        setGameStarted(true);
+        setLoading(true);
         if (currentPlayer === Player.User && getPlayerPockets()[index] > 0) {
             const response = await callEndpoint('api/game_pigeon/mancala_capture/player_move', {
                 playerScore: getPlayerScore(),
@@ -69,7 +91,6 @@ const Mancala = () => {
                 aiPockets: getAiPockets(),
                 move: index
             });
-            console.log('handlePocketClick:', response);
             setPlayingAnimationActive(true);
             await animateMove(response.boardState.recentMove, Player.User);
             // set from board state to apply captures (if applicable)
@@ -78,8 +99,8 @@ const Mancala = () => {
             if (!response.boardState.endInBank) {
                 setCurrentPlayer(Player.AI);
             }
-
         }
+        setLoading(false);
     };
 
     const animateMove = async (pocketIndex: number, turn: Player) => {
@@ -109,23 +130,170 @@ const Mancala = () => {
         }
     }
 
+    const resetGame = () => {
+        setGameStarted(false);
+        setPockets([4, 4, 4, 4, 4, 4, 0, 4, 4, 4, 4, 4, 4, 0]);
+        setCurrentPlayer(startingPlayer);
+        setPlayingAnimationActive(false);
+        setWinner(null);
+        setLoading(false);
+    }
+
+    useEffect(() => {
+        if (winner) {
+            return;
+        }
+        if (currentPlayer === Player.AI && autoplay && !loading) {
+            getAiMove();
+        }
+    }, [currentPlayer, winner, autoplay, loading]);
+
     return (
         <div className="flex flex-col gap-4 bg-background-base min-h-screen items-center">
             <h1 className="text-center text-3xl font-bold text-primary-highlight mb-4">Mancala!</h1>
-            <ActionButton
-                onClick={getAiMove}
-                label="Get AI Move"
-                disabled={currentPlayer !== Player.AI || playingAnimationActive}
-            />
-            <MancalaBoard
-                pockets={pockets}
-                selectable={currentPlayer === Player.User && !playingAnimationActive}
-                playerTurn={currentPlayer}
-                onPocketClick={handlePocketClick}
-            />
+            <div className="border p-4 rounded-lg shadow-lg flex flex-col md:flex-row flex-wrap gap-4 sm:gap-8 items-center justify-center transition duration-500">
+                <div className="flex flex-col items-center gap-4 min-w-fit flex-0 relative min-h-[48rem] sm:min-h-[24rem]">
+                    <div className="text-lg font-semibold text-secondary-base">AI</div>
+                    <div className="hidden sm:block w-full">
+                        <HorizontalArrow pointLeft={true} isActive={currentPlayer === Player.AI} />
+                    </div>
+                    <div className="flex flex-row items-stretch gap-4 h-[39rem] sm:h-auto">
+                        <div className="block sm:hidden h-full">
+                            <VerticalArrow pointDown={false} isActive={currentPlayer === Player.User} />
+                        </div>
+                        <MancalaBoard
+                            pockets={pockets}
+                            selectable={currentPlayer === Player.User && !playingAnimationActive}
+                            playerTurn={currentPlayer}
+                            onPocketClick={handlePocketClick}
+                        />
+                        <div className="block sm:hidden h-full">
+                            <VerticalArrow pointDown={true} isActive={currentPlayer === Player.AI} />
+                        </div>
+                    </div>
+                    <div className="hidden sm:block w-full">
+                        <HorizontalArrow pointLeft={false} isActive={currentPlayer === Player.User} />
+                    </div>
+                    <div className="text-lg font-semibold text-primary-base">Player</div>
+                    {currentPlayer === Player.AI && !autoplay
+                        ?
+                        <div className="absolute left-0 right-0 bottom-0 w-full flex justify-center">
+                            {
+                                !autoplay && (
+                                    <ActionButton
+                                        label={loading
+                                            ? playingAnimationActive
+                                                ? "AI is placing moves..."
+                                                : "AI is thinking..."
+                                            : "Get AI Move"}
+                                        onClick={getAiMove}
+                                        disabled={loading || winner !== null}
+                                        className={`w-48 h-12 text-md 
+                                            ${!gameStarted && startingPlayer === Player.AI
+                                                ? 'animate-enlargeBounce'
+                                                : ''}`
+                                        }
+                                    />
+                                )
+                            }
+                        </div>
+                        : null
+                    }
+                </div>
+                <div className="border p-4 rounded-lg shadow-lg">
+                    <InputSection
+                        maxDepth={maxDepth}
+                        setMaxDepth={setMaxDepth}
+                        gameMode={gameMode}
+                        setGameMode={setGameMode}
+                        autoplay={autoplay}
+                        setAutoplay={setAutoplay}
+                        startingPlayer={startingPlayer}
+                        setStartingPlayer={(player: Player) => {
+                            if (!gameStarted) {
+                                setCurrentPlayer(player);
+                            }
+                            setStartingPlayer(player);
+                        }}
+                        loading={loading}
+                        onReset={resetGame}
+                    />
+                </div>
+            </div>
         </div>
     );
 };
+
+interface InputSectionProps {
+    maxDepth: number;
+    setMaxDepth: (depth: number) => void;
+    gameMode: GameMode;
+    setGameMode: (mode: GameMode) => void;
+    autoplay: boolean;
+    setAutoplay: (autoplay: boolean) => void;
+    startingPlayer: Player;
+    setStartingPlayer: (player: Player) => void;
+    loading: boolean;
+    onReset: () => void;
+}
+
+
+const InputSection: React.FC<InputSectionProps> = ({
+    maxDepth,
+    setMaxDepth,
+    gameMode,
+    setGameMode,
+    autoplay,
+    setAutoplay,
+    startingPlayer,
+    setStartingPlayer,
+    loading,
+    onReset,
+}) => {
+    const restartButtonLabel = (
+        <div className="flex flex-row justify-center items-center gap-2">
+            <span>Restart</span>
+            <VscDebugRestart />
+        </div>
+    )
+
+    return (
+        <div className="flex flex-col items-center gap-6 mb-4">
+            <ButtonGroupPicker
+                optionsWithLabels={[{ label: "Capture", value: GameMode.Capture }, { label: "Avalanche", value: GameMode.Avalanche }]}
+                label="Game Mode"
+                selectedValue={gameMode}
+                setValue={setGameMode}
+            />
+            <ButtonGroupPicker
+                options={[9, 10, 11]}
+                label="Max AI Search Depth"
+                selectedValue={maxDepth}
+                setValue={setMaxDepth}
+            />
+            <ButtonGroupPicker
+                optionsWithLabels={[{ label: "AI", value: Player.AI }, { label: "User", value: Player.User }]}
+                label="Starting Player"
+                selectedValue={startingPlayer}
+                setValue={setStartingPlayer}
+            />
+            <BooleanSelector
+                selected={autoplay}
+                label="AI Autoplay"
+                onChange={() => {
+                    setAutoplay(!autoplay);
+                }}
+                labelOnBottom={true}
+            />
+            <ActionButton
+                label={restartButtonLabel}
+                onClick={onReset}
+                className=""
+                disabled={loading}
+            />
+        </div>
+    );
+}
 
 
 interface MancalaBoardProps {
@@ -148,19 +316,18 @@ const MancalaBoard: React.FC<MancalaBoardProps> = ({
     const playerPockets = pockets.slice(0, 6);
     const aiPockets = pockets.slice(7, 13);
     return (
-        <div className="flex flex-col items-center">
-            <div className="mb-4 text-lg font-semibold text-primary-highlight">AI</div>
-            <div className="flex flex-row gap-4 items-center bg-mancala-board p-4 rounded-3xl shadow-lg items-stretch">
+        <div className="flex flex-col sm:flex-row items-center">
+            <div className="flex flex-col sm:flex-row gap-4 items-center bg-mancala-board p-4 rounded-3xl shadow-lg items-stretch">
                 <div
                     key={`ai-score-pocket-${aiScore}`}
-                    className="bg-secondary rounded-3xl bg-mancala-pocket flex items-center justify-center text-3xl font-bold text-white w-16 transition animate-secondaryOutlineBounce"
+                    className="bg-secondary rounded-3xl bg-mancala-pocket flex items-center justify-center text-3xl font-bold text-white w-full sm:w-16 h-12 sm:h-auto transition animate-secondaryOutlineBounce"
                 >
                     <span key={`ai-score-${aiScore}`} className="transition animate-enlargeBounceBigger text">
                         {aiScore}
                     </span>
                 </div>
-                <div className="flex flex-col items-center gap-2">
-                    <div className="grid grid-cols-6 gap-4">
+                <div className="flex flex-row-reverse sm:flex-col items-center gap-2">
+                    <div className="grid grid-rows-6 sm:grid-cols-6 sm:grid-rows-1 gap-4">
                         {aiPockets.slice().reverse().map((count, index) => {
                             const outlineAnimateClass = aiOutlineAnimates[index]
                                 ? playerTurn === Player.User
@@ -184,7 +351,7 @@ const MancalaBoard: React.FC<MancalaBoardProps> = ({
                             )
                         })}
                     </div>
-                    <div className="grid grid-cols-6 gap-4">
+                    <div className="grid grid-rows-6 sm:grid-cols-6 sm:grid-rows-1 gap-4">
                         {playerPockets.map((count, index) => {
                             const pocketActive = selectable && count > 0;
                             const selectableAnimateClass = pocketActive ? 'animate-pulse' : '';
@@ -216,16 +383,67 @@ const MancalaBoard: React.FC<MancalaBoardProps> = ({
                         })}
                     </div>
                 </div>
-                <div key={`player-score-pocket-${playerScore}`} className="bg-secondary rounded-3xl bg-mancala-pocket flex items-center justify-center text-3xl font-bold text-white w-16 transition animate-primaryOutlineBounce">
+                <div key={`player-score-pocket-${playerScore}`} className="bg-secondary rounded-3xl bg-mancala-pocket flex items-center justify-center text-3xl font-bold text-white w-full sm:w-16 h-12 sm:h-auto transition animate-primaryOutlineBounce">
                     <span key={`player-score-${playerScore}`} className="transition animate-enlargeBounceBigger">
                         {playerScore}
                     </span>
                 </div>
             </div>
-            <div className="mt-4 text-lg font-semibold text-primary-highlight">Player</div>
         </div>
     );
 }
+
+
+const HorizontalArrow: React.FC<{ pointLeft: boolean, isActive: boolean }> = ({ pointLeft, isActive }) => {
+    return (
+        <div className={`flex flex-row justify-center items-center w-full px-8 transition-all duration-500
+            ${pointLeft
+                ? 'flex-row-reverse'
+                : ''}
+            ${isActive
+                ? ''
+                : 'opacity-30'}`}>
+            <div
+                className={`h-2 w-full 
+                    ${pointLeft
+                        ? 'bg-secondary-base mr-[-2px]'
+                        : 'bg-primary-base ml-[-2px]'}`}
+            />
+            <div
+                className={`h-0 w-0 border-y-8 border-y-transparent 
+                ${pointLeft
+                        ? 'border-r-[16px] border-r-secondary-base'
+                        : 'border-l-[16px] border-l-primary-base'}`}>
+            </div>
+        </div>
+    );
+}
+
+const VerticalArrow: React.FC<{ pointDown: boolean, isActive: boolean }> = ({ pointDown, isActive }) => {
+    return (
+        <div className={`flex flex-col justify-center items-center h-full py-8 transition-all duration-500
+            ${pointDown
+                ? 'flex-col-reverse'
+                : ''}
+            ${isActive
+                ? ''
+                : 'opacity-50'}`}>
+            <div
+                className={`w-2 h-full 
+                    ${pointDown
+                        ? 'bg-secondary-base mb-[-2px]'
+                        : 'bg-primary-base mt-[-2px]'}`}
+            />
+            <div
+                className={`h-0 w-0 border-x-8 border-x-transparent 
+                ${pointDown
+                        ? 'border-b-[16px] border-b-secondary-base'
+                        : 'border-t-[16px] border-t-primary-base'}`}>
+            </div>
+        </div>
+    );
+}
+
 
 const pause = async (duration: number) => {
     return new Promise(resolve => setTimeout(resolve, duration));
