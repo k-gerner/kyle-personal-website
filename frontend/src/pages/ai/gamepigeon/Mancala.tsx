@@ -19,7 +19,7 @@ enum GameMode {
 }
 
 const CAPTURE_STARTING_POCKETS = [
-    4, 4, 4, 4, 4, 0, // User Pockets
+    4, 4, 4, 4, 4, 4, // User Pockets
     0, // User Score
     4, 4, 4, 4, 4, 4, // AI Pockets
     0 // AI Score
@@ -34,7 +34,7 @@ const Mancala = () => {
     const [startingPlayer, setStartingPlayer] = useState<Player>(Player.User);
 
     // Game state
-    const [gameStarted, setGameStarted] = useState(false);
+    const [gameActive, setGameActive] = useState(false);
     const [currentPlayer, setCurrentPlayer] = useState<Player>(Player.User);
     const [playingAnimationActive, setPlayingAnimationActive] = useState(false);
     // Player pockets are indexed 0-5, player bank is index 6
@@ -51,7 +51,7 @@ const Mancala = () => {
     const getAiScore = () => pockets[AI_BANK_INDEX];
 
     const getAiMove = async () => {
-        setGameStarted(true);
+        setGameActive(true);
         setLoading(true);
         const response = await callEndpoint('api/game_pigeon/mancala_capture', {
             playerScore: getPlayerScore(),
@@ -75,26 +75,56 @@ const Mancala = () => {
         setLoading(false);
     }
 
+    const endGame = async (boardState: {
+        playerScore: number;
+        aiScore: number;
+        playerPockets: number[];
+        aiPockets: number[];
+    }) => {
+        // game over, move remaining stones to respective banks
+        const newPlayerScore = boardState.playerScore + boardState.playerPockets.reduce((a, b) => a + b, 0);
+        const newAiScore = boardState.aiScore + boardState.aiPockets.reduce((a, b) => a + b, 0);
+        const newPockets = [
+            ...Array(6).fill(0),
+            newPlayerScore,
+            ...Array(6).fill(0),
+            newAiScore
+        ];
+        setPockets(newPockets);
+        await pause(END_IN_BANK_ANIMATION_DELAY);
+        // determine winner
+        const winningPlayer = newPlayerScore > newAiScore
+            ? Player.User
+            : newPlayerScore < newAiScore
+                ? Player.AI
+                : Player.NEITHER;
+        setWinner(winningPlayer);
+        setGameActive(false);
+    }
+
     const setPocketsFromBoardState = async (boardState: {
         playerScore: number;
         aiScore: number;
         playerPockets: number[];
         aiPockets: number[];
     }) => {
-        const newPockets = [
+        let newPockets = [
             ...boardState.playerPockets,
             boardState.playerScore,
             ...boardState.aiPockets,
             boardState.aiScore
         ];
-        if (newPockets !== pockets) {
+        if (boardState.playerPockets.every(p => p === 0) || boardState.aiPockets.every(p => p === 0)) {
+            await endGame(boardState);
+        }
+        else if (newPockets !== pockets) {
             setPockets(newPockets);
             await pause(POCKET_ANIMATION_DELAY);
         }
     }
 
     const handlePocketClick = async (index: number) => {
-        setGameStarted(true);
+        setGameActive(true);
         setLoading(true);
         if (currentPlayer === Player.User && getPlayerPockets()[index] > 0) {
             const response = await callEndpoint('api/game_pigeon/mancala_capture/player_move', {
@@ -143,7 +173,7 @@ const Mancala = () => {
     }
 
     const resetGame = () => {
-        setGameStarted(false);
+        setGameActive(false);
         setPockets(CAPTURE_STARTING_POCKETS);
         setCurrentPlayer(startingPlayer);
         setPlayingAnimationActive(false);
@@ -202,7 +232,7 @@ const Mancala = () => {
                                         onClick={getAiMove}
                                         disabled={loading || winner !== null}
                                         className={`w-48 h-12 text-md 
-                                            ${!gameStarted && startingPlayer === Player.AI
+                                            ${!gameActive && startingPlayer === Player.AI
                                                 ? 'animate-enlargeBounce'
                                                 : ''}`
                                         }
@@ -213,25 +243,31 @@ const Mancala = () => {
                         : null
                     }
                 </div>
-                <div className="border p-4 rounded-lg shadow-lg">
-                    <InputSection
-                        maxDepth={maxDepth}
-                        setMaxDepth={setMaxDepth}
-                        gameMode={gameMode}
-                        setGameMode={setGameMode}
-                        autoplay={autoplay}
-                        setAutoplay={setAutoplay}
-                        startingPlayer={startingPlayer}
-                        setStartingPlayer={(player: Player) => {
-                            if (!gameStarted) {
-                                setCurrentPlayer(player);
-                            }
-                            setStartingPlayer(player);
-                        }}
-                        loading={loading}
-                        gameStarted={gameStarted}
-                        onReset={resetGame}
-                    />
+                <div className="flex flex-col gap-2">
+                    {winner && (
+                        <div className="animate-revealFromTop overflow-hidden">
+                            <WinnerSection winner={winner} onReset={resetGame} />
+                        </div>
+                    )}
+                    <div className="border p-4 rounded-lg shadow-lg">
+                        <InputSection
+                            maxDepth={maxDepth}
+                            setMaxDepth={setMaxDepth}
+                            gameMode={gameMode}
+                            setGameMode={setGameMode}
+                            autoplay={autoplay}
+                            setAutoplay={setAutoplay}
+                            startingPlayer={startingPlayer}
+                            setStartingPlayer={(player: Player) => {
+                                if (!gameActive) {
+                                    setCurrentPlayer(player);
+                                }
+                                setStartingPlayer(player);
+                            }}
+                            loading={loading}
+                            onReset={resetGame}
+                        />
+                    </div>
                 </div>
             </div>
         </div>
@@ -248,7 +284,6 @@ interface InputSectionProps {
     startingPlayer: Player;
     setStartingPlayer: (player: Player) => void;
     loading: boolean;
-    gameStarted: boolean;
     onReset: () => void;
 }
 
@@ -263,7 +298,6 @@ const InputSection: React.FC<InputSectionProps> = ({
     startingPlayer,
     setStartingPlayer,
     loading,
-    gameStarted,
     onReset,
 }) => {
     const restartButtonLabel = (
@@ -305,7 +339,7 @@ const InputSection: React.FC<InputSectionProps> = ({
                 label={restartButtonLabel}
                 onClick={onReset}
                 className=""
-                disabled={loading || !gameStarted}
+                disabled={loading}
             />
         </div>
     );
@@ -414,6 +448,37 @@ const MancalaBoard: React.FC<MancalaBoardProps> = ({
         </div>
     );
 }
+
+
+interface WinnerSectionProps {
+    winner: Player;
+    onReset: () => void;
+}
+
+const WinnerSection: React.FC<WinnerSectionProps> = ({ winner, onReset }) => {
+    const backgroundColor = winner === Player.User
+        ? "bg-success"
+        : winner === Player.AI
+            ? "bg-danger"
+            : "bg-primary-base";
+    const winnerText = winner === Player.User
+        ? "You Win!"
+        : winner === Player.AI
+            ? "AI Wins!"
+            : "It's a Tie!";
+    return (
+        <div className={`border p-4 rounded-lg flex flex-col items-center justify-center gap-4 ${backgroundColor}`}>
+            <h2 className="text-2xl font-bold text-text-contrast">
+                {winnerText}
+            </h2>
+            <ActionButton
+                label="Play Again"
+                onClick={onReset}
+                className="text-text-contrast"
+            />
+        </div>
+    );
+};
 
 
 const HorizontalArrow: React.FC<{ pointLeft: boolean, isActive: boolean }> = ({ pointLeft, isActive }) => {
