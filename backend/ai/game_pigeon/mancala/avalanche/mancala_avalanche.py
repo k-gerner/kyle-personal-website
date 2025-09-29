@@ -18,7 +18,7 @@ class MancalaAvalancheBoardState:
 	ai_score: int
 	player_pockets: List[int]
 	ai_pockets: List[int]
-	moves: List[int]
+	recent_move: int
 
 
 def create_solver(pocket_pebbles: List[int]) -> AvalancheSolver:
@@ -39,7 +39,7 @@ def run(
 		ai_score: int,
 		player_pockets: List[int],
 		ai_pockets: List[int],
-) -> MancalaAvalancheBoardState:
+) -> List[MancalaAvalancheBoardState]:
 	"""
 	Main method to run the Mancala Avalanche game client.
 
@@ -50,24 +50,31 @@ def run(
 		ai_pockets (List[int]): The pockets of the AI.
 
 	Returns:
-		board_state (MancalaAvalancheBoardState): The state of the board after all AI moves.
+		board_states (List[MancalaAvalancheBoardState]): The states of the board after each AI move.
 	"""
-	ai = AvalanchePlayer()
-	player = AvalanchePlayer()
+	ai = AvalanchePlayer(score=ai_score)
+	player = AvalanchePlayer(score=player_score)
 	board_vals = player_pockets + [player_score] + ai_pockets + [ai_score]
-	board = AvalancheBoard(board_vals, ai, player, True)
+	board = AvalancheBoard(
+		pebbles_in_each=board_vals,
+		player1=player,
+		player2=ai,
+		player_one_turn=False
+	)
 	_debug_board(board)
-	solver = AvalancheSolver(board)
-	best_moves = solver.find_best_move(board, 0)[1]
+	solver = AvalancheSolver(board=board, is_player1=False)
+	_, best_moves = solver.find_best_move(board, 0)
 	if best_moves is None:
 		raise BackendError(ValueError("AI could not find a valid move."))
-	points_gained = solver.make_moves_on_moveset(best_moves, board)
-	_debug_board(board)
-	board_state = MancalaAvalancheBoardState(
-		player_score=board.p2.score,
-		ai_score=board.p1.score,
-		player_pockets=board_vals[0:PLAYER_BANK_INDEX].copy(),
-		ai_pockets=board_vals[PLAYER_BANK_INDEX + 1:AI_BANK_INDEX].copy(),
-		moves=best_moves
-	)
-	return board_state
+	board_states = []
+	for move in best_moves:
+		solver.make_move(move, board)
+		_debug_board(board)
+		board_states.append(MancalaAvalancheBoardState(
+			player_score=board.p1.score,
+			ai_score=board.p2.score,
+			player_pockets=board.pebblesList[0:PLAYER_BANK_INDEX].copy(),
+			ai_pockets=board.pebblesList[PLAYER_BANK_INDEX + 1:AI_BANK_INDEX].copy(),
+			recent_move=move
+		))
+	return board_states

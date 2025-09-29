@@ -4,8 +4,8 @@ from ai.game_pigeon.mancala.avalanche.enums import PocketType
 
 # class that represents the Player (of which, there are 2)
 class AvalanchePlayer:
-    def __init__(self):
-        self.score = 0
+    def __init__(self, score=0):
+        self.score = score
 
     def increment_score(self):
         self.score += 1
@@ -155,12 +155,18 @@ class AvalancheBoard:
 class AvalancheSolver:
 
     # constructor
-    def __init__(self, board: AvalancheBoard):
+    def __init__(self, board: AvalancheBoard, is_player1: bool = True):
         self.board = board
+        self.is_player1 = is_player1
 
     # Returns a copy of the game board
     def copy_board(self, board_to_copy: AvalancheBoard) -> AvalancheBoard:
-        return AvalancheBoard(board_to_copy.pebblesList, board_to_copy.p1.copy_player(), board_to_copy.p2.copy_player(), board_to_copy.p1Turn)
+        return AvalancheBoard(
+            pebbles_in_each=board_to_copy.pebblesList, 
+            player1=board_to_copy.p1.copy_player(), 
+            player2=board_to_copy.p2.copy_player(), 
+            player_one_turn=board_to_copy.p1Turn
+        )
 
     # Performs the moves of a given moveset on the given board
     def make_moves_on_moveset(self, move_list: List[int], board: AvalancheBoard) -> int:
@@ -171,9 +177,10 @@ class AvalancheSolver:
             board (AvalancheBoard): The board to perform the moves on
         Returns:
             score_increase (int): The increase in score for player 1 after performing the moves"""
-        prev_score = board.p1.score
+        prev_score = board.p1.score if self.is_player1 else board.p2.score
         board.perform_move_set(move_list)
-        return board.p1.score - prev_score
+        score_increase = board.p1.score - prev_score if self.is_player1 else board.p2.score - prev_score
+        return score_increase
 
     # Perform a single move on a given board
     # returns the score for this turn, and whether or not the turn ended in the player's bank
@@ -187,9 +194,10 @@ class AvalancheSolver:
             results (Tuple[int, bool]): The score increase from the move, and whether or not
                                         the turn ended in the player's bank
         """
-        prev_score = board.p1.score
+        prev_score = board.p1.score if self.is_player1 else board.p2.score
         ended_in_bank = board.perform_move(index)
-        return board.p1.score - prev_score, ended_in_bank
+        score_increase = board.p1.score - prev_score if self.is_player1 else board.p2.score - prev_score
+        return score_increase, ended_in_bank
 
 
     def find_best_move(self, board: AvalancheBoard, curr_val: int) -> Tuple[int, List[int]]:
@@ -228,7 +236,8 @@ class AvalancheSolver:
         Returns a list of the indexes that have pieces in them (and therefore are available to be played)
         """
         non_zeros = []
-        for i in range(0, 6, 1):
+        pocket_indices = range(0, 6) if self.board.p1Turn else range(7, 13)
+        for i in pocket_indices:
             if board.pebblesList[i] != 0:
                 non_zeros.append(i)
         return non_zeros
