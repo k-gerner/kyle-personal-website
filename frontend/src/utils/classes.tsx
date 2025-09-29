@@ -1,4 +1,5 @@
 export enum Player {
     User = "user",
-    AI = "ai"
+    AI = "ai",
+    NEITHER = "neither"
 }

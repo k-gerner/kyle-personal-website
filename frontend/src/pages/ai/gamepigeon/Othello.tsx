@@ -59,7 +59,7 @@ const Othello = () => {
         } else if (playerLocations.length < aiLocations.length) {
             setWinner(Player.AI);
         } else {
-            setWinner(null);
+            setWinner(Player.NEITHER);
         }
         setValidPlayerLocations([]);
         setGameActive(false);
