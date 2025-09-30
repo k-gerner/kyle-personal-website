@@ -80,8 +80,8 @@ export const ButtonGroupPicker = <T extends string | number>({
                                     ? 'bg-primary-highlight text-text-contrast'
                                     : 'bg-background-base text-gray-800'}
                                 ${showSelectedOnDisabled
-                                    ? 'disabled:bg-slate-200 disabled:text-slate-400'
-                                    : ''
+                                    ? ''
+                                    : 'disabled:bg-slate-200 disabled:text-slate-400'
                                 }
                             `}
                             onClick={() => setValue(option)}
@@ -100,8 +100,8 @@ export const ButtonGroupPicker = <T extends string | number>({
                                     ? 'bg-primary-highlight text-text-contrast'
                                     : 'bg-background-base text-gray-800'}
                                 ${showSelectedOnDisabled
-                                    ? 'disabled:bg-slate-200 disabled:text-slate-400'
-                                    : ''
+                                    ? ''
+                                    : 'disabled:bg-slate-200 disabled:text-slate-400'
                                 }
                             `}
                             onClick={() => setValue(value)}

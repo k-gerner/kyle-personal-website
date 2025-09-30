@@ -369,7 +369,7 @@ const InputSection: React.FC<InputSectionProps> = ({
                 selectedValue={gameMode}
                 setValue={setGameMode}
                 disabled={gameActive}
-                showSelectedOnDisabled={false}
+                showSelectedOnDisabled={true}
             />
             <ButtonGroupPicker
                 options={[9, 10, 11]}
@@ -377,7 +377,7 @@ const InputSection: React.FC<InputSectionProps> = ({
                 selectedValue={maxDepth}
                 setValue={setMaxDepth}
                 disabled={gameMode === GameMode.Avalanche}
-                showSelectedOnDisabled={true}
+                showSelectedOnDisabled={false}
             />
             <ButtonGroupPicker
                 optionsWithLabels={[{ label: "AI", value: Player.AI }, { label: "User", value: Player.User }]}
