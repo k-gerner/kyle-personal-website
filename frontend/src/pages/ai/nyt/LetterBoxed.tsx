@@ -3,6 +3,7 @@ import React, { useState, useRef } from 'react';
 import '../../../App.css'
 import { ButtonGroupPicker } from '../../../components/ButtonGroupPicker';
 import { PaginatedSolutionsSection } from '../../../components/PaginatedSolutionsSection';
+import { TitleWithInfo } from '../../../components/TitleWithInfo';
 import Input from '../../../atoms/Input';
 
 const TOP = "top";
@@ -18,6 +19,7 @@ type LetterSides = {
 const buttonStyle = "rounded-full border border-slate-300 py-2 px-4 text-center text-sm transition-all shadow-sm hover:shadow-lg text-slate-600 hover:text-text-contrast hover:bg-primary-base hover:border-primary-base focus-visible:text-text-contrast focus-visible:bg-primary-highlight focus-visible:border-primary-base active:border-primary-highlight active:text-text-contrast active:bg-primary-highlight disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none";
 
 const LetterBoxed = () => {
+    const [showInfo, setShowInfo] = useState(false);
     const [hasSolved, setHasSolved] = useState(false); // if solve has run at least once
     const [solutions, setSolutions] = React.useState<string[][]>([[]]);
     const [maxSolutionLength, setMaxSolutionLength] = useState<number>(2);
@@ -89,7 +91,13 @@ const LetterBoxed = () => {
 
     return (
         <div className="flex flex-col gap-4">
-            <h1 className="text-center text-3xl font-bold text-primary-highlight mb-4">Letter Boxed!</h1>
+            <TitleWithInfo
+                title="Letter Boxed!"
+                showInfo={showInfo}
+                setShowInfo={setShowInfo}
+                infoTitle="How to Play Letter Boxed"
+                infoBody={<LetterBoxedInfoBody />}
+            />
             <InputSection
                 letters={letterSides}
                 onLettersChange={onLettersChange}
@@ -270,6 +278,32 @@ const LettersInputs: React.FC<LettersInputsProps> = ({
             />
         </div>
     )
+}
+
+
+const LetterBoxedInfoBody: React.FC = () => {
+    return (
+        <div>
+            <ul className="list-disc pl-5 mb-2 text-slate-700">
+                <li>Enter 3 unique letters for each side of the box (total 12 letters).</li>
+                <li>Click <b>Solve</b> to find the shortest sequence of words that uses all the letters, where each word starts with the letter that the previous word ended with.</li>
+                <li>Words are shown in pages, with numbers indicating their order in the sequence.</li>
+                <li>Try to find the shortest solution possible!</li>
+            </ul>
+            <p className="text-slate-500 text-sm">This game is inspired by the New York Times Letter Boxed puzzle.</p>
+        </div>
+    )
+    // return (
+    //     <div>
+    //         <ul className="list-disc pl-5 mb-2 text-slate-700">
+    //             <li>Enter a center letter and 6 unique outer letters (total 7 letters).</li>
+    //             <li>Click <b>Solve</b> to find all valid English words you can make that include the center letter.</li>
+    //             <li>Words are grouped by length and shown in pages. Words that include all letters (pangrams) are prioritized as well.</li>
+    //             <li>Try to find as many words as you can!</li>
+    //         </ul>
+    //         <p className="text-slate-500 text-sm">This game is inspired by the New York Times Spelling Bee puzzle.</p>
+    //     </div>
+    // );
 }
 
 
