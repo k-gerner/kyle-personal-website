@@ -139,16 +139,16 @@ interface LettersSectionProps {
 const LettersSection: React.FC<LettersSectionProps> = ({ centerLetter, outerLetters }) => {
     return (
         <div className="flex flex-row items-center justify-center max-w-4xl mx-auto">
-            <div className="flex flex-col items-center gap-2 -mr-4 md:-mr-5 lg:-mr-7">
+            <div className="flex flex-col items-center gap-1 md:gap-2 lg:gap-3 xl:gap-4 -mr-4 md:-mr-5 xl:-mr-7">
                 <Letter letter={outerLetters[0] || ''} />
                 <Letter letter={outerLetters[1] || ''} />
             </div>
-            <div className="flex flex-col items-center gap-2">
+            <div className="flex flex-col items-center gap-1 md:gap-2 lg:gap-3 xl:gap-4">
                 <Letter letter={outerLetters[2] || ''} />
                 <Letter letter={centerLetter || ''} isCenter={true} />
                 <Letter letter={outerLetters[3] || ''} />
             </div>
-            <div className="flex flex-col items-center gap-2 -ml-4 md:-ml-5 lg:-ml-7">
+            <div className="flex flex-col items-center gap-1 md:gap-2 lg:gap-3 xl:gap-4 -ml-4 md:-ml-5 xl:-ml-7">
                 <Letter letter={outerLetters[4] || ''} />
                 <Letter letter={outerLetters[5] || ''} />
             </div>
