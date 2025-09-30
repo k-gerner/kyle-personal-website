@@ -48,6 +48,7 @@ const SeaBattle = () => {
     const [initialLoad, setInitialLoad] = useState(true);
 
     // Game state
+    const [gameActive, setGameActive] = useState(false);
     const [boardState, setBoardState] = useState<BoardState>(INITIAL_BOARD_STATE);
     const [selectedPosition, setSelectedPosition] = useState<number[] | null>(null);
     const [gameOver, setGameOver] = useState(false);
@@ -115,6 +116,7 @@ const SeaBattle = () => {
     }
 
     const resetGame = async (size: number) => {
+        setGameActive(false);
         setInitialized(false);
         setSelectedPosition(null);
         const initialRemainingShips = await getInitialRemainingShips(size);
@@ -151,6 +153,7 @@ const SeaBattle = () => {
                     setBoardSize={(size) => resetGame(size)}
                     showDensities={showDensities}
                     setShowDensities={setShowDensities}
+                    gameActive={gameActive}
                     onReset={() => resetGame(boardState.boardSize)}
                 />
             </div>
@@ -167,18 +170,21 @@ const SeaBattle = () => {
                         enabled={selectedPosition !== null && !gameOver}
                         onMarkDestroyed={() => {
                             if (selectedPosition) {
+                                setGameActive(true);
                                 getSpaceDensities(PositionState.DESTROYED);
                                 setSelectedPosition(null);
                             }
                         }}
                         onMarkHit={() => {
                             if (selectedPosition) {
+                                setGameActive(true);
                                 getSpaceDensities(PositionState.HIT);
                                 setSelectedPosition(null);
                             }
                         }}
                         onMarkMissed={() => {
                             if (selectedPosition) {
+                                setGameActive(true);
                                 getSpaceDensities(PositionState.MISSED);
                                 setSelectedPosition(null);
                             }
@@ -378,6 +384,7 @@ interface InputSectionProps {
     setBoardSize: (depth: number) => void;
     showDensities: boolean;
     setShowDensities: (show: boolean) => void;
+    gameActive: boolean;
     onReset: (boardSize: number) => void;
 }
 
@@ -386,6 +393,7 @@ const InputSection: React.FC<InputSectionProps> = ({
     setBoardSize,
     showDensities,
     setShowDensities,
+    gameActive,
     onReset
 }) => {
     const restartButtonLabel = (
@@ -396,12 +404,14 @@ const InputSection: React.FC<InputSectionProps> = ({
     )
 
     return (
-        <div className="flex flex-row items-start gap-6">
+        <div className="flex flex-row items-center gap-6">
             <ButtonGroupPicker
                 options={[8, 9, 10]}
                 label="Board Size"
                 selectedValue={boardSize}
                 setValue={setBoardSize}
+                disabled={gameActive}
+                showSelectedOnDisabled={true}
             />
             <BooleanSelector
                 selected={showDensities}
