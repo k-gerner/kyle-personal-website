@@ -1,5 +1,5 @@
 # Kyle Gerner    7.9.2020
-# The class that contains the main method that runs the solver. Also contains
+# The class that contains the main method that runs the solver.
 from typing import List
 from dataclasses import dataclass
 from ai.game_pigeon.mancala.avalanche.classes import AvalancheBoard, AvalanchePlayer, AvalancheSolver
@@ -62,7 +62,7 @@ def run(
 		player2=ai,
 		player_one_turn=False
 	)
-	_debug_board(board)
+	# _debug_board(board)
 	solver = AvalancheSolver(board=board, is_player1=False)
 	_, best_moves = solver.find_best_move(board, 0)
 	if best_moves is None:
@@ -70,7 +70,7 @@ def run(
 	board_states = []
 	for move in best_moves:
 		_, ended_in_bank = solver.make_move(move, board)
-		_debug_board(board)
+		# _debug_board(board)
 		board_states.append(MancalaAvalancheBoardState(
 			player_score=board.p1.score,
 			ai_score=board.p2.score,
@@ -115,7 +115,7 @@ def evaluate_player_move(
 		raise BackendError(ValueError("Invalid move by player."))
 	solver = AvalancheSolver(board=board, is_player1=True)
 	_, ended_in_bank = solver.make_move(move, board)
-	_debug_board(board)
+	# _debug_board(board)
 	return MancalaAvalancheBoardState(
 		player_score=board.p1.score,
 		ai_score=board.p2.score,
