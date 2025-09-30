@@ -17,7 +17,7 @@ export const chunkArray = (array: string[], chunkSize: number): string[][] => {
  * Call endpoint and return the response as a Promise of a JSON object
  * @param endpoint Endpoint to call, e.g. "api/nyt/spelling_bee"
  * @param body Body to send in the request, should be a JSON object
- * @returns 
+ * @returns Promise resolving to the JSON response from the endpoint
  */
 export const callEndpoint = async (endpoint: string, body: any): Promise<any> => {
     const res = await fetch('http://localhost:5001/' + endpoint, {
@@ -32,3 +32,11 @@ export const callEndpoint = async (endpoint: string, body: any): Promise<any> =>
     }
     return await res.json();
 }
+
+/**
+ * Pause execution for a given duration
+ * @param duration Duration to pause in milliseconds
+ */
+export const pause = async (duration: number) => {
+    return new Promise(resolve => setTimeout(resolve, duration));
+};
