@@ -1,11 +1,9 @@
 import { InfoOverlay } from "./InfoOverlay";
 import { GoInfo } from "react-icons/go";
-import React from "react";
+import React, { useState } from "react";
 
 export interface TitleWithInfoProps {
     title: string;
-    showInfo: boolean;
-    setShowInfo: (show: boolean) => void;
     infoTitle: string;
     infoBody: React.ReactNode;
 }
@@ -13,11 +11,10 @@ export interface TitleWithInfoProps {
 
 export const TitleWithInfo: React.FC<TitleWithInfoProps> = ({
     title,
-    showInfo,
-    setShowInfo,
     infoTitle,
     infoBody
 }) => {
+    const [showInfo, setShowInfo] = useState(false);
     return (
         <div>
             <div className="flex items-center justify-center mb-4">

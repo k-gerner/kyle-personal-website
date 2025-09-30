@@ -19,7 +19,6 @@ type LetterSides = {
 const buttonStyle = "rounded-full border border-slate-300 py-2 px-4 text-center text-sm transition-all shadow-sm hover:shadow-lg text-slate-600 hover:text-text-contrast hover:bg-primary-base hover:border-primary-base focus-visible:text-text-contrast focus-visible:bg-primary-highlight focus-visible:border-primary-base active:border-primary-highlight active:text-text-contrast active:bg-primary-highlight disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none";
 
 const LetterBoxed = () => {
-    const [showInfo, setShowInfo] = useState(false);
     const [hasSolved, setHasSolved] = useState(false); // if solve has run at least once
     const [solutions, setSolutions] = React.useState<string[][]>([[]]);
     const [maxSolutionLength, setMaxSolutionLength] = useState<number>(2);
@@ -93,8 +92,6 @@ const LetterBoxed = () => {
         <div className="flex flex-col gap-4">
             <TitleWithInfo
                 title="Letter Boxed!"
-                showInfo={showInfo}
-                setShowInfo={setShowInfo}
                 infoTitle="How to Play Letter Boxed"
                 infoBody={<LetterBoxedInfoBody />}
             />
