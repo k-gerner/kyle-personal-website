@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import '../../../App.css'
 import { ButtonGroupPicker } from '../../../components/ButtonGroupPicker';
 import { PaginatedSolutionsSection } from '../../../components/PaginatedSolutionsSection';
+import { TitleWithInfo } from '../../../components/TitleWithInfo';
 import { chunkArray } from '../../../utils/helpers';
 import Input from '../../../atoms/Input';
 
@@ -10,6 +11,7 @@ const WORDS_PER_PAGE = 5;
 const buttonStyle = "rounded-full border border-slate-300 py-2 px-4 text-center text-sm transition-all shadow-sm hover:shadow-lg text-slate-600 hover:text-text-contrast hover:bg-primary-base hover:border-primary-base focus-visible:text-text-contrast focus-visible:bg-primary-highlight focus-visible:border-primary-base active:border-primary-highlight active:text-text-contrast active:bg-primary-highlight disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
 
 const Anagrams = () => {
+    const [showInfo, setShowInfo] = useState(false);
     const [hasSolved, setHasSolved] = useState(false); // if solve has run at least once
     const [inputLetters, setInputLetters] = useState('');
     const [numLetters, setNumLetters] = useState(6);
@@ -39,7 +41,13 @@ const Anagrams = () => {
     };
     return (
         <div className="flex flex-col gap-4">
-            <h1 className="text-center text-3xl font-bold text-primary-highlight mb-4">Anagrams!</h1>
+            <TitleWithInfo
+                title="Anagrams!"
+                showInfo={showInfo}
+                setShowInfo={setShowInfo}
+                infoTitle="How to Play Anagrams"
+                infoBody={<AnagramsInfoBody />}
+            />
             <div className="flex flex-col gap-6 md:gap-2 md:flex-row transition-all duration-300 ease-in-out">
                 <div className={`flex flex-col gap-10 flex-shrink-0 transition-all duration-500 w-full ${hasSolved ? 'md:w-3/5' : 'md:w-full'}`}>
                     <InputSection
@@ -135,6 +143,20 @@ const LettersSection: React.FC<LettersSectionProps> = ({
                     {letter}
                 </div>
             ))}
+        </div>
+    );
+}
+
+const AnagramsInfoBody: React.FC = () => {
+    return (
+        <div>
+            <ul className="list-disc pl-5 mb-2 text-slate-700">
+                <li>Enter 6 or 7 letters in the input box.</li>
+                <li>Click <b>Solve</b> to find all valid English words you can make.</li>
+                <li>Words are grouped by length and shown in pages.</li>
+                <li>Try to find as many words as you can!</li>
+            </ul>
+            <p className="text-slate-500 text-sm">This game is inspired by classic anagram puzzles.</p>
         </div>
     );
 }
