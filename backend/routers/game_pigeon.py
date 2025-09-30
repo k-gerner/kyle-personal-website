@@ -9,6 +9,10 @@ import ai.game_pigeon.connect4.connect4 as connect4
 import ai.game_pigeon.gomoku.gomoku as gomoku
 import ai.game_pigeon.othello.othello as othello
 import ai.game_pigeon.sea_battle.sea_battle as sea_battle
+import ai.game_pigeon.mancala.capture.mancala_capture as mancala_capture
+import ai.game_pigeon.mancala.avalanche.mancala_avalanche as mancala_avalanche
+from ai.game_pigeon.mancala.capture.mancala_capture import MancalaCaptureBoardState
+from ai.game_pigeon.mancala.avalanche.mancala_avalanche import MancalaAvalancheBoardState
 from utils.ai_runner import run
 from utils.error import BackendError
 from utils.model import CamelAliasModel
@@ -525,3 +529,137 @@ async def get_initial_state_sea_battle(input: SeaBattleInitialStateInput) -> Sea
         logging.error("Unexpected error in sea battle initial state:", exc_info=True)
         raise HTTPException(status_code=500, detail="An unexpected error occurred.")
     return SeaBattleInitialStateOutput(remaining_ships=remaining_ships)
+
+
+###################
+# Mancala Capture #
+###################
+
+class MancalaCaptureInput(CamelAliasModel):
+    player_score: int
+    ai_score: int
+    player_pockets: List[int]  # List of integers representing the number of pebbles in each of the player's pockets
+    ai_pockets: List[int]  # List of integers representing the number of pebbles in each of the AI's pockets
+    max_depth: int = 11  # Default search depth
+
+class MancalaCaptureOutput(CamelAliasModel):
+    board_states: List[MancalaCaptureBoardState]  # The states of the board after each AI move
+
+@router.post("/mancala_capture")
+async def solve_mancala_capture(input: MancalaCaptureInput) -> MancalaCaptureOutput:
+    """
+    Solve the Mancala Capture puzzle with the provided board state.
+    """
+    try :
+        board_states = run(
+            mancala_capture.run, 
+            player_score=input.player_score, 
+            ai_score=input.ai_score,
+            player_pockets=input.player_pockets,
+            ai_pockets=input.ai_pockets,
+            max_depth=input.max_depth
+        )
+    except BackendError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        logging.error("Unexpected error in mancala capture:", exc_info=True)
+        raise HTTPException(status_code=500, detail="An unexpected error occurred.")
+    return MancalaCaptureOutput(board_states=board_states)
+
+
+class MancalaCapturePlayerMoveInput(CamelAliasModel):
+    player_score: int
+    ai_score: int
+    player_pockets: List[int]  # List of integers representing the number of pebbles in each of the player's pockets
+    ai_pockets: List[int]  # List of integers representing the number of pebbles in each of the AI's pockets
+    move: int  # The move to play (index of the pocket to pick from)
+
+class MancalaCapturePlayerMoveOutput(CamelAliasModel):
+    board_state: MancalaCaptureBoardState  # The state of the board after the player's move
+
+@router.post("/mancala_capture/player_move")
+async def evaluate_player_move_mancala_capture(input: MancalaCapturePlayerMoveInput) -> MancalaCapturePlayerMoveOutput:
+    """
+    Evaluate a player's move in the Mancala Capture game and return the resulting board state.
+    """
+    try :
+        board_state = run(
+            mancala_capture.evaluate_player_move, 
+            player_score=input.player_score, 
+            ai_score=input.ai_score,
+            player_pockets=input.player_pockets,
+            ai_pockets=input.ai_pockets,
+            move=input.move
+        )
+    except BackendError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        logging.error("Unexpected error in mancala capture player move:", exc_info=True)
+        raise HTTPException(status_code=500, detail="An unexpected error occurred.")
+    return MancalaCapturePlayerMoveOutput(board_state=board_state)
+
+
+#####################
+# Mancala Avalanche #
+#####################
+
+class MancalaAvalancheInput(CamelAliasModel):
+    player_score: int
+    ai_score: int
+    player_pockets: List[int]  # List of integers representing the number of pebbles in each of the player's pockets
+    ai_pockets: List[int]  # List of integers representing the number of pebbles in each of the AI's pockets
+
+class MancalaAvalancheOutput(CamelAliasModel):
+    board_states: List[MancalaAvalancheBoardState]  # The states of the board after each AI move
+
+@router.post("/mancala_avalanche")
+async def solve_mancala_avalanche(input: MancalaAvalancheInput) -> MancalaAvalancheOutput:
+    """
+    Solve the Mancala Avalanche puzzle with the provided board state.
+    """
+    try :
+        board_states = run(
+            mancala_avalanche.run, 
+            player_score=input.player_score, 
+            ai_score=input.ai_score,
+            player_pockets=input.player_pockets,
+            ai_pockets=input.ai_pockets
+        )
+    except BackendError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        logging.error("Unexpected error in mancala avalanche:", exc_info=True)
+        raise HTTPException(status_code=500, detail="An unexpected error occurred.")
+    return MancalaAvalancheOutput(board_states=board_states)
+
+
+class MancalaAvalanchePlayerMoveInput(CamelAliasModel):
+    player_score: int
+    ai_score: int
+    player_pockets: List[int]  # List of integers representing the number of pebbles in each of the player's pockets
+    ai_pockets: List[int]  # List of integers representing the number of pebbles in each of the AI's pockets
+    move: int  # The move to play (index of the pocket to pick from)
+
+class MancalaAvalanchePlayerMoveOutput(CamelAliasModel):
+    board_state: MancalaAvalancheBoardState  # The state of the board after the player's move
+
+@router.post("/mancala_avalanche/player_move")
+async def evaluate_player_move_mancala_avalanche(input: MancalaAvalanchePlayerMoveInput) -> MancalaAvalanchePlayerMoveOutput:
+    """
+    Evaluate a player's move in the Mancala Avalanche game and return the resulting board state.
+    """
+    try :
+        board_state = run(
+            mancala_avalanche.evaluate_player_move, 
+            player_score=input.player_score, 
+            ai_score=input.ai_score,
+            player_pockets=input.player_pockets,
+            ai_pockets=input.ai_pockets,
+            move=input.move
+        )
+    except BackendError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        logging.error("Unexpected error in mancala avalanche player move:", exc_info=True)
+        raise HTTPException(status_code=500, detail="An unexpected error occurred.")
+    return MancalaAvalanchePlayerMoveOutput(board_state=board_state)

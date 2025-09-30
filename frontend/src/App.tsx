@@ -10,6 +10,7 @@ import Connect4 from "./pages/ai/gamepigeon/Connect4";
 import Gomoku from "./pages/ai/gamepigeon/Gomoku";
 import Othello from "./pages/ai/gamepigeon/Othello";
 import SeaBattle from "./pages/ai/gamepigeon/SeaBattle";
+import Mancala from "./pages/ai/gamepigeon/Mancala";
 import { ThemePicker } from "./components/ThemePicker";
 import './index.css';
 
@@ -30,6 +31,7 @@ function App() {
             <Link to="/gomoku" className="text-primary-highlight hover:underline">Gomoku</Link>
             <Link to="/othello" className="text-primary-highlight hover:underline">Othello</Link>
             <Link to="/sea_battle" className="text-primary-highlight hover:underline">Sea Battle</Link>
+            <Link to="/mancala" className="text-primary-highlight hover:underline">Mancala</Link>
           </div>
 
           {/* Right side: Theme Picker */}
@@ -48,6 +50,7 @@ function App() {
           <Route path="/gomoku" element={<Gomoku />} />
           <Route path="/othello" element={<Othello />} />
           <Route path="/sea_battle" element={<SeaBattle />} />
+          <Route path="/mancala" element={<Mancala />} />
           {/* Catch-all route for 404 */}
           <Route path="*" element={<div>Page not found</div>} />
         </Routes>

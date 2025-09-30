@@ -58,6 +58,9 @@ code {
   --sea-battle-ship-base-color: rgb(31, 41, 55);
   --sea-battle-ship-border-color: black;
 
+  --mancala-board-color: rgb(222, 184, 135);
+  --mancala-pocket-color: rgb(188, 118, 61);
+
 }
 
 .theme-light {

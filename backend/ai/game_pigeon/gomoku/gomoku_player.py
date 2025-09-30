@@ -9,7 +9,7 @@ class GomokuPlayer:
         """Sets the color for this player"""
         self.color = color
 
-    def get_move(self, board: List[List[str]]) -> Tuple[int, int]:
+    def get_move(self, board: List[List[str]], max_depth: int) -> Tuple[int, int]:
         """Returns the chosen move for a given board, in [rowIndex, columnIndex] format"""
         print("\n<!> Function 'get_move' has not been implemented.\n" +
               "The program has been terminated.\n" +

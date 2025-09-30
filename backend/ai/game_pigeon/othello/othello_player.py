@@ -10,7 +10,7 @@ class OthelloPlayer:
         self.color = color
         self.is_ai = is_ai
 
-    def get_move(self, board: List[List[str]]) -> Tuple[int, int]:
+    def get_move(self, board: List[List[str]], max_depth: int) -> Tuple[int, int]:
         """Returns the chosen move for a given board, in [row_index, column_index] format"""
         print("\n<!> Function 'get_move' has not been implemented.\n" +
               "The program has been terminated.\n" +

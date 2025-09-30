@@ -1,0 +1,17 @@
+# The super class that player objects will inherit from
+from typing import List
+
+
+class MancalaPlayer:
+
+	def __init__(self, bank_index):
+		"""Sets the bank indices for this player"""
+		self.bank_index = bank_index
+
+	def get_move(self, board: List[int], max_depth: int) -> int:
+		"""Returns the chosen move for a given board, in [rowIndex, columnIndex] format"""
+		print("\n<!> Function 'get_move' has not been implemented.\n" +
+			  "The program has been terminated.\n" +
+			  "Please make sure that you have implemented 'get_move' from the Player super class.\n")
+		exit(0)
+		return -1  # to satisfy the return type hint warning
