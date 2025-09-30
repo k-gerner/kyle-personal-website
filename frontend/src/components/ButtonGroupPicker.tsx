@@ -1,4 +1,39 @@
-const defaultButtonStyle = "py-2 px-4 inline-flex items-center gap-x-2 first:rounded-s-lg first:ms-0 last:rounded-e-lg border border-gray-200 hover:bg-primary-base text-center text-sm transition-all shadow-sm hover:shadow-lg text-slate-600 hover:text-text-contrast hover:bg-primary-base hover:border-primary-base focus:text-text-contrast focus:bg-primary-highlight focus:border-primary-base active:border-primary-highlight active:text-text-contrast active:bg-primary-highlight";
+const defaultButtonStyle = [
+    "py-2",
+    "px-4",
+    "inline-flex",
+    "items-center",
+    "gap-x-2",
+    "first:rounded-s-lg",
+    "first:ms-0",
+    "last:rounded-e-lg",
+    "border",
+    "border-gray-200",
+    "hover:bg-primary-base",
+    "text-center",
+    "text-sm",
+    "transition-all",
+    "shadow-sm",
+    "hover:shadow-lg",
+    "text-slate-600",
+    // hover state styles
+    "hover:text-text-contrast",
+    "hover:bg-primary-base",
+    "hover:border-primary-base",
+    // focus state styles
+    "focus:text-text-contrast",
+    "focus:bg-primary-highlight",
+    "focus:border-primary-base",
+    // active state styles
+    "active:border-primary-highlight",
+    "active:text-text-contrast",
+    "active:bg-primary-highlight",
+    // disabled state styles
+    "disabled:pointer-events-none",
+    "disabled:opacity-50",
+    "disabled:shadow-none",
+    "disabled:border-slate-200",
+].join(" ");
 
 export type ButtonGroupPickerOption<T extends string | number> = { label: string; value: T };
 
@@ -9,6 +44,8 @@ export type ButtonGroupPickerProps<T extends string | number> =
         label?: string;
         selectedValue: T;
         setValue: (value: T) => void;
+        disabled?: boolean;
+        showSelectedOnDisabled?: boolean; // if true, the selected button will be highlighted even when disabled
     }
     | {
         options?: never; // `options` must not be set
@@ -16,6 +53,8 @@ export type ButtonGroupPickerProps<T extends string | number> =
         label?: string;
         selectedValue: T;
         setValue: (value: T) => void;
+        disabled?: boolean;
+        showSelectedOnDisabled?: boolean; // if true, the selected button will be highlighted even when disabled
     };
 
 export const ButtonGroupPicker = <T extends string | number>({
@@ -24,6 +63,8 @@ export const ButtonGroupPicker = <T extends string | number>({
     label,
     selectedValue,
     setValue,
+    disabled = false,
+    showSelectedOnDisabled = false,
 }: ButtonGroupPickerProps<T>) => {
     return (
         <div className="flex flex-col gap-2 justify-center items-center">
@@ -34,11 +75,17 @@ export const ButtonGroupPicker = <T extends string | number>({
                         <button
                             key={option}
                             type="button"
-                            className={`${defaultButtonStyle} ${selectedValue === option
-                                ? 'bg-primary-highlight text-text-contrast'
-                                : 'bg-background-base text-gray-800'}
+                            className={`${defaultButtonStyle} 
+                                ${selectedValue === option
+                                    ? 'bg-primary-highlight text-text-contrast'
+                                    : 'bg-background-base text-gray-800'}
+                                ${showSelectedOnDisabled
+                                    ? 'disabled:bg-slate-200 disabled:text-slate-400'
+                                    : ''
+                                }
                             `}
                             onClick={() => setValue(option)}
+                            disabled={disabled}
                         >
                             {option}
                         </button>
@@ -48,11 +95,17 @@ export const ButtonGroupPicker = <T extends string | number>({
                         <button
                             key={value}
                             type="button"
-                            className={`${defaultButtonStyle} ${selectedValue === value
-                                ? 'bg-primary-highlight text-text-contrast'
-                                : 'bg-background-base text-gray-800'}
+                            className={`${defaultButtonStyle} 
+                                ${selectedValue === value
+                                    ? 'bg-primary-highlight text-text-contrast'
+                                    : 'bg-background-base text-gray-800'}
+                                ${showSelectedOnDisabled
+                                    ? 'disabled:bg-slate-200 disabled:text-slate-400'
+                                    : ''
+                                }
                             `}
                             onClick={() => setValue(value)}
+                            disabled={disabled}
                         >
                             {label}
                         </button>
