@@ -19,6 +19,7 @@ class MancalaAvalancheBoardState:
 	player_pockets: List[int]
 	ai_pockets: List[int]
 	recent_move: int
+	end_in_bank: bool = False
 
 
 def create_solver(pocket_pebbles: List[int]) -> AvalancheSolver:
@@ -68,13 +69,58 @@ def run(
 		raise BackendError(ValueError("AI could not find a valid move."))
 	board_states = []
 	for move in best_moves:
-		solver.make_move(move, board)
+		_, ended_in_bank = solver.make_move(move, board)
 		_debug_board(board)
 		board_states.append(MancalaAvalancheBoardState(
 			player_score=board.p1.score,
 			ai_score=board.p2.score,
 			player_pockets=board.pebblesList[0:PLAYER_BANK_INDEX].copy(),
 			ai_pockets=board.pebblesList[PLAYER_BANK_INDEX + 1:AI_BANK_INDEX].copy(),
-			recent_move=move
+			recent_move=move,
+			end_in_bank=ended_in_bank
 		))
 	return board_states
+
+
+def evaluate_player_move(
+		player_score: int,
+		ai_score: int,
+		player_pockets: List[int],
+		ai_pockets: List[int],
+		move: int
+	) -> MancalaAvalancheBoardState:
+	"""
+	Evaluates the player's move and returns the resulting board state.
+
+	Parameters:
+		player_score (int): The score of the player.
+		ai_score (int): The score of the AI.
+		player_pockets (List[int]): The pockets of the player.
+		ai_pockets (List[int]): The pockets of the AI.
+		move (int): The index of the pocket the player is moving from.
+
+	Returns:
+		board_state (MancalaAvalancheBoardState): The state of the board after the player's move.
+	"""
+	player = AvalanchePlayer(score=player_score)
+	ai = AvalanchePlayer(score=ai_score)
+	board_vals = player_pockets + [player_score] + ai_pockets + [ai_score]
+	board = AvalancheBoard(
+		pebbles_in_each=board_vals,
+		player1=player,
+		player2=ai,
+		player_one_turn=True
+	)
+	if move < 0 or move >= PLAYER_BANK_INDEX or board.pebblesList[move] == 0:
+		raise BackendError(ValueError("Invalid move by player."))
+	solver = AvalancheSolver(board=board, is_player1=True)
+	_, ended_in_bank = solver.make_move(move, board)
+	_debug_board(board)
+	return MancalaAvalancheBoardState(
+		player_score=board.p1.score,
+		ai_score=board.p2.score,
+		player_pockets=board.pebblesList[0:PLAYER_BANK_INDEX].copy(),
+		ai_pockets=board.pebblesList[PLAYER_BANK_INDEX + 1:AI_BANK_INDEX].copy(),
+		recent_move=move,
+		end_in_bank=ended_in_bank
+	)
