@@ -293,17 +293,6 @@ const LetterBoxedInfoBody: React.FC = () => {
             <p className="text-slate-500 text-sm">This game is inspired by the New York Times Letter Boxed puzzle.</p>
         </div>
     )
-    // return (
-    //     <div>
-    //         <ul className="list-disc pl-5 mb-2 text-slate-700">
-    //             <li>Enter a center letter and 6 unique outer letters (total 7 letters).</li>
-    //             <li>Click <b>Solve</b> to find all valid English words you can make that include the center letter.</li>
-    //             <li>Words are grouped by length and shown in pages. Words that include all letters (pangrams) are prioritized as well.</li>
-    //             <li>Try to find as many words as you can!</li>
-    //         </ul>
-    //         <p className="text-slate-500 text-sm">This game is inspired by the New York Times Spelling Bee puzzle.</p>
-    //     </div>
-    // );
 }
 
 
