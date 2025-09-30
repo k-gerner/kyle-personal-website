@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 
-import { callEndpoint } from "../../../utils/helpers";
+import { callEndpoint, pause } from "../../../utils/helpers";
 import { Player } from '../../../utils/classes';
 import { ActionButton } from '../../../atoms/ActionButton';
 import { VscDebugRestart } from "react-icons/vsc";
@@ -41,30 +41,38 @@ const Mancala = () => {
     // AI pockets are indexed 7-12, AI bank is index 13
     // Initial state: [4, 4, 4, 4, 4, 4, 0, 4, 4, 4, 4, 4, 4, 0]
     // Full board state: [playerPockets..., playerBank, aiPockets..., aiBank]
-    const [pockets, setPockets] = useState<number[]>(CAPTURE_STARTING_POCKETS.concat([0], CAPTURE_STARTING_POCKETS));
+    const [pockets, setPockets] = useState<number[]>(CAPTURE_STARTING_POCKETS);
     const [loading, setLoading] = useState(false);
     const [winner, setWinner] = useState<Player | null>(null);
 
-    const getPlayerPockets = () => pockets.slice(0, 6);
-    const getAiPockets = () => pockets.slice(7, 13);
+    const getPlayerPockets = () => pockets.slice(0, PLAYER_BANK_INDEX);
+    const getAiPockets = () => pockets.slice(PLAYER_BANK_INDEX + 1, AI_BANK_INDEX);
     const getPlayerScore = () => pockets[PLAYER_BANK_INDEX];
     const getAiScore = () => pockets[AI_BANK_INDEX];
 
     const getAiMove = async () => {
         setGameActive(true);
         setLoading(true);
-        const response = await callEndpoint('api/game_pigeon/mancala_capture', {
+        const endpoint = gameMode === GameMode.Capture
+            ? 'api/game_pigeon/mancala_capture'
+            : 'api/game_pigeon/mancala_avalanche';
+        const requestBody = {
             playerScore: getPlayerScore(),
             aiScore: getAiScore(),
             playerPockets: getPlayerPockets(),
             aiPockets: getAiPockets(),
-            maxDepth: maxDepth
-        });
+            ...(gameMode === GameMode.Capture ? { maxDepth: maxDepth } : {})
+        };
+        const response = await callEndpoint(endpoint, requestBody);
+        const animateFunction = gameMode === GameMode.Capture
+            ? animateCaptureMove
+            : animateAvalancheMove;
         setPlayingAnimationActive(true);
+        let currentPockets = [...pockets];
         for (let i = 0; i < response.boardStates.length; i++) {
             const boardState = response.boardStates[i];
-            await animateMove(boardState.recentMove, Player.AI); // AI pockets are offset by 7
-            // set from board state to apply captures (if applicable)
+            currentPockets = await animateFunction(boardState.recentMove, Player.AI, currentPockets);
+            // set from board state to apply captures (if applicable) and/or end game (if applicable)
             await setPocketsFromBoardState(boardState);
             if (i < response.boardStates.length - 1) {
                 await pause(END_IN_BANK_ANIMATION_DELAY); // brief pause between moves
@@ -92,7 +100,6 @@ const Mancala = () => {
         ];
         setPockets(newPockets);
         await pause(END_IN_BANK_ANIMATION_DELAY);
-        // determine winner
         const winningPlayer = newPlayerScore > newAiScore
             ? Player.User
             : newPlayerScore < newAiScore
@@ -127,7 +134,10 @@ const Mancala = () => {
         setGameActive(true);
         setLoading(true);
         if (currentPlayer === Player.User && getPlayerPockets()[index] > 0) {
-            const response = await callEndpoint('api/game_pigeon/mancala_capture/player_move', {
+            const endpoint = gameMode === GameMode.Capture
+                ? 'api/game_pigeon/mancala_capture/player_move'
+                : 'api/game_pigeon/mancala_avalanche/player_move';
+            const response = await callEndpoint(endpoint, {
                 playerScore: getPlayerScore(),
                 aiScore: getAiScore(),
                 playerPockets: getPlayerPockets(),
@@ -135,8 +145,11 @@ const Mancala = () => {
                 move: index
             });
             setPlayingAnimationActive(true);
-            await animateMove(response.boardState.recentMove, Player.User);
-            // set from board state to apply captures (if applicable)
+            const animateFunction = gameMode === GameMode.Capture
+                ? animateCaptureMove
+                : animateAvalancheMove;
+            await animateFunction(response.boardState.recentMove, Player.User, pockets);
+            // set from board state to apply captures (if applicable) and/or end game (if applicable)
             await setPocketsFromBoardState(response.boardState);
             setPlayingAnimationActive(false);
             if (!response.boardState.endInBank) {
@@ -146,13 +159,11 @@ const Mancala = () => {
         setLoading(false);
     };
 
-    const animateMove = async (pocketIndex: number, turn: Player) => {
-        let scoreInHand = pockets[pocketIndex];
-        setPockets(prev => {
-            const newPockets = [...prev];
-            newPockets[pocketIndex] = 0;
-            return newPockets;
-        });
+    const animateCaptureMove = async (pocketIndex: number, turn: Player, currentPockets: number[]) => {
+        let scoreInHand = currentPockets[pocketIndex];
+        let localPockets = [...currentPockets];
+        localPockets[pocketIndex] = 0;
+        setPockets([...localPockets]);
         await pause(POCKET_ANIMATION_DELAY);
         let currentIndex = pocketIndex;
         while (scoreInHand > 0) {
@@ -162,19 +173,52 @@ const Mancala = () => {
             } else if (turn === Player.AI && currentIndex === PLAYER_BANK_INDEX) {
                 currentIndex = (currentIndex + 1) % 14; // skip player bank
             }
-            setPockets(prev => {
-                const newPockets = [...prev];
-                newPockets[currentIndex] += 1;
-                return newPockets;
-            });
+            localPockets[currentIndex] += 1;
+            setPockets([...localPockets]);
             await pause(POCKET_ANIMATION_DELAY); // wait between each increment
             scoreInHand--;
+        }
+        return localPockets;
+    }
+
+    const animateAvalancheMove = async (pocketIndex: number, turn: Player, currentPockets: number[]) => {
+        let scoreInHand = currentPockets[pocketIndex];
+        let localPockets = [...currentPockets];
+        localPockets[pocketIndex] = 0;
+        setPockets([...localPockets]);
+        await pause(POCKET_ANIMATION_DELAY);
+        let currentIndex = pocketIndex;
+        while (true) {
+            while (scoreInHand > 0) {
+                currentIndex = (currentIndex + 1) % 14;
+                if (turn === Player.User && currentIndex === AI_BANK_INDEX) {
+                    currentIndex = (currentIndex + 1) % 14; // skip AI bank
+                } else if (turn === Player.AI && currentIndex === PLAYER_BANK_INDEX) {
+                    currentIndex = (currentIndex + 1) % 14; // skip player bank
+                }
+                localPockets[currentIndex] += 1;
+                setPockets([...localPockets]);
+                await pause(POCKET_ANIMATION_DELAY); // wait between each increment
+                scoreInHand--;
+            }
+            if (localPockets[currentIndex] === 1 || currentIndex === PLAYER_BANK_INDEX || currentIndex === AI_BANK_INDEX) {
+                return localPockets; // end if last stone lands in empty pocket or in bank
+            }
+            scoreInHand = localPockets[currentIndex];
+            await pause(END_IN_BANK_ANIMATION_DELAY);
+            localPockets[currentIndex] = 0;
+            setPockets([...localPockets]);
+            await pause(POCKET_ANIMATION_DELAY);
         }
     }
 
     const resetGame = () => {
         setGameActive(false);
-        setPockets(CAPTURE_STARTING_POCKETS);
+        if (gameMode === GameMode.Avalanche) {
+            setPockets(avalancheStartingPockets());
+        } else {
+            setPockets(CAPTURE_STARTING_POCKETS);
+        }
         setCurrentPlayer(startingPlayer);
         setPlayingAnimationActive(false);
         setWinner(null);
@@ -254,7 +298,14 @@ const Mancala = () => {
                             maxDepth={maxDepth}
                             setMaxDepth={setMaxDepth}
                             gameMode={gameMode}
-                            setGameMode={setGameMode}
+                            setGameMode={(gameMode: GameMode) => {
+                                if (gameMode === GameMode.Avalanche) {
+                                    setPockets(avalancheStartingPockets());
+                                } else {
+                                    setPockets(CAPTURE_STARTING_POCKETS);
+                                }
+                                setGameMode(gameMode);
+                            }}
                             autoplay={autoplay}
                             setAutoplay={setAutoplay}
                             startingPlayer={startingPlayer}
@@ -265,6 +316,7 @@ const Mancala = () => {
                                 setStartingPlayer(player);
                             }}
                             loading={loading}
+                            gameActive={gameActive}
                             onReset={resetGame}
                         />
                     </div>
@@ -284,6 +336,7 @@ interface InputSectionProps {
     startingPlayer: Player;
     setStartingPlayer: (player: Player) => void;
     loading: boolean;
+    gameActive: boolean;
     onReset: () => void;
 }
 
@@ -298,6 +351,7 @@ const InputSection: React.FC<InputSectionProps> = ({
     startingPlayer,
     setStartingPlayer,
     loading,
+    gameActive,
     onReset,
 }) => {
     const restartButtonLabel = (
@@ -314,12 +368,16 @@ const InputSection: React.FC<InputSectionProps> = ({
                 label="Game Mode"
                 selectedValue={gameMode}
                 setValue={setGameMode}
+                disabled={gameActive}
+                showSelectedOnDisabled={false}
             />
             <ButtonGroupPicker
                 options={[9, 10, 11]}
                 label="Max AI Search Depth"
                 selectedValue={maxDepth}
                 setValue={setMaxDepth}
+                disabled={gameMode === GameMode.Avalanche}
+                showSelectedOnDisabled={true}
             />
             <ButtonGroupPicker
                 optionsWithLabels={[{ label: "AI", value: Player.AI }, { label: "User", value: Player.User }]}
@@ -532,11 +590,6 @@ const VerticalArrow: React.FC<{ pointDown: boolean, isActive: boolean }> = ({ po
 }
 
 
-const pause = async (duration: number) => {
-    return new Promise(resolve => setTimeout(resolve, duration));
-};
-
-
 // Custom hook to trigger animation when a value changes
 // Duration should match the duration defined for the Tailwind animation
 // We need to use this for arrays of values, since we can't call hooks conditionally or in loops
@@ -556,6 +609,19 @@ function useOutlineAnimateArray(values: number[], duration = POCKET_ANIMATION_DE
     }, [values.join(",")]);
 
     return animates;
+}
+
+
+/**
+ * Generates the initial state of the pockets for the avalanche game.
+ * @returns An array representing the initial state of the pockets.
+ */
+function avalancheStartingPockets() {
+    const sidePockets = [];
+    for (let i = 0; i < 6; i++) {
+        sidePockets.push(Math.floor(Math.random() * 5) + 1); // 1-5 stones in each pocket
+    }
+    return [...sidePockets, 0, ...sidePockets, 0];
 }
 
 
