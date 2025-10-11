@@ -148,16 +148,6 @@ const SeaBattle = () => {
     return (
         <div className="flex flex-col gap-4 bg-background-base min-h-screen items-center">
             <SeaBattleTitleSection />
-            <div className='flex flex-col p-4 border rounded-lg shadow-lg'>
-                <InputSection
-                    boardSize={boardState.boardSize}
-                    setBoardSize={(size) => resetGame(size)}
-                    showDensities={showDensities}
-                    setShowDensities={setShowDensities}
-                    gameActive={gameActive}
-                    onReset={() => resetGame(boardState.boardSize)}
-                />
-            </div>
             <div className='border p-4 rounded-lg shadow-lg w-full flex flex-col items-center md:flex-row gap-8 transition-all duration-500 justify-center'>
                 <div className='flex flex-col gap-2'>
                     <SeaBattleBoard
@@ -202,9 +192,19 @@ const SeaBattle = () => {
                             />
                         </div>
                     )}
-                    <div className='border p-4 rounded-lg shadow-lg'>
+                    <div className='border p-4 rounded-lg shadow-md'>
                         <RemainingShipsSection
                             shipsRemaining={boardState.remainingShips}
+                        />
+                    </div>
+                    <div className='flex flex-col p-4 border rounded-lg shadow-md'>
+                        <InputSection
+                            boardSize={boardState.boardSize}
+                            setBoardSize={(size) => resetGame(size)}
+                            showDensities={showDensities}
+                            setShowDensities={setShowDensities}
+                            gameActive={gameActive}
+                            onReset={() => resetGame(boardState.boardSize)}
                         />
                     </div>
                 </div>
@@ -405,7 +405,7 @@ const InputSection: React.FC<InputSectionProps> = ({
     )
 
     return (
-        <div className="flex flex-row items-center gap-6">
+        <div className="flex flex-row md:flex-col items-center gap-6">
             <ButtonGroupPicker
                 options={[8, 9, 10]}
                 label="Board Size"
