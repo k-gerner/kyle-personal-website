@@ -6,6 +6,7 @@ import { ActionButton } from '../../../atoms/ActionButton';
 import { VscDebugRestart } from "react-icons/vsc";
 import { ButtonGroupPicker } from '../../../components/ButtonGroupPicker';
 import { BooleanSelector } from '../../../atoms/BooleanSelector';
+import { TitleWithInfo } from "../../../components/TitleWithInfo";
 
 const END_IN_BANK_ANIMATION_DELAY = 1000; // ms
 const POCKET_ANIMATION_DELAY = 500; // ms
@@ -236,7 +237,7 @@ const Mancala = () => {
 
     return (
         <div className="flex flex-col gap-4 bg-background-base min-h-screen items-center">
-            <h1 className="text-center text-3xl font-bold text-primary-highlight mb-4">Mancala!</h1>
+            <MancalaTitleSection />
             <div className="border p-4 rounded-lg shadow-lg flex flex-col md:flex-row flex-wrap gap-4 sm:gap-8 items-center justify-center transition duration-500">
                 <div className="flex flex-col items-center gap-4 min-w-fit flex-0 relative min-h-[48rem] sm:min-h-[24rem]">
                     <div className="text-lg font-semibold text-secondary-base">AI</div>
@@ -586,6 +587,45 @@ const VerticalArrow: React.FC<{ pointDown: boolean, isActive: boolean }> = ({ po
                         : 'border-t-[16px] border-t-primary-base'}`}>
             </div>
         </div>
+    );
+}
+
+
+const MancalaTitleSection: React.FC = () => {
+    return (
+        <TitleWithInfo
+            title="Mancala!"
+            infoTitle="How to Play Mancala"
+            objective="Collect the most stones in your bank."
+            rules={[
+                "Players take turns choosing one of their pockets to distribute its stones.",
+                "Stones are distributed one by one into subsequent pockets in a counter-clockwise direction, including the player's own bank but skipping the opponent's bank.",
+                "If the last stone lands in the player's bank, they get another turn.",
+                (
+                    <div><b>(Capture Mode)</b>: If the last stone lands in an empty pocket on the player's side and the opposite pocket has stones, both the last stone and the stones in the opposite pocket are captured and placed in the player's bank.</div>
+                ),
+                (
+                    <div><b>(Avalanche Mode)</b>: If the last stone lands in a non-empty pocket, the stones in that pocket are picked up and distributed in the same manner (this can continue multiple times in a single turn).</div>
+                ),
+                "The game ends when all six pockets on one side are empty. The other player moves all remaining stones from their pockets to their bank.",
+                "The player with the most stones in their bank at the end of the game wins."
+            ]}
+            instructionsTitle="Game Settings"
+            toolInstructions={[
+                (
+                    <div><b>Game Mode</b>: Capture Mode or Avalanche Mode. Affects how stones are distributed and captured.</div>
+                ),
+                (
+                    <div><b>Max AI Search Depth</b>: How deep the AI will search for the best move.</div>
+                ),
+                (
+                    <div><b>Starting Player</b>: Which player goes first.</div>
+                ),
+                (
+                    <div><b>AI Autoplay</b>: Whether to automatically play the best moves for the AI.</div>
+                ),
+            ]}
+        />
     );
 }
 

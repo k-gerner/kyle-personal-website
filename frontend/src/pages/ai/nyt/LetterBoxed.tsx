@@ -90,11 +90,7 @@ const LetterBoxed = () => {
 
     return (
         <div className="flex flex-col gap-4">
-            <TitleWithInfo
-                title="Letter Boxed!"
-                infoTitle="How to Play Letter Boxed"
-                infoBody={<LetterBoxedInfoBody />}
-            />
+            <LetterBoxedTitleSection />
             <InputSection
                 letters={letterSides}
                 onLettersChange={onLettersChange}
@@ -278,18 +274,26 @@ const LettersInputs: React.FC<LettersInputsProps> = ({
 }
 
 
-const LetterBoxedInfoBody: React.FC = () => {
+const LetterBoxedTitleSection: React.FC = () => {
     return (
-        <div>
-            <ul className="list-disc pl-5 mb-2 text-slate-700">
-                <li>Enter 3 unique letters for each side of the box (total 12 letters).</li>
-                <li>Click <b>Solve</b> to find the shortest sequence of words that uses all the letters, where each word starts with the letter that the previous word ended with.</li>
-                <li>Words are shown in pages, with numbers indicating their order in the sequence.</li>
-                <li>Try to find the shortest solution possible!</li>
-            </ul>
-            <p className="text-slate-500 text-sm">This game is inspired by the New York Times Letter Boxed puzzle.</p>
-        </div>
-    )
+        <TitleWithInfo
+            title="Letter Boxed!"
+            infoTitle="How to Play Letter Boxed"
+            objective="Find the shortest sequence of words that uses all the letters."
+            rules={[
+                "Each word must start with the letter that the previous word ended with.",
+                "Letters on the same side cannot be used sequentially."
+            ]}
+            instructionsTitle="How to Use the Tool"
+            toolInstructions={[
+                "Enter 3 unique letters for each side of the box.",
+                (
+                    <div>Click <b>Solve</b> to find the shortest sequence of words that uses all the letters.</div>
+                ),
+                "Words are shown in pages, with numbers indicating their order in the sequence."
+            ]}
+        />
+    );
 }
 
 

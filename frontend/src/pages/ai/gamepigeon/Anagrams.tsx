@@ -40,11 +40,7 @@ const Anagrams = () => {
     };
     return (
         <div className="flex flex-col gap-4">
-            <TitleWithInfo
-                title="Anagrams!"
-                infoTitle="How to Play Anagrams"
-                infoBody={<AnagramsInfoBody />}
-            />
+            <AnagramsTitleSection />
             <div className="flex flex-col gap-6 md:gap-2 md:flex-row transition-all duration-300 ease-in-out">
                 <div className={`flex flex-col gap-10 flex-shrink-0 transition-all duration-500 w-full ${hasSolved ? 'md:w-3/5' : 'md:w-full'}`}>
                     <InputSection
@@ -144,17 +140,23 @@ const LettersSection: React.FC<LettersSectionProps> = ({
     );
 }
 
-const AnagramsInfoBody: React.FC = () => {
+const AnagramsTitleSection: React.FC = () => {
     return (
-        <div>
-            <ul className="list-disc pl-5 mb-2 text-slate-700">
-                <li>Enter 6 or 7 letters in the input box.</li>
-                <li>Click <b>Solve</b> to find all valid English words you can make.</li>
-                <li>Words are grouped by length and shown in pages.</li>
-                <li>Try to find as many words as you can!</li>
-            </ul>
-            <p className="text-slate-500 text-sm">This game is inspired by classic anagram puzzles.</p>
-        </div>
+        <TitleWithInfo
+            title="Anagrams!"
+            infoTitle="How to Play Anagrams"
+            objective="Find English words that can be made from the letters."
+            rules={[
+                "Words must be 3 letters or longer",
+                "Longer words are worth more points."
+            ]}
+            instructionsTitle="How to Use the Tool"
+            toolInstructions={[
+                "Enter letters into the input box.",
+                (<div>Click <b>Solve</b> to find all valid English words that can be made.</div>),
+                "Words are grouped by length and shown in pages."
+            ]}
+        />
     );
 }
 

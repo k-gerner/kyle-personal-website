@@ -6,6 +6,7 @@ import { callEndpoint } from '../../../utils/helpers';
 import { Player } from '../../../utils/classes';
 import { ButtonGroupPicker } from '../../../components/ButtonGroupPicker';
 import { BooleanSelector } from '../../../atoms/BooleanSelector';
+import { TitleWithInfo } from '../../../components/TitleWithInfo';
 
 const BOARD_SIZE = 8;
 const INITIAL_BOARD_STATE = {
@@ -173,7 +174,7 @@ const Othello = () => {
 
     return (
         <div className="flex flex-col gap-4 bg-background-base min-h-screen items-center">
-            <h1 className="text-center text-3xl font-bold text-primary-highlight mb-4">Othello!</h1>
+            <OthelloTitleSection />
             <div className="border p-4 rounded-lg shadow-lg flex items-start flex-col md:flex-row gap-4 w-full">
                 <ScoreBoard
                     playerScore={pieceLocations.player.length}
@@ -500,6 +501,36 @@ const WinnerSection: React.FC<WinnerSectionProps> = ({ winner, onReset }) => {
         </div>
     );
 };
+
+
+const OthelloTitleSection: React.FC = () => {
+    return (
+        <TitleWithInfo
+            title="Othello!"
+            infoTitle="How to Play Othello"
+            objective="Have the most pieces on the board when the game ends."
+            rules={[
+                "Players take turns placing pieces on the board.",
+                "When a piece is placed, all of the opponent's pieces that are in a straight line (horizontal, vertical, or diagonal) and bounded by the placed piece and another piece of the current player's color are flipped to the current player's color.",
+                "If a player cannot make a valid move, they must pass their turn.",
+                "The game ends when the board is full.",
+                "The player with the most pieces on the board at the end of the game wins."
+            ]}
+            instructionsTitle="Game Settings"
+            toolInstructions={[
+                (
+                    <div><b>Max AI Search Depth</b>: How deep the AI will search for the best move.</div>
+                ),
+                (
+                    <div><b>Starting Player</b>: Which player goes first.</div>
+                ),
+                (
+                    <div><b>AI Autoplay</b>: Whether to automatically play the best moves for the AI.</div>
+                ),
+            ]}
+        />
+    );
+}
 
 
 function locationsContain(locations: number[][], position: number[]): boolean {

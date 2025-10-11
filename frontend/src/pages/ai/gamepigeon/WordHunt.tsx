@@ -4,6 +4,7 @@ import { ButtonGroupPicker, ButtonGroupPickerOption } from '../../../components/
 import { PaginatedSolutionsSection } from '../../../components/PaginatedSolutionsSection';
 import { chunkArray } from '../../../utils/helpers';
 import Input from '../../../atoms/Input';
+import { TitleWithInfo } from '../../../components/TitleWithInfo';
 
 type BoardType = "4x4" | "5x5" | "donut" | "cross";
 
@@ -87,7 +88,7 @@ const WordHunt = () => {
 
     return (
         <div className="flex flex-col gap-4">
-            <h1 className="text-center text-3xl font-bold text-primary-highlight mb-4">Word Hunt!</h1>
+            <WordHuntTitleSection />
             <InputSection
                 letters={inputLetters}
                 boardType={boardType}
@@ -461,6 +462,28 @@ const LetterTile: React.FC<LetterTileProps> = ({
             <span>{letter || ""}</span>
             <span className="text-xs text-text-base opacity-70">{inSolution && indexInSolution + 1}</span>
         </div>
+    );
+}
+
+const WordHuntTitleSection: React.FC = () => {
+    return (
+        <TitleWithInfo
+            title="Word Hunt!"
+            infoTitle="How to Play Word Hunt"
+            objective="Find English words that can be made from connecting the letters."
+            rules={[
+                "Only neighboring letters can be connected (vertical, horizontal, or diagonal).",
+                "A tile can only be used once in a word (no backtracking).",
+                "Words must be 3 letters or longer.",
+                "Longer words are worth more points."
+            ]}
+            instructionsTitle="How to Use the Tool"
+            toolInstructions={[
+                "Choose the layout of the board.",
+                "Enter letters into the input boxes.",
+                (<div>Click <b>Solve</b> to find all valid English words that can be made.</div>),
+            ]}
+        />
     );
 }
 

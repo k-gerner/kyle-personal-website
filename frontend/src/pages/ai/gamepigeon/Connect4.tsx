@@ -7,6 +7,7 @@ import { LuCrown } from "react-icons/lu";
 import { VscDebugRestart } from "react-icons/vsc";
 import { callEndpoint } from '../../../utils/helpers';
 import { Player } from '../../../utils/classes';
+import { TitleWithInfo } from '../../../components/TitleWithInfo';
 
 const ROWS = 6;
 const COLUMNS = 7;
@@ -113,7 +114,7 @@ const Connect4 = () => {
 
     return (
         <div className="flex flex-col gap-4 bg-background-base min-h-screen items-center">
-            <h1 className="text-center text-3xl font-bold text-primary-highlight mb-4">Connect 4!</h1>
+            <Connect4TitleSection />
             <div className="border p-4 rounded-lg shadow-lg flex flex-col md:flex-row gap-4 w-full">
                 <div className="flex-shrink-0 transition-all duration-500 w-full md:w-1/2 transition">
                     <Board
@@ -337,6 +338,33 @@ const WinnerSection: React.FC<WinnerSectionProps> = ({ winner, onReset }) => {
         </div>
     );
 };
+
+
+const Connect4TitleSection: React.FC = () => {
+    return (
+        <TitleWithInfo
+            title="Connect 4!"
+            infoTitle="How to Play Connect 4"
+            objective="Connect four discs in a row."
+            rules={[
+                "Players take turns dropping discs into columns.",
+                "The first player to connect four discs vertically, horizontally, or diagonally wins."
+            ]}
+            instructionsTitle="Game Settings"
+            toolInstructions={[
+                (
+                    <div><b>Max AI Search Depth</b>: How deep the AI will search for the best move.</div>
+                ),
+                (
+                    <div><b>Starting Player</b>: Which player goes first.</div>
+                ),
+                (
+                    <div><b>AI Autoplay</b>: Whether to automatically play the best moves for the AI.</div>
+                ),
+            ]}
+        />
+    );
+}
 
 /**
  * Get the coordinate for the next available row in the specified column.

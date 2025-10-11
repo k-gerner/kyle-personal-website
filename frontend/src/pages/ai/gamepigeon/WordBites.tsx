@@ -4,6 +4,7 @@ import { BooleanSelector } from '../../../atoms/BooleanSelector';
 import { PageButtons, NoSolutions } from '../../../components/PaginatedSolutionsSection';
 import { MdOutlineCancel } from "react-icons/md";
 import { LoadingSpinner } from "../../../atoms/LoadingSpinner";
+import { TitleWithInfo } from '../../../components/TitleWithInfo';
 
 
 const INPUT_DELAY_MS = 500; // Delay in milliseconds for input reset
@@ -120,7 +121,7 @@ const WordBites = () => {
 
     return (
         <div className="flex flex-col gap-4">
-            <h1 className="text-center text-3xl font-bold text-primary-highlight mb-4">Word Bites!</h1>
+            <WordBitesTitleSection />
             <InputSection
                 currentInputLetters={currentInputLetters}
                 onLettersChange={handleInputChange}
@@ -584,6 +585,30 @@ const SolutionTiles: React.FC<{ solution: Solution }> = ({ solution }) => {
         <div className={`flex ${solution.isHorizontal ? "flex-row" : "flex-col"} gap-2 items-center justify-center`}>
             {tileComponents}
         </div>
+    );
+}
+
+
+const WordBitesTitleSection: React.FC = () => {
+    return (
+        <TitleWithInfo
+            title="Word Bites!"
+            infoTitle="How to Play Word Bites"
+            objective="Combine tiles to form English words."
+            rules={[
+                "Words must be 3 letters or longer.",
+                "Longer words are worth more points.",
+                "Words can be oriented either vertically, or horizontally."
+            ]}
+            instructionsTitle="How to Use the Tool"
+            toolInstructions={[
+                "Enter the letter tiles for each orientation.",
+                (
+                    <div>Click <b>Solve</b> to find the shortest sequence of words that uses all the letters.</div>
+                ),
+                "For each solution, there will be a visualization of the tiles used."
+            ]}
+        />
     );
 }
 

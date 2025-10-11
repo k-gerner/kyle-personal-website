@@ -49,11 +49,7 @@ const SpellingBee = () => {
 
     return (
         <div className="flex flex-col gap-4">
-            <TitleWithInfo
-                title="Spelling Bee!"
-                infoTitle="How to Play Spelling Bee"
-                infoBody={<SpellingBeeInfoBody />}
-            />
+            <SpellingBeeTitleSection />
             <InputSection
                 centerLetter={centerLetter}
                 outerLetters={outerLetters}
@@ -173,18 +169,23 @@ const Letter: React.FC<LetterProps> = ({ letter, isCenter }) => {
 }
 
 
-const SpellingBeeInfoBody: React.FC = () => {
+const SpellingBeeTitleSection: React.FC = () => {
     return (
-        <div>
-            <ul className="list-disc pl-5 mb-2 text-slate-700">
-                <li>Enter a center letter and 6 unique outer letters (total 7 letters).</li>
-                <li>Click <b>Solve</b> to find all valid English words you can make that include the center letter.</li>
-                <li>Words are grouped by length and shown in pages. Words that include all letters (pangrams) are prioritized as well.</li>
-                <li>Try to find as many words as you can!</li>
-            </ul>
-            <p className="text-slate-500 text-sm">This game is inspired by the New York Times Spelling Bee puzzle.</p>
-        </div>
-    );
+        <TitleWithInfo
+            title="Spelling Bee!"
+            infoTitle="How to Play Spelling Bee"
+            objective="Find as many words as possible using the given letters. Longer words (and words that use all 7 letters) are worth more."
+            rules={[
+                "All words must include the center letter and be at least 4 letters long."
+            ]}
+            instructionsTitle="How to Use the Tool"
+            toolInstructions={[
+                "Enter a center letter and 6 unique outer letters (total 7 letters).",
+                (<div>Click <b>Solve</b> to find all valid English words you can make that include the center letter.</div>),
+                "Words are grouped by length and shown in pages. Words that include all letters (pangrams) are prioritized as well."
+            ]}
+        />
+    )
 }
 
 

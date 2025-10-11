@@ -1,18 +1,24 @@
-import { InfoOverlay } from "./InfoOverlay";
 import { GoInfo } from "react-icons/go";
+import { MdOutlineCancel } from "react-icons/md";
 import React, { useState } from "react";
 
 export interface TitleWithInfoProps {
     title: string;
     infoTitle: string;
-    infoBody: React.ReactNode;
+    objective: string | React.ReactNode;
+    rules: string[] | React.ReactNode[];
+    instructionsTitle?: string | React.ReactNode;
+    toolInstructions?: string[] | React.ReactNode[];
 }
 
 
 export const TitleWithInfo: React.FC<TitleWithInfoProps> = ({
     title,
     infoTitle,
-    infoBody
+    objective,
+    rules,
+    instructionsTitle,
+    toolInstructions,
 }) => {
     const [showInfo, setShowInfo] = useState(false);
     return (
@@ -37,9 +43,66 @@ export const TitleWithInfo: React.FC<TitleWithInfoProps> = ({
                 <InfoOverlay
                     setShowInfo={setShowInfo}
                     title={infoTitle}
-                    body={infoBody}
+                    objective={objective}
+                    rules={rules}
+                    instructionsTitle={instructionsTitle}
+                    toolInstructions={toolInstructions}
                 />
             )}
+        </div>
+    );
+}
+
+
+export interface InfoOverlayProps {
+    setShowInfo: (show: boolean) => void;
+    title: string;
+    objective: string | React.ReactNode;
+    rules: string[] | React.ReactNode[];
+    instructionsTitle?: string | React.ReactNode;
+    toolInstructions?: string[] | React.ReactNode[];
+}
+
+export const InfoOverlay: React.FC<InfoOverlayProps> = ({
+    setShowInfo,
+    title,
+    objective,
+    rules,
+    instructionsTitle,
+    toolInstructions,
+}) => {
+    return (
+        <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
+            <div className="bg-background-base rounded-lg shadow-lg p-8 max-w-xl w-full relative max-h-[90vh] overflow-y-auto">
+                <button
+                    className="absolute top-2 right-2 text-xl font-bold text-danger hover:opacity-70 transition"
+                    onClick={() => setShowInfo(false)}
+                    aria-label="Close info"
+                >
+                    <MdOutlineCancel className='w-8 h-8' />
+                </button>
+                <h2 className="text-xl text-text-base font-bold mb-2">{title}</h2>
+                <ul className="list-disc pl-5 mb-2 text-slate-700">
+                    <li><b>Objective:</b> {objective}</li>
+                    <li><b>Rules:</b></li>
+                    <ul className="list-disc pl-5 mb-2 text-slate-700">
+                        {rules.map((rule, index) => (
+                            <li key={index}>{rule}</li>
+                        ))}
+                    </ul>
+
+                </ul>
+                {toolInstructions && toolInstructions.length > 0 && (
+                    <>
+                        <h3 className="text-lg text-text-base font-bold mb-1">{instructionsTitle}</h3>
+                        <ul className="list-disc pl-5 mb-2 text-slate-700">
+                            {toolInstructions.map((instruction, index) => (
+                                <li key={index}>{instruction}</li>
+                            ))}
+                        </ul>
+                    </>
+                )}
+            </div>
         </div>
     );
 }
