@@ -75,7 +75,7 @@ export const InfoOverlay: React.FC<InfoOverlayProps> = ({
         <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
             <div className="bg-background-base rounded-lg shadow-lg p-8 max-w-xl w-full relative max-h-[90vh] overflow-y-auto">
                 <button
-                    className="absolute top-2 right-2 text-xl font-bold text-danger hover:opacity-70 transition"
+                    className="absolute rounded-full top-2 right-2 text-xl font-bold text-danger bg-background-base hover:bg-danger hover:text-background-base transition-colors"
                     onClick={() => setShowInfo(false)}
                     aria-label="Close info"
                 >
