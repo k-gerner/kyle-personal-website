@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import '../../../App.css'
 import { ButtonGroupPicker } from '../../../components/ButtonGroupPicker';
 import { PaginatedSolutionsSection } from '../../../components/PaginatedSolutionsSection';
+import { TitleWithInfo } from '../../../components/TitleWithInfo';
 import { chunkArray } from '../../../utils/helpers';
 import Input from '../../../atoms/Input';
 
@@ -39,7 +40,7 @@ const Anagrams = () => {
     };
     return (
         <div className="flex flex-col gap-4">
-            <h1 className="text-center text-3xl font-bold text-primary-highlight mb-4">Anagrams!</h1>
+            <AnagramsTitleSection />
             <div className="flex flex-col gap-6 md:gap-2 md:flex-row transition-all duration-300 ease-in-out">
                 <div className={`flex flex-col gap-10 flex-shrink-0 transition-all duration-500 w-full ${hasSolved ? 'md:w-3/5' : 'md:w-full'}`}>
                     <InputSection
@@ -136,6 +137,26 @@ const LettersSection: React.FC<LettersSectionProps> = ({
                 </div>
             ))}
         </div>
+    );
+}
+
+const AnagramsTitleSection: React.FC = () => {
+    return (
+        <TitleWithInfo
+            title="Anagrams!"
+            infoTitle="How to Play Anagrams"
+            objective="Find English words that can be made from the letters."
+            rules={[
+                "Words must be 3 letters or longer",
+                "Longer words are worth more points."
+            ]}
+            instructionsTitle="How to Use the Tool"
+            toolInstructions={[
+                "Enter letters into the input box.",
+                (<div>Click <b>Solve</b> to find all valid English words that can be made.</div>),
+                "Words are grouped by length and shown in pages."
+            ]}
+        />
     );
 }
 

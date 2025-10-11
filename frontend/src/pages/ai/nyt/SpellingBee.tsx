@@ -1,4 +1,5 @@
 import React, { useState, useRef } from 'react';
+import { TitleWithInfo } from '../../../components/TitleWithInfo';
 import { PaginatedSolutionsSection } from '../../../components/PaginatedSolutionsSection';
 import { chunkArray } from '../../../utils/helpers';
 import '../../../App.css'
@@ -48,7 +49,7 @@ const SpellingBee = () => {
 
     return (
         <div className="flex flex-col gap-4">
-            <h1 className="text-center text-3xl font-bold text-primary-highlight mb-4">Spelling Bee!</h1>
+            <SpellingBeeTitleSection />
             <InputSection
                 centerLetter={centerLetter}
                 outerLetters={outerLetters}
@@ -134,16 +135,16 @@ interface LettersSectionProps {
 const LettersSection: React.FC<LettersSectionProps> = ({ centerLetter, outerLetters }) => {
     return (
         <div className="flex flex-row items-center justify-center max-w-4xl mx-auto">
-            <div className="flex flex-col items-center gap-4">
+            <div className="flex flex-col items-center gap-1 sm:gap-2 lg:gap-3 xl:gap-4 -mr-4 md:-mr-5 xl:-mr-7">
                 <Letter letter={outerLetters[0] || ''} />
                 <Letter letter={outerLetters[1] || ''} />
             </div>
-            <div className="flex flex-col items-center gap-4">
+            <div className="flex flex-col items-center gap-1 sm:gap-2 lg:gap-3 xl:gap-4">
                 <Letter letter={outerLetters[2] || ''} />
                 <Letter letter={centerLetter || ''} isCenter={true} />
                 <Letter letter={outerLetters[3] || ''} />
             </div>
-            <div className="flex flex-col items-center gap-4">
+            <div className="flex flex-col items-center gap-1 sm:gap-2 lg:gap-3 xl:gap-4 -ml-4 md:-ml-5 xl:-ml-7">
                 <Letter letter={outerLetters[4] || ''} />
                 <Letter letter={outerLetters[5] || ''} />
             </div>
@@ -165,6 +166,26 @@ const Letter: React.FC<LetterProps> = ({ letter, isCenter }) => {
             </span>
         </div>
     );
+}
+
+
+const SpellingBeeTitleSection: React.FC = () => {
+    return (
+        <TitleWithInfo
+            title="Spelling Bee!"
+            infoTitle="How to Play Spelling Bee"
+            objective="Find as many words as possible using the given letters. Longer words (and words that use all 7 letters) are worth more."
+            rules={[
+                "All words must include the center letter and be at least 4 letters long."
+            ]}
+            instructionsTitle="How to Use the Tool"
+            toolInstructions={[
+                "Enter a center letter and 6 unique outer letters (total 7 letters).",
+                (<div>Click <b>Solve</b> to find all valid English words you can make that include the center letter.</div>),
+                "Words are grouped by length and shown in pages. Words that include all letters (pangrams) are prioritized as well."
+            ]}
+        />
+    )
 }
 
 

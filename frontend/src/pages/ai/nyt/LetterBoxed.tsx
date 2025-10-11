@@ -3,6 +3,7 @@ import React, { useState, useRef } from 'react';
 import '../../../App.css'
 import { ButtonGroupPicker } from '../../../components/ButtonGroupPicker';
 import { PaginatedSolutionsSection } from '../../../components/PaginatedSolutionsSection';
+import { TitleWithInfo } from '../../../components/TitleWithInfo';
 import Input from '../../../atoms/Input';
 
 const TOP = "top";
@@ -89,7 +90,7 @@ const LetterBoxed = () => {
 
     return (
         <div className="flex flex-col gap-4">
-            <h1 className="text-center text-3xl font-bold text-primary-highlight mb-4">Letter Boxed!</h1>
+            <LetterBoxedTitleSection />
             <InputSection
                 letters={letterSides}
                 onLettersChange={onLettersChange}
@@ -270,6 +271,29 @@ const LettersInputs: React.FC<LettersInputsProps> = ({
             />
         </div>
     )
+}
+
+
+const LetterBoxedTitleSection: React.FC = () => {
+    return (
+        <TitleWithInfo
+            title="Letter Boxed!"
+            infoTitle="How to Play Letter Boxed"
+            objective="Find the shortest sequence of words that uses all the letters."
+            rules={[
+                "Each word must start with the letter that the previous word ended with.",
+                "Letters on the same side cannot be used sequentially."
+            ]}
+            instructionsTitle="How to Use the Tool"
+            toolInstructions={[
+                "Enter 3 unique letters for each side of the box.",
+                (
+                    <div>Click <b>Solve</b> to find the shortest sequence of words that uses all the letters.</div>
+                ),
+                "Words are shown in pages, with numbers indicating their order in the sequence."
+            ]}
+        />
+    );
 }
 
 

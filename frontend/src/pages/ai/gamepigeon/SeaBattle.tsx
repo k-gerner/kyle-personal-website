@@ -6,6 +6,7 @@ import { ActionButton } from '../../../atoms/ActionButton';
 import { callEndpoint } from '../../../utils/helpers';
 import { ButtonGroupPicker } from '../../../components/ButtonGroupPicker';
 import { BooleanSelector } from '../../../atoms/BooleanSelector';
+import { TitleWithInfo } from '../../../components/TitleWithInfo';
 
 enum PositionState {
     EMPTY,
@@ -146,7 +147,7 @@ const SeaBattle = () => {
 
     return (
         <div className="flex flex-col gap-4 bg-background-base min-h-screen items-center">
-            <h1 className="text-center text-3xl font-bold text-primary-highlight mb-4">Sea Battle!</h1>
+            <SeaBattleTitleSection />
             <div className='flex flex-col p-4 border rounded-lg shadow-lg'>
                 <InputSection
                     boardSize={boardState.boardSize}
@@ -483,6 +484,32 @@ const GameOverSection: React.FC<GameOverSectionProps> = ({ onReset, numHits, num
         </div>
     );
 };
+
+
+const SeaBattleTitleSection: React.FC = () => {
+    return (
+        <TitleWithInfo
+            title="Sea Battle!"
+            infoTitle="How to Play Sea Battle"
+            objective="Sink all enemy ships."
+            rules={[
+                "Players take turns guessing the location of enemy ships.",
+                "The first player to sink all enemy ships wins."
+            ]}
+            instructionsTitle="How to Use the Tool"
+            toolInstructions={[
+                (
+                    <div><b>Note</b>: This is a tool to help you play the optimal moves in Sea Battle. You are not playing against an AI opponent.</div>
+                ),
+                "Select the size of the board (8x8, 9x9, or 10x10).",
+                "Click on a cell to select it.",
+                "Use the buttons below the board to mark the selected cell as 'Destroyed', 'Hit', or 'Missed'.",
+                "The tool will update the density map and suggest the best moves based on your markings.",
+                "Continue marking cells until all ships are sunk."
+            ]}
+        />
+    );
+}
 
 
 function locationsContain(locations: number[][], position: number[]): boolean {
