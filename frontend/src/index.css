@@ -40,6 +40,8 @@ code {
   /* slate-400 */
   --text-contrast-color: white;
 
+  --letter-tile-color: rgb(233, 199, 155);
+
   --connect-4-board-color: #5aa9e6;
   --connect-4-board-highlight-color: #023047;
   --connect-4-piece-yellow-color: #ffd97d;

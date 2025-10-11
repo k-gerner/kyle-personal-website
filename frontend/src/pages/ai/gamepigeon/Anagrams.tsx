@@ -132,7 +132,7 @@ const LettersSection: React.FC<LettersSectionProps> = ({
     return (
         <div className="flex flex-row gap-2 justify-center">
             {paddedLetters.map((letter, index) => (
-                <div key={index} className="bg-orange-200 rounded-md w-16 h-16 flex items-center justify-center text-xl font-bold text-slate-800">
+                <div key={index} className="bg-letter-tile rounded-md w-16 h-16 flex items-center justify-center text-xl font-bold text-slate-800">
                     {letter}
                 </div>
             ))}

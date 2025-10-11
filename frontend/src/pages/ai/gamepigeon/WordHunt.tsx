@@ -454,7 +454,7 @@ const LetterTile: React.FC<LetterTileProps> = ({
     const isStartingLetter = indexInSolution === 0;
     const baseClasses = "rounded-md flex flex-col items-center justify-center text-xl font-bold text-slate-800";
     const sizeClasses = size === 'sm' ? 'w-12 h-12' : 'w-16 h-16';
-    const bgColor = inSolution || beforeSolve ? 'bg-secondary-base' : 'bg-secondary-base opacity-50';
+    const bgColor = inSolution || beforeSolve ? 'bg-letter-tile' : 'bg-letter-tile opacity-50';
     const borderColor = isStartingLetter ? 'border-4 border-text-base' : '';
 
     return (

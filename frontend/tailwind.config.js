@@ -24,6 +24,7 @@ const customColors = {
   'danger': 'var(--danger-color)',
   'warning': 'var(--warning-color)',
   'success': 'var(--success-color)',
+  'letter-tile': 'var(--letter-tile-color)',
 
   // game specific
   'connect-4-board': 'var(--connect-4-board-color)',

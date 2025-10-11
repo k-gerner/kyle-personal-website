@@ -37,7 +37,7 @@ async def solve_anagrams(input: AnagramsInput) -> AnagramsOutput:
     """
     Solve the Anagrams puzzle with the provided letters.
     """
-    valid_anagrams = run(anagrams.run, input.letters)
+    valid_anagrams = run(anagrams.run, letters=input.letters)
     return AnagramsOutput(words=valid_anagrams)
 
 
