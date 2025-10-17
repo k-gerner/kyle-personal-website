@@ -133,7 +133,7 @@ const LetterBox: React.FC<LetterBoxProps> = ({ letterSides }) => {
                     {Array(3).fill(null).map((_, index) => (
                         <div key={`top-${index}`} className="flex flex-col items-center">
                             <span className="text-3xl mb-1 text-text-base">{letterSides[TOP][index] ?? '-'}</span>
-                            <div className="w-6 h-6 rounded-full border-2 border-primary-base bg-background-base"></div>
+                            <div className="w-6 h-6 rounded-full border-2 border-primary-base bg-primary-base"></div>
                         </div>
                     ))}
                 </div>
@@ -142,7 +142,7 @@ const LetterBox: React.FC<LetterBoxProps> = ({ letterSides }) => {
                 <div className="absolute right-[-18%] top-[16%] flex flex-col justify-between h-2/3">
                     {Array(3).fill(null).map((_, index) => (
                         <div key={`right-${index}`} className="flex flex-row items-center">
-                            <div className="w-6 h-6 rounded-full border-2 border-primary-base bg-background-base"></div>
+                            <div className="w-6 h-6 rounded-full border-2 border-primary-base bg-primary-base"></div>
                             <span className="text-3xl ml-3 text-text-base">{letterSides[RIGHT][index] ?? '-'}</span>
                         </div>
                     ))}
@@ -152,7 +152,7 @@ const LetterBox: React.FC<LetterBoxProps> = ({ letterSides }) => {
                 <div className="absolute bottom-[-22%] left-[16%] flex justify-between w-2/3">
                     {Array(3).fill(null).map((_, index) => (
                         <div key={`bottom-${index}`} className="flex flex-col items-center">
-                            <div className="w-6 h-6 rounded-full border-2 border-primary-base bg-background-base"></div>
+                            <div className="w-6 h-6 rounded-full border-2 border-primary-base bg-primary-base"></div>
                             <span className="text-3xl mt-1 text-text-base">{letterSides[BOTTOM][index] ?? '-'}</span>
                         </div>
                     ))}
@@ -163,7 +163,7 @@ const LetterBox: React.FC<LetterBoxProps> = ({ letterSides }) => {
                     {Array(3).fill(null).map((_, index) => (
                         <div key={`left-${index}`} className="flex flex-row items-center">
                             <span className="text-3xl mr-3 text-text-base">{letterSides[LEFT][index] ?? '-'}</span>
-                            <div className="w-6 h-6 rounded-full border-2 border-primary-base bg-background-base"></div>
+                            <div className="w-6 h-6 rounded-full border-2 border-primary-base bg-primary-base"></div>
                         </div>
                     ))}
                 </div>

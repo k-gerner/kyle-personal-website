@@ -238,7 +238,7 @@ const Mancala = () => {
     return (
         <div className="flex flex-col gap-4 bg-background-base min-h-screen items-center">
             <MancalaTitleSection />
-            <div className="border p-4 rounded-lg shadow-lg flex flex-col md:flex-row flex-wrap gap-4 sm:gap-8 items-center justify-center transition duration-500">
+            <div className="border border-brd-muted p-4 rounded-lg shadow-lg flex flex-col md:flex-row flex-wrap gap-4 sm:gap-8 items-center justify-center transition duration-500">
                 <div className="flex flex-col items-center gap-4 min-w-fit flex-0 relative min-h-[48rem] sm:min-h-[24rem]">
                     <div className="text-lg font-semibold text-secondary-base">AI</div>
                     <div className="hidden sm:block w-full">
@@ -294,7 +294,7 @@ const Mancala = () => {
                             <WinnerSection winner={winner} onReset={resetGame} />
                         </div>
                     )}
-                    <div className="border p-4 rounded-lg shadow-lg">
+                    <div className="border border-brd-muted p-4 rounded-lg shadow-lg">
                         <InputSection
                             maxDepth={maxDepth}
                             setMaxDepth={setMaxDepth}
@@ -526,14 +526,14 @@ const WinnerSection: React.FC<WinnerSectionProps> = ({ winner, onReset }) => {
             ? "AI Wins!"
             : "It's a Tie!";
     return (
-        <div className={`border p-4 rounded-lg flex flex-col items-center justify-center gap-4 ${backgroundColor}`}>
-            <h2 className="text-2xl font-bold text-text-contrast">
+        <div className={`border border-brd-muted p-4 rounded-lg flex flex-col items-center justify-center gap-4 ${backgroundColor}`}>
+            <h2 className="text-2xl font-bold text-text-light">
                 {winnerText}
             </h2>
             <ActionButton
                 label="Play Again"
                 onClick={onReset}
-                className="text-text-contrast"
+                className="text-text-light border-text-light"
             />
         </div>
     );

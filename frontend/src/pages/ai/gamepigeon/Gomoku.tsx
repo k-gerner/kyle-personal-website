@@ -116,7 +116,7 @@ const Gomoku = () => {
     return (
         <div className="flex flex-col gap-4 bg-background-base min-h-screen items-center">
             <GomokuTitleSection />
-            <div className="border p-4 rounded-lg shadow-lg flex flex-col md:flex-row gap-4 w-full">
+            <div className="border border-brd-muted p-4 rounded-lg shadow-lg flex flex-col md:flex-row gap-4 w-full">
                 <div className="flex flex-col gap-2 items-center flex-shrink-0 transition-all duration-500 w-full md:w-1/2 transition min-w-fit">
                     <GomokuBoard
                         playerLocations={playerLocations}
@@ -151,9 +151,9 @@ const Gomoku = () => {
                             <WinnerSection winner={winner} onReset={resetGame} />
                         </div>
                     )}
-                    <div className="border p-4 rounded-lg shadow-lg flex flex-col items-center justify-center gap-4 w-full">
+                    <div className="border border-brd-muted p-4 rounded-lg shadow-lg flex flex-col items-center justify-center gap-4 w-full">
                         <div className="flex flex-col text-center gap-2">
-                            <h2 className="text-lg font-semibold">Game Settings</h2>
+                            <h2 className="text-text-base text-lg font-semibold">Game Settings</h2>
                         </div>
                         <InputSection
                             maxDepth={maxDepth}
@@ -372,14 +372,14 @@ interface WinnerSectionProps {
 const WinnerSection: React.FC<WinnerSectionProps> = ({ winner, onReset }) => {
     const backgroundColor = winner === Player.User ? "bg-success" : "bg-danger";
     return (
-        <div className={`border p-4 rounded-lg flex flex-col items-center justify-center gap-4 ${backgroundColor}`}>
-            <h2 className="text-2xl font-bold text-text-contrast">
+        <div className={`border border-brd-muted p-4 rounded-lg flex flex-col items-center justify-center gap-4 ${backgroundColor}`}>
+            <h2 className="text-2xl font-bold text-text-light">
                 {winner === Player.User ? "You Win!" : "AI Wins!"}
             </h2>
             <ActionButton
                 label="Play Again"
                 onClick={onReset}
-                className="text-text-contrast"
+                className="text-text-light border-text-light"
             />
         </div>
     );

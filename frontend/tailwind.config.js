@@ -21,6 +21,8 @@ const customColors = {
   'text-base': "var(--text-base-color)",
   'text-muted': 'var(--text-muted-color)',
   'text-dull': 'var(--text-dull-color)',
+  'text-light': 'var(--text-light-color)',
+  'text-dark': 'var(--text-dark-color)',
   'text-contrast': 'var(--text-contrast-color)',
   'danger': 'var(--danger-color)',
   'warning': 'var(--warning-color)',

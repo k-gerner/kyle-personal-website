@@ -12,18 +12,19 @@ const defaultStyle = [
     "transition-all",
     "shadow-sm",
     "hover:shadow-lg",
-    "text-text-muted",
+    "text-text-light",
+    "bg-primary-base",
     // hover state styles
-    "hover:text-text-contrast",
-    "hover:bg-primary-base",
+    "hover:text-text-light",
+    "hover:bg-primary-highlight",
     "hover:border-primary-base",
     // focus state styles
-    "focus-visible:text-text-contrast",
+    "focus-visible:text-text-light",
     "focus-visible:bg-primary-highlight",
     "focus-visible:border-primary-base",
     // active state styles
     "active:border-primary-highlight",
-    "active:text-text-contrast",
+    "active:text-text-light",
     "active:bg-primary-highlight",
     // disabled state styles
     "disabled:pointer-events-none",
@@ -31,7 +32,7 @@ const defaultStyle = [
     "disabled:shadow-none",
     "disabled:bg-background-muted",
     "disabled:border-brd-muted",
-    "disabled:text-text-dull",
+    "disabled:text-text-muted",
 ].join(" ");
 
 export interface ActionButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {

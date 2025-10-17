@@ -19,16 +19,16 @@ const defaultButtonStyle = [
     "hover:shadow-lg",
     "text-text-muted",
     // hover state styles
-    "hover:text-text-contrast",
+    "hover:text-text-light",
     "hover:bg-primary-base",
     "hover:border-primary-base",
     // focus state styles
-    "focus:text-text-contrast",
+    "focus:text-text-light",
     "focus:bg-primary-highlight",
     "focus:border-primary-base",
     // active state styles
     "active:border-primary-highlight",
-    "active:text-text-contrast",
+    "active:text-text-light",
     "active:bg-primary-highlight",
     // disabled state styles
     "disabled:pointer-events-none",
@@ -74,7 +74,7 @@ export const ButtonGroupPicker = <T extends string | number>({
                     ?
                     options.map((option) => {
                         const dynamicClasses = `${selectedValue === option
-                            ? 'bg-primary-highlight text-text-contrast'
+                            ? 'bg-primary-highlight text-text-light'
                             : 'bg-background-base text-text-muted'}
                                 ${showSelectedOnDisabled
                                 ? ''
@@ -96,7 +96,7 @@ export const ButtonGroupPicker = <T extends string | number>({
                     :
                     optionsWithLabels?.map(({ value, label }) => {
                         const dynamicClasses = `${selectedValue === value
-                            ? 'bg-primary-highlight text-text-contrast'
+                            ? 'bg-primary-highlight text-text-light'
                             : 'bg-background-base text-text-muted'}
                                 ${showSelectedOnDisabled
                                 ? ''
@@ -115,7 +115,7 @@ export const ButtonGroupPicker = <T extends string | number>({
                         )
                     })}
             </div>
-            <span className="text-sm text-text-muted">{label}</span>
+            <span className="text-sm text-text-base">{label}</span>
         </div>
     );
 };

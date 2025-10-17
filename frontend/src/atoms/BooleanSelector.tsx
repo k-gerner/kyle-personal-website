@@ -30,7 +30,7 @@ export const BooleanSelector: React.FC<BooleanSelectorProps> = ({
                         }`}
                 ></div>
             </div>
-            <span className="text-sm text-text-primary">{label}</span>
+            <span className="text-sm text-text-base ">{label}</span>
         </label>
     )
 }

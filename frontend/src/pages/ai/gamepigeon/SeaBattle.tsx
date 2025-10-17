@@ -148,7 +148,7 @@ const SeaBattle = () => {
     return (
         <div className="flex flex-col gap-4 bg-background-base min-h-screen items-center">
             <SeaBattleTitleSection />
-            <div className='border p-4 rounded-lg shadow-lg w-full flex flex-col items-center md:flex-row gap-8 transition-all duration-500 justify-center'>
+            <div className='border border-brd-muted p-4 rounded-lg shadow-lg w-full flex flex-col items-center md:flex-row gap-8 transition-all duration-500 justify-center'>
                 <div className='flex flex-col gap-2'>
                     <SeaBattleBoard
                         board={boardState}
@@ -192,12 +192,12 @@ const SeaBattle = () => {
                             />
                         </div>
                     )}
-                    <div className='border p-4 rounded-lg shadow-md'>
+                    <div className='border border-brd-muted p-4 rounded-lg shadow-md'>
                         <RemainingShipsSection
                             shipsRemaining={boardState.remainingShips}
                         />
                     </div>
-                    <div className='flex flex-col p-4 border rounded-lg shadow-md'>
+                    <div className='flex flex-col p-4 border border-brd-muted rounded-lg shadow-md'>
                         <InputSection
                             boardSize={boardState.boardSize}
                             setBoardSize={(size) => resetGame(size)}
@@ -262,7 +262,7 @@ const SeaBattleBoard: React.FC<SeaBattleBoardProps> = ({
                                     : isCleared
                                         ? 'bg-sea-battle-board opacity-50'
                                         : isSelected
-                                            ? 'bg-primary-base opacity-50 border-background-contrast border-2'
+                                            ? 'bg-primary-base opacity-50 border-background-contrast border-2 border-primary-contrast'
                                             : 'bg-sea-battle-board';
                         const label = isDestroyed || isHit
                             ? <ImCross className="text-white" />
@@ -312,26 +312,26 @@ const BoardMarkingSection: React.FC<BoardMarkingSectionProps> = ({
     onMarkMissed
 }) => {
     return (
-        <div className="flex flex-col gap-2 border rounded-lg p-2 shadow-lg">
+        <div className="flex flex-col gap-2 border border-brd-muted rounded-lg p-2 shadow-lg">
             <h2 className="text-lg font-bold text-center text-text-base">Mark Selected Cell As:</h2>
             <div className="flex flex-row gap-4 justify-center">
                 <ActionButton
                     label="Destroyed"
                     onClick={onMarkDestroyed}
                     disabled={!enabled}
-                    className="bg-success border-success text-text-contrast"
+                    className="bg-success border-success text-text-light"
                 />
                 <ActionButton
                     label="Hit"
                     onClick={onMarkHit}
                     disabled={!enabled}
-                    className="bg-warning border-warning text-text-muted"
+                    className="bg-warning border-warning text-text-dark"
                 />
                 <ActionButton
                     label="Missed"
                     onClick={onMarkMissed}
                     disabled={!enabled}
-                    className="bg-danger border-danger text-text-contrast"
+                    className="bg-danger border-danger text-text-light"
                 />
             </div>
         </div>

@@ -1,7 +1,8 @@
 import React, { useState, useRef, useEffect } from "react";
-import { MdExpandLess, MdExpandMore } from "react-icons/md";
+import { MdExpandLess, MdExpandMore, MdOutlineDarkMode } from "react-icons/md";
 import { PiSunHorizon } from "react-icons/pi";
 import { twMerge } from 'tailwind-merge';
+
 
 
 const defaultButtonStyle = [
@@ -22,14 +23,14 @@ const defaultButtonStyle = [
     "shadow-sm",
     "hover:shadow-lg",
     "text-text-muted",
-    "hover:text-text-contrast",
+    "hover:text-text-light",
     "hover:bg-primary-base",
     "hover:border-primary-base",
-    "focus:text-text-contrast",
+    "focus:text-text-light",
     "focus:bg-primary-highlight",
     "focus:border-primary-base",
     "active:border-primary-highlight",
-    "active:text-text-contrast",
+    "active:text-text-light",
     "active:bg-primary-highlight"
 ].join(" ");
 
@@ -101,6 +102,11 @@ export const ThemePicker = () => {
                         text="Ocean Sun"
                         icon={<PiSunHorizon />}
                         onClick={() => handleThemeChange("theme-light")}
+                    />
+                    <SelectableOption
+                        text="Ocean Moon"
+                        icon={<MdOutlineDarkMode />}
+                        onClick={() => handleThemeChange("theme-dark")}
                     />
                     <SelectableOption
                         text="Test"

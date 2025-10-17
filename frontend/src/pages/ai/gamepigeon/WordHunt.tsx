@@ -457,7 +457,7 @@ const LetterTile: React.FC<LetterTileProps> = ({
     return (
         <div key={tileKey} className={`${baseClasses} ${sizeClasses} ${bgColor} ${borderColor}`}>
             <span>{letter || ""}</span>
-            <span className="text-xs text-text-base opacity-70">{inSolution && indexInSolution + 1}</span>
+            <span className="text-xs text-text-dark opacity-70">{inSolution && indexInSolution + 1}</span>
         </div>
     );
 }

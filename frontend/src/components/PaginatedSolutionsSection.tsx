@@ -8,13 +8,13 @@ const pageButtonStyle = [
     "transition-all", "shadow-sm", "text-text-muted",
 
     // Hover styles
-    "hover:shadow-lg", "hover:text-text-contrast", "hover:bg-primary-base", "hover:border-primary-base",
+    "hover:shadow-lg", "hover:text-text-light", "hover:bg-primary-base", "hover:border-primary-base",
 
     // Focus styles
     "focus-visible:text-text-contrast", "focus-visible:bg-primary-highlight", "focus-visible:border-primary-base",
 
     // Active styles
-    "active:border-primary-highlight", "active:text-text-contrast", "active:bg-primary-highlight",
+    "active:border-primary-highlight", "active:text-text-light", "active:bg-primary-highlight",
 
     // Disabled styles
     "disabled:pointer-events-none", "disabled:opacity-50", "disabled:shadow-none",
@@ -47,8 +47,8 @@ export const PaginatedSolutionsSection: React.FC<PaginatedSolutionsSectionProps>
     }
 
     return (
-        <div className="min-w-max flex flex-col w-full border-2 border:black rounded items-center">
-            <h2 className="rounded text-lg font-bold text-center p-2 bg-primary-highlight text-text-contrast w-full">
+        <div className="min-w-max flex flex-col w-full border-2 border-brd-muted rounded-lg items-center">
+            <h2 className="rounded-t text-lg font-bold text-center p-2 bg-primary-highlight text-text-light w-full">
                 {isLoading
                     ? "Checking..."
                     : `Potential Solutions (${solutions.reduce((total, subArray) => total + subArray.length, 0)})`}
@@ -70,7 +70,7 @@ export const PaginatedSolutionsSection: React.FC<PaginatedSolutionsSectionProps>
                                                 : index + 1}
                                         </div>
                                     )}
-                                    <div className={`font-bold bg-primary-base p-4 text-text-contrast min-w-max text-center tracking-widest ${includeNumbers ? "rounded-e-lg" : "rounded-lg"}`}>
+                                    <div className={`font-bold bg-primary-base p-4 text-text-light min-w-max text-center tracking-widest ${includeNumbers ? "rounded-e-lg" : "rounded-lg"}`}>
                                         {word.toUpperCase()}
                                     </div>
                                 </div>
@@ -126,7 +126,7 @@ export const PageButtons: React.FC<PageButtonsProps> = ({
     }, [pageNumber, setPageNumber, totalPages, previousActive, nextActive]);
 
     return (
-        <div className="w-full flex flex-row py-2 px-6 gap-6">
+        <div className="w-full flex flex-row py-2 px-6 gap-6 text-text-light">
             <button
                 disabled={!previousActive}
                 onClick={() => setPageNumber(pageNumber - 1)}
@@ -144,7 +144,7 @@ export const PageButtons: React.FC<PageButtonsProps> = ({
 
 export const NoSolutions = () => {
     return (
-        <div className="flex gap-2 items-center justify-center w-full h-40 bg-background-muted rounded-lg shadow-md">
+        <div className="flex gap-2 items-center justify-center w-full h-40 bg-background-muted rounded-b-md shadow-md text-text-base">
             <GoInfo />
             <span className="text-xl text-text-muted font-semibold">
                 No solutions found!

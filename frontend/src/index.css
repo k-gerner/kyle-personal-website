@@ -39,6 +39,8 @@ code {
   --text-muted-color: rgb(71 85 105);
   --text-dull-color: rgb(148, 163, 184);
   /* slate-400 */
+  --text-light-color: white;
+  --text-dark-color: black;
   --text-contrast-color: white;
 
   --brd-muted-color: rgb(209, 213, 219);
@@ -113,7 +115,37 @@ code {
   --text-contrast-color: white;
 }
 
-.theme-dark {}
+.theme-dark {
+  --primary-accent-color: rgb(6, 87, 127);
+  --primary-base-color: rgb(30, 154, 192);
+  --primary-highlight-color: rgb(39, 171, 204);
+  --primary-contrast-color: rgb(142, 202, 230);
+
+  --secondary-base-color: rgb(255 183 3);
+  --secondary-accent-color: rgb(253 158 2);
+  --secondary-contrast-color: rgb(251 133 0);
+
+  --background-base-color: rgb(58, 54, 54);
+  --background-muted-color: rgb(97, 91, 91);
+  --background-contrast-color: white;
+
+  --success-color: rgb(16 185 129);
+  --warning-color: rgb(251 191 36);
+  --danger-color: rgb(213, 86, 86);
+
+  --text-base-color: white;
+  --text-muted-color: rgb(148, 163, 184);
+  --text-dull-color: rgb(103, 123, 150);
+  --text-contrast-color: rgb(0, 0, 0);
+
+  --brd-muted-color: rgb(84, 78, 78);
+
+  --connect-4-board-highlight-color: #c5e1ee;
+
+  --sea-battle-ship-inner-color: rgb(31, 41, 55);
+  --sea-battle-ship-base-color: rgb(107, 114, 128);
+  --sea-battle-ship-border-color: rgb(129, 136, 150);
+}
 
 .input-box-transition {
   transition: all 0.2s ease;

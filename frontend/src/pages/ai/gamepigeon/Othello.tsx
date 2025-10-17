@@ -175,7 +175,7 @@ const Othello = () => {
     return (
         <div className="flex flex-col gap-4 bg-background-base min-h-screen items-center">
             <OthelloTitleSection />
-            <div className="border p-4 rounded-lg shadow-lg flex items-start flex-col md:flex-row gap-4 w-full">
+            <div className="border border-brd-muted p-4 rounded-lg shadow-lg flex items-start flex-col md:flex-row gap-4 w-full">
                 <ScoreBoard
                     playerScore={pieceLocations.player.length}
                     aiScore={pieceLocations.ai.length}
@@ -218,9 +218,9 @@ const Othello = () => {
                             <WinnerSection winner={winner} onReset={resetGame} />
                         </div>
                     )}
-                    <div className="border p-4 rounded-lg shadow-lg flex flex-col items-center justify-center gap-4 w-full">
+                    <div className="border border-brd-muted p-4 rounded-lg shadow-lg flex flex-col items-center justify-center gap-4 w-full">
                         <div className="flex flex-col text-center gap-2">
-                            <h2 className="text-lg font-semibold">Game Settings</h2>
+                            <h2 className="text-text-base text-lg font-semibold">Game Settings</h2>
                         </div>
                         <InputSection
                             maxDepth={maxDepth}
@@ -415,14 +415,14 @@ const ScoreBoard: React.FC<ScoreBoardProps> = ({ playerScore, aiScore }) => {
     return (
         <div className="px-10 gap-12 flex flex-row md:flex-col gap-4 justify-center items-center bg-primary-base rounded-3xl max-w-fit max-h-fit py-2 md:py-10 self-center">
             <div className="flex flex-col items-center gap-2">
-                <span className="text-lg font-semibold text-text-contrast">Player</span>
+                <span className="text-lg font-semibold text-text-light">Player</span>
                 <Piece type={PieceType.PLAYER} />
-                <span className="text-2xl font-bold text-text-contrast">{playerScore}</span>
+                <span className="text-2xl font-bold text-text-light">{playerScore}</span>
             </div>
             <div className="flex flex-col items-center gap-2">
-                <span className="text-lg font-semibold text-text-contrast">AI</span>
+                <span className="text-lg font-semibold text-text-light">AI</span>
                 <Piece type={PieceType.AI} />
-                <span className="text-2xl font-bold text-text-contrast">{aiScore}</span>
+                <span className="text-2xl font-bold text-text-light">{aiScore}</span>
             </div>
         </div>
     );
@@ -489,14 +489,14 @@ const WinnerSection: React.FC<WinnerSectionProps> = ({ winner, onReset }) => {
             ? "AI Wins!"
             : "It's a Tie!";
     return (
-        <div className={`border p-4 rounded-lg flex flex-col items-center justify-center gap-4 ${backgroundColor}`}>
-            <h2 className="text-2xl font-bold text-text-contrast">
+        <div className={`border border-brd-muted p-4 rounded-lg flex flex-col items-center justify-center gap-4 ${backgroundColor}`}>
+            <h2 className="text-2xl font-bold text-text-light">
                 {winnerText}
             </h2>
             <ActionButton
                 label="Play Again"
                 onClick={onReset}
-                className="text-text-contrast"
+                className="text-text-light border-text-light"
             />
         </div>
     );
