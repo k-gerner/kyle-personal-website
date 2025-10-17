@@ -4,7 +4,7 @@ import { twMerge } from 'tailwind-merge';
 const defaultStyle = [
     "rounded-full",
     "border",
-    "border-slate-300",
+    "border-brd-muted",
     "py-2",
     "px-4",
     "text-center",
@@ -12,7 +12,7 @@ const defaultStyle = [
     "transition-all",
     "shadow-sm",
     "hover:shadow-lg",
-    "text-slate-600",
+    "text-text-muted",
     // hover state styles
     "hover:text-text-contrast",
     "hover:bg-primary-base",
@@ -29,9 +29,9 @@ const defaultStyle = [
     "disabled:pointer-events-none",
     "disabled:opacity-50",
     "disabled:shadow-none",
-    "disabled:bg-slate-200",
-    "disabled:border-slate-200",
-    "disabled:text-slate-400",
+    "disabled:bg-background-muted",
+    "disabled:border-brd-muted",
+    "disabled:text-text-dull",
 ].join(" ");
 
 export interface ActionButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {

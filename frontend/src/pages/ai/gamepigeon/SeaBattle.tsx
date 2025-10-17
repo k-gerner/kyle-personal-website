@@ -319,19 +319,19 @@ const BoardMarkingSection: React.FC<BoardMarkingSectionProps> = ({
                     label="Destroyed"
                     onClick={onMarkDestroyed}
                     disabled={!enabled}
-                    className="bg-success"
+                    className="bg-success border-success text-text-contrast"
                 />
                 <ActionButton
                     label="Hit"
                     onClick={onMarkHit}
                     disabled={!enabled}
-                    className="bg-warning"
+                    className="bg-warning border-warning text-text-muted"
                 />
                 <ActionButton
                     label="Missed"
                     onClick={onMarkMissed}
                     disabled={!enabled}
-                    className="bg-gray-400"
+                    className="bg-danger border-danger text-text-contrast"
                 />
             </div>
         </div>

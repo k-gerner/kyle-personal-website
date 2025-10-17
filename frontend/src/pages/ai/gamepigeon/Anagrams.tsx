@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import '../../../App.css'
+import { ActionButton } from '../../../atoms/ActionButton';
 import { ButtonGroupPicker } from '../../../components/ButtonGroupPicker';
 import { PaginatedSolutionsSection } from '../../../components/PaginatedSolutionsSection';
 import { TitleWithInfo } from '../../../components/TitleWithInfo';
@@ -8,7 +9,6 @@ import Input from '../../../atoms/Input';
 
 
 const WORDS_PER_PAGE = 5;
-const buttonStyle = "rounded-full border border-slate-300 py-2 px-4 text-center text-sm transition-all shadow-sm hover:shadow-lg text-slate-600 hover:text-text-contrast hover:bg-primary-base hover:border-primary-base focus-visible:text-text-contrast focus-visible:bg-primary-highlight focus-visible:border-primary-base active:border-primary-highlight active:text-text-contrast active:bg-primary-highlight disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
 
 const Anagrams = () => {
     const [hasSolved, setHasSolved] = useState(false); // if solve has run at least once
@@ -87,30 +87,27 @@ const InputSection: React.FC<InputSectionProps> = ({
     onSolve
 }) => {
     return (
-        <div className="flex flex-col gap-4">
-            <div className='flex flex-row gap-2 justify-center'>
-                <Input
-                    type="text"
-                    value={letters}
-                    onChange={onLettersChange}
-                    maxLength={numLetters}
-                    placeholder="Letters"
-                    className="w-36"
-                />
-            </div>
+        <div className="flex flex-col gap-4 items-center">
+            <Input
+                type="text"
+                value={letters}
+                onChange={onLettersChange}
+                maxLength={numLetters}
+                placeholder="Letters"
+                className="w-36"
+            />
             <ButtonGroupPicker
                 options={[6, 7]}
                 label="Number of Letters"
                 selectedValue={numLetters}
                 setValue={setNumLetters}
             />
-            <div className="flex justify-center">
-                <button
-                    disabled={letters.length !== numLetters}
-                    onClick={onSolve}
-                    className={`${buttonStyle} w-48`}
-                >Solve</button>
-            </div>
+            <ActionButton
+                disabled={letters.length !== numLetters}
+                label="Solve"
+                onClick={onSolve}
+                className="w-48"
+            />
         </div>
     );
 }
@@ -132,7 +129,7 @@ const LettersSection: React.FC<LettersSectionProps> = ({
     return (
         <div className="flex flex-row gap-2 justify-center">
             {paddedLetters.map((letter, index) => (
-                <div key={index} className="bg-letter-tile rounded-md w-16 h-16 flex items-center justify-center text-xl font-bold text-slate-800">
+                <div key={index} className="bg-letter-tile rounded-md w-16 h-16 flex items-center justify-center text-xl font-bold text-letter-tile-text">
                     {letter}
                 </div>
             ))}

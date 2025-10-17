@@ -1,4 +1,5 @@
 import React, { useState, useRef } from 'react';
+import { ActionButton } from '../../../atoms/ActionButton';
 import { TitleWithInfo } from '../../../components/TitleWithInfo';
 import { PaginatedSolutionsSection } from '../../../components/PaginatedSolutionsSection';
 import { chunkArray } from '../../../utils/helpers';
@@ -6,7 +7,6 @@ import '../../../App.css'
 import Input from '../../../atoms/Input';
 
 const WORDS_PER_PAGE = 5;
-const buttonStyle = "rounded-full border border-slate-300 py-2 px-4 text-center text-sm transition-all shadow-sm hover:shadow-lg text-slate-600 hover:text-text-contrast hover:bg-primary-base hover:border-primary-base focus-visible:text-text-contrast focus-visible:bg-primary-highlight focus-visible:border-primary-base active:border-primary-highlight active:text-text-contrast active:bg-primary-highlight disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
 
 const SpellingBee = () => {
     const [hasSolved, setHasSolved] = useState(false); // if solve has run at least once
@@ -96,7 +96,7 @@ const InputSection: React.FC<InputSectionProps> = ({
     outerLettersRef
 }) => {
     return (
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-2 items-center">
             <div className='flex flex-row gap-2 justify-center'>
                 <Input
                     type="text"
@@ -116,13 +116,12 @@ const InputSection: React.FC<InputSectionProps> = ({
                     ref={outerLettersRef}
                 />
             </div>
-            <div className="flex justify-center">
-                <button
-                    disabled={!centerLetter || outerLetters.length !== 6}
-                    onClick={onSolve}
-                    className={`${buttonStyle} w-48`}
-                >Solve</button>
-            </div>
+            <ActionButton
+                disabled={!centerLetter || outerLetters.length !== 6}
+                label="Solve"
+                onClick={onSolve}
+                className="w-48"
+            />
         </div>
     );
 }

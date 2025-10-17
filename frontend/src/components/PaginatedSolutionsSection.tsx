@@ -4,8 +4,8 @@ import { GoInfo } from "react-icons/go";
 
 const pageButtonStyle = [
     // General styles
-    "rounded-full", "border", "border-slate-300", "py-2", "px-4", "text-center", "text-sm",
-    "transition-all", "shadow-sm", "text-slate-600",
+    "rounded-full", "border", "border-brd-muted", "py-2", "px-4", "text-center", "text-sm",
+    "transition-all", "shadow-sm", "text-text-muted",
 
     // Hover styles
     "hover:shadow-lg", "hover:text-text-contrast", "hover:bg-primary-base", "hover:border-primary-base",
@@ -144,9 +144,9 @@ export const PageButtons: React.FC<PageButtonsProps> = ({
 
 export const NoSolutions = () => {
     return (
-        <div className="flex gap-2 items-center justify-center w-full h-40 bg-gray-100 rounded-lg shadow-md">
+        <div className="flex gap-2 items-center justify-center w-full h-40 bg-background-muted rounded-lg shadow-md">
             <GoInfo />
-            <span className="text-xl text-gray-600 font-semibold">
+            <span className="text-xl text-text-muted font-semibold">
                 No solutions found!
             </span>
         </div>

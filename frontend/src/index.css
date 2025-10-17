@@ -18,10 +18,10 @@ code {
 @import './styles/SpellingBee.css';
 
 :root {
-  --primary-accent-color: #8ecae6;
+  --primary-accent-color: rgb(142, 202, 230);
   --primary-base-color: rgb(33, 158, 188);
-  --primary-highlight-color: #126782;
-  --primary-contrast-color: #023047;
+  --primary-highlight-color: rgb(18, 103, 130);
+  --primary-contrast-color: rgb(2, 48, 71);
 
   --secondary-base-color: rgb(255 183 3);
   --secondary-accent-color: rgb(253 158 2);
@@ -29,18 +29,23 @@ code {
 
   --background-base-color: white;
   --background-muted-color: rgb(229, 231, 235);
-  --background-contrast-color: #023047;
+  --background-contrast-color: rgb(2, 48, 71);
 
   --success-color: rgb(16 185 129);
   --warning-color: rgb(251 191 36);
   --danger-color: rgb(213, 86, 86);
 
   --text-base-color: rgb(0, 0, 0);
-  --text-muted-color: rgb(148, 163, 184);
+  --text-muted-color: rgb(71 85 105);
+  --text-dull-color: rgb(148, 163, 184);
   /* slate-400 */
   --text-contrast-color: white;
 
+  --brd-muted-color: rgb(209, 213, 219);
+  /** border */
+
   --letter-tile-color: rgb(233, 199, 155);
+  --letter-tile-text-color: rgb(30, 41, 59);
 
   --connect-4-board-color: #5aa9e6;
   --connect-4-board-highlight-color: #023047;
@@ -83,7 +88,7 @@ code {
 
   --text-base-color: rgb(0, 0, 0);
   /* black; */
-  --text-muted-color: #94a3b8;
+  /* --text-muted-color: #94a3b8; */
   /* slate-400 */
   --text-contrast-color: white;
 }

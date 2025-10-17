@@ -1,8 +1,37 @@
 import React, { useState, useRef, useEffect } from "react";
 import { MdExpandLess, MdExpandMore } from "react-icons/md";
 import { PiSunHorizon } from "react-icons/pi";
+import { twMerge } from 'tailwind-merge';
 
-const defaultButtonStyle = "rounded-lg py-2 px-4 inline-flex items-center gap-x-2 border border-gray-200 hover:bg-primary-base text-center text-sm transition-all shadow-sm hover:shadow-lg text-slate-600 hover:text-text-contrast hover:bg-primary-base hover:border-primary-base focus:text-text-contrast focus:bg-primary-highlight focus:border-primary-base active:border-primary-highlight active:text-text-contrast active:bg-primary-highlight";
+
+const defaultButtonStyle = [
+    "rounded-lg",
+    "py-2",
+    "px-4",
+    "inline-flex",
+    "items-center",
+    "gap-x-2",
+    "border",
+    "border-brd-muted",
+    "hover:bg-primary-base",
+    "text-center",
+    "text-sm",
+    "bg-background-base",
+    "text-primary-highlight",
+    "transition-all",
+    "shadow-sm",
+    "hover:shadow-lg",
+    "text-text-muted",
+    "hover:text-text-contrast",
+    "hover:bg-primary-base",
+    "hover:border-primary-base",
+    "focus:text-text-contrast",
+    "focus:bg-primary-highlight",
+    "focus:border-primary-base",
+    "active:border-primary-highlight",
+    "active:text-text-contrast",
+    "active:bg-primary-highlight"
+].join(" ");
 
 export const ThemePicker = () => {
     const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -53,7 +82,7 @@ export const ThemePicker = () => {
             {/* Parent Button */}
             <button
                 onClick={toggleDropdown}
-                className={`px-4 py-2 bg-background-base text-primary-highlight rounded hover:bg-gray-300 border ${defaultButtonStyle}`}
+                className={`${defaultButtonStyle}`}
             >
                 <div className="flex flex-row gap-2 items-center">
                     <span>Theme</span>
@@ -65,7 +94,7 @@ export const ThemePicker = () => {
             {dropdownOpen && (
                 <div
                     ref={dropdownRef}
-                    className={`absolute mt-2 bg-background-base border border-gray-300 rounded shadow-lg min-w-max animate-dropdown ${alignLeft ? "right-0" : "left-0"
+                    className={`absolute mt-2 bg-background-base border border-brd-muted rounded shadow-lg min-w-max animate-dropdown ${alignLeft ? "right-0" : "left-0"
                         }`}
                 >
                     <SelectableOption
@@ -100,9 +129,13 @@ const SelectableOption: React.FC<SelectableOptionProps> = ({
             <span>{text}</span>
         </div>)
         : text;
+    const buttonClasses = twMerge(
+        defaultButtonStyle,
+        "block w-full text-left rounded border-none"
+    );
     return (
         <button
-            className="block w-full text-left px-4 py-2 hover:bg-gray-100"
+            className={buttonClasses}
             onClick={onClick}
         >
             {contents}

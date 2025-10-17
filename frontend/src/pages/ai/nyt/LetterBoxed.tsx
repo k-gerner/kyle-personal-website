@@ -1,6 +1,7 @@
 import React, { useState, useRef } from 'react';
 
 import '../../../App.css'
+import { ActionButton } from '../../../atoms/ActionButton';
 import { ButtonGroupPicker } from '../../../components/ButtonGroupPicker';
 import { PaginatedSolutionsSection } from '../../../components/PaginatedSolutionsSection';
 import { TitleWithInfo } from '../../../components/TitleWithInfo';
@@ -15,8 +16,6 @@ type Side = typeof TOP | typeof RIGHT | typeof BOTTOM | typeof LEFT;
 type LetterSides = {
     [key in Side]: string[];
 };
-
-const buttonStyle = "rounded-full border border-slate-300 py-2 px-4 text-center text-sm transition-all shadow-sm hover:shadow-lg text-slate-600 hover:text-text-contrast hover:bg-primary-base hover:border-primary-base focus-visible:text-text-contrast focus-visible:bg-primary-highlight focus-visible:border-primary-base active:border-primary-highlight active:text-text-contrast active:bg-primary-highlight disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none";
 
 const LetterBoxed = () => {
     const [hasSolved, setHasSolved] = useState(false); // if solve has run at least once
@@ -128,13 +127,13 @@ interface LetterBoxProps {
 const LetterBox: React.FC<LetterBoxProps> = ({ letterSides }) => {
     return (
         <div className="flex justify-center items-center font-mono py-14">
-            <div className="min-w-max relative w-64 h-64 border-4 border-black flex justify-center items-center">
+            <div className="min-w-max relative w-64 h-64 border-4 border-background-contrast flex justify-center items-center">
                 {/* Top Circles */}
                 <div className="absolute top-[-22%] left-[16%] flex justify-between w-2/3">
                     {Array(3).fill(null).map((_, index) => (
                         <div key={`top-${index}`} className="flex flex-col items-center">
-                            <span className="text-3xl mb-1">{letterSides[TOP][index] ?? '-'}</span>
-                            <div className="w-6 h-6 rounded-full border-2 border-red-500 bg-white"></div>
+                            <span className="text-3xl mb-1 text-text-base">{letterSides[TOP][index] ?? '-'}</span>
+                            <div className="w-6 h-6 rounded-full border-2 border-primary-base bg-background-base"></div>
                         </div>
                     ))}
                 </div>
@@ -143,8 +142,8 @@ const LetterBox: React.FC<LetterBoxProps> = ({ letterSides }) => {
                 <div className="absolute right-[-18%] top-[16%] flex flex-col justify-between h-2/3">
                     {Array(3).fill(null).map((_, index) => (
                         <div key={`right-${index}`} className="flex flex-row items-center">
-                            <div className="w-6 h-6 rounded-full border-2 border-red-500 bg-white"></div>
-                            <span className="text-3xl ml-3">{letterSides[RIGHT][index] ?? '-'}</span>
+                            <div className="w-6 h-6 rounded-full border-2 border-primary-base bg-background-base"></div>
+                            <span className="text-3xl ml-3 text-text-base">{letterSides[RIGHT][index] ?? '-'}</span>
                         </div>
                     ))}
                 </div>
@@ -153,8 +152,8 @@ const LetterBox: React.FC<LetterBoxProps> = ({ letterSides }) => {
                 <div className="absolute bottom-[-22%] left-[16%] flex justify-between w-2/3">
                     {Array(3).fill(null).map((_, index) => (
                         <div key={`bottom-${index}`} className="flex flex-col items-center">
-                            <div className="w-6 h-6 rounded-full border-2 border-red-500 bg-white"></div>
-                            <span className="text-3xl mt-1">{letterSides[BOTTOM][index] ?? '-'}</span>
+                            <div className="w-6 h-6 rounded-full border-2 border-primary-base bg-background-base"></div>
+                            <span className="text-3xl mt-1 text-text-base">{letterSides[BOTTOM][index] ?? '-'}</span>
                         </div>
                     ))}
                 </div>
@@ -163,8 +162,8 @@ const LetterBox: React.FC<LetterBoxProps> = ({ letterSides }) => {
                 <div className="absolute left-[-18%] top-[16%] flex flex-col justify-between h-2/3">
                     {Array(3).fill(null).map((_, index) => (
                         <div key={`left-${index}`} className="flex flex-row items-center">
-                            <span className="text-3xl mr-3">{letterSides[LEFT][index] ?? '-'}</span>
-                            <div className="w-6 h-6 rounded-full border-2 border-red-500 bg-white"></div>
+                            <span className="text-3xl mr-3 text-text-base">{letterSides[LEFT][index] ?? '-'}</span>
+                            <div className="w-6 h-6 rounded-full border-2 border-primary-base bg-background-base"></div>
                         </div>
                     ))}
                 </div>
@@ -193,7 +192,7 @@ const InputSection: React.FC<InputSectionProps> = ({
     setMaxSolutionLength,
 }) => {
     return (
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-4 items-center">
             <LettersInputs
                 letters={letters}
                 onLettersChange={onLettersChange}
@@ -206,13 +205,12 @@ const InputSection: React.FC<InputSectionProps> = ({
                 selectedValue={maxSolutionLength}
                 setValue={setMaxSolutionLength}
             />
-            <div className="flex justify-center">
-                <button
-                    disabled={!Object.values(letters).every((side) => side.length === 3)}
-                    onClick={onSolve}
-                    className={`${buttonStyle} w-48`}
-                >Solve</button>
-            </div>
+            <ActionButton
+                disabled={!Object.values(letters).every((side) => side.length === 3)}
+                label="Solve"
+                onClick={onSolve}
+                className="w-48"
+            />
         </div>
     );
 }

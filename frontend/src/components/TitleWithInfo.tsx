@@ -27,7 +27,7 @@ export const TitleWithInfo: React.FC<TitleWithInfoProps> = ({
                 <h1 className="text-3xl font-bold text-primary-highlight">{title}</h1>
                 <div className="relative group">
                     <button
-                        className="ml-2 p-2 rounded-full hover:bg-slate-200 transition"
+                        className="ml-2 p-2 rounded-full hover:bg-background-muted transition"
                         aria-label="Show info"
                         onClick={() => setShowInfo(true)}
                     >
@@ -82,10 +82,10 @@ export const InfoOverlay: React.FC<InfoOverlayProps> = ({
                     <MdOutlineCancel className='w-8 h-8' />
                 </button>
                 <h2 className="text-xl text-text-base font-bold mb-2">{title}</h2>
-                <ul className="list-disc pl-5 mb-2 text-slate-700">
+                <ul className="list-disc pl-5 mb-2 text-text-muted">
                     <li><b>Objective:</b> {objective}</li>
                     <li><b>Rules:</b></li>
-                    <ul className="list-disc pl-5 mb-2 text-slate-700">
+                    <ul className="list-disc pl-5 mb-2 text-text-muted">
                         {rules.map((rule, index) => (
                             <li key={index}>{rule}</li>
                         ))}
@@ -95,7 +95,7 @@ export const InfoOverlay: React.FC<InfoOverlayProps> = ({
                 {toolInstructions && toolInstructions.length > 0 && (
                     <>
                         <h3 className="text-lg text-text-base font-bold mb-1">{instructionsTitle}</h3>
-                        <ul className="list-disc pl-5 mb-2 text-slate-700">
+                        <ul className="list-disc pl-5 mb-2 text-text-muted">
                             {toolInstructions.map((instruction, index) => (
                                 <li key={index}>{instruction}</li>
                             ))}

@@ -1,3 +1,5 @@
+import { twMerge } from 'tailwind-merge';
+
 const defaultButtonStyle = [
     "py-2",
     "px-4",
@@ -8,14 +10,14 @@ const defaultButtonStyle = [
     "first:ms-0",
     "last:rounded-e-lg",
     "border",
-    "border-gray-200",
+    "border-brd-muted",
     "hover:bg-primary-base",
     "text-center",
     "text-sm",
     "transition-all",
     "shadow-sm",
     "hover:shadow-lg",
-    "text-slate-600",
+    "text-text-muted",
     // hover state styles
     "hover:text-text-contrast",
     "hover:bg-primary-base",
@@ -32,7 +34,6 @@ const defaultButtonStyle = [
     "disabled:pointer-events-none",
     "disabled:opacity-50",
     "disabled:shadow-none",
-    "disabled:border-slate-200",
 ].join(" ");
 
 export type ButtonGroupPickerOption<T extends string | number> = { label: string; value: T };
@@ -71,47 +72,50 @@ export const ButtonGroupPicker = <T extends string | number>({
             <div>
                 {options
                     ?
-                    options.map((option) => (
-                        <button
-                            key={option}
-                            type="button"
-                            className={`${defaultButtonStyle} 
-                                ${selectedValue === option
-                                    ? 'bg-primary-highlight text-text-contrast'
-                                    : 'bg-background-base text-gray-800'}
+                    options.map((option) => {
+                        const dynamicClasses = `${selectedValue === option
+                            ? 'bg-primary-highlight text-text-contrast'
+                            : 'bg-background-base text-text-muted'}
                                 ${showSelectedOnDisabled
-                                    ? ''
-                                    : 'disabled:bg-slate-200 disabled:text-slate-400'
-                                }
+                                ? ''
+                                : 'disabled:bg-background-muted disabled:text-text-dull'
+                            }`
+                        return (
+                            <button
+                                key={option}
+                                type="button"
+                                className={`${twMerge(defaultButtonStyle, dynamicClasses)}
                             `}
-                            onClick={() => setValue(option)}
-                            disabled={disabled}
-                        >
-                            {option}
-                        </button>
-                    ))
+                                onClick={() => setValue(option)}
+                                disabled={disabled}
+                            >
+                                {option}
+                            </button>
+                        )
+                    })
                     :
-                    optionsWithLabels?.map(({ value, label }) => (
-                        <button
-                            key={value}
-                            type="button"
-                            className={`${defaultButtonStyle} 
-                                ${selectedValue === value
-                                    ? 'bg-primary-highlight text-text-contrast'
-                                    : 'bg-background-base text-gray-800'}
+                    optionsWithLabels?.map(({ value, label }) => {
+                        const dynamicClasses = `${selectedValue === value
+                            ? 'bg-primary-highlight text-text-contrast'
+                            : 'bg-background-base text-text-muted'}
                                 ${showSelectedOnDisabled
-                                    ? ''
-                                    : 'disabled:bg-slate-200 disabled:text-slate-400'
-                                }
-                            `}
-                            onClick={() => setValue(value)}
-                            disabled={disabled}
-                        >
-                            {label}
-                        </button>
-                    ))}
+                                ? ''
+                                : 'disabled:bg-background-muted disabled:text-text-dull'
+                            }`
+                        return (
+                            <button
+                                key={value}
+                                type="button"
+                                className={`${twMerge(defaultButtonStyle, dynamicClasses)}`}
+                                onClick={() => setValue(value)}
+                                disabled={disabled}
+                            >
+                                {label}
+                            </button>
+                        )
+                    })}
             </div>
-            <span className="text-sm text-slate-600">{label}</span>
+            <span className="text-sm text-text-muted">{label}</span>
         </div>
     );
 };

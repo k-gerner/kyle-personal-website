@@ -20,11 +20,15 @@ const customColors = {
   'background-contrast': 'var(--background-contrast-color)',
   'text-base': "var(--text-base-color)",
   'text-muted': 'var(--text-muted-color)',
+  'text-dull': 'var(--text-dull-color)',
   'text-contrast': 'var(--text-contrast-color)',
   'danger': 'var(--danger-color)',
   'warning': 'var(--warning-color)',
   'success': 'var(--success-color)',
+  'brd-muted': 'var(--brd-muted-color)',
+
   'letter-tile': 'var(--letter-tile-color)',
+  'letter-tile-text': 'var(--letter-tile-text-color)',
 
   // game specific
   'connect-4-board': 'var(--connect-4-board-color)',

@@ -1,5 +1,6 @@
 import React, { useState, useRef } from 'react';
 import '../../../App.css'
+import { ActionButton } from '../../../atoms/ActionButton';
 import { ButtonGroupPicker, ButtonGroupPickerOption } from '../../../components/ButtonGroupPicker';
 import { PaginatedSolutionsSection } from '../../../components/PaginatedSolutionsSection';
 import { chunkArray } from '../../../utils/helpers';
@@ -21,7 +22,6 @@ const rowLengthsByBoardType: Record<BoardType, number[]> = {
     "cross": [4, 5, 3, 5, 4]
 };
 const WORDS_PER_PAGE = 1;
-const buttonStyle = "rounded-full border border-slate-300 py-2 px-4 text-center text-sm transition-all shadow-sm hover:shadow-lg text-slate-600 hover:text-text-contrast hover:bg-primary-base hover:border-primary-base focus-visible:text-text-contrast focus-visible:bg-primary-highlight focus-visible:border-primary-base active:border-primary-highlight active:text-text-contrast active:bg-primary-highlight disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
 
 const WordHunt = () => {
     const [hasSolved, setHasSolved] = useState(false); // if solve has run at least once
@@ -149,7 +149,7 @@ const InputSection: React.FC<InputSectionProps> = ({
         { label: "Cross", value: "cross" }
     ] as ButtonGroupPickerOption<BoardType>[];
     return (
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-4 items-center">
             <div className='flex flex-wrap flex-row gap-2 justify-center'>
                 <Input
                     type="text"
@@ -191,7 +191,6 @@ const InputSection: React.FC<InputSectionProps> = ({
                         onChange={(e) => onLettersChange(e.target.value, 4)}
                         maxLength={rowLengthsByBoardType[boardType][4]}
                         placeholder="Row 5"
-                        // className={`input-box-transition ${invalidInputSide === LEFT ? 'shake' : ''} w-36`}
                         ref={lettersInputRefs[4]}
                     />
                 }
@@ -202,13 +201,11 @@ const InputSection: React.FC<InputSectionProps> = ({
                 selectedValue={boardType}
                 setValue={onBoardTypeChange}
             />
-            <div className="flex justify-center">
-                <button
-                    disabled={letters.flat().length !== rowLengthsByBoardType[boardType].reduce((a, b) => a + b, 0)}
-                    onClick={onSolve}
-                    className={`${buttonStyle} w-48`}
-                >Solve</button>
-            </div>
+            <ActionButton
+                disabled={letters.flat().length !== rowLengthsByBoardType[boardType].reduce((a, b) => a + b, 0)} label="Solve"
+                onClick={onSolve}
+                className="w-48"
+            />
         </div>
     );
 }
@@ -452,7 +449,7 @@ const LetterTile: React.FC<LetterTileProps> = ({
 }) => {
     const inSolution = indexInSolution !== undefined && indexInSolution >= 0;
     const isStartingLetter = indexInSolution === 0;
-    const baseClasses = "rounded-md flex flex-col items-center justify-center text-xl font-bold text-slate-800";
+    const baseClasses = "rounded-md flex flex-col items-center justify-center text-xl font-bold text-letter-tile-text";
     const sizeClasses = size === 'sm' ? 'w-12 h-12' : 'w-16 h-16';
     const bgColor = inSolution || beforeSolve ? 'bg-letter-tile' : 'bg-letter-tile opacity-50';
     const borderColor = isStartingLetter ? 'border-4 border-text-base' : '';

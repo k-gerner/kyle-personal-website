@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import Input from '../../../atoms/Input';
+import { ActionButton } from '../../../atoms/ActionButton';
 import { BooleanSelector } from '../../../atoms/BooleanSelector';
 import { PageButtons, NoSolutions } from '../../../components/PaginatedSolutionsSection';
 import { MdOutlineCancel } from "react-icons/md";
@@ -30,8 +31,6 @@ type LetterTileBufferProps = {
     bufferBack: boolean;
     solutionIsHorizontal: boolean
 }
-
-const buttonStyle = "rounded-full border border-slate-300 py-2 px-4 text-center text-sm transition-all shadow-sm hover:shadow-lg text-slate-600 hover:text-text-contrast hover:bg-primary-base hover:border-primary-base focus-visible:text-text-contrast focus-visible:bg-primary-highlight focus-visible:border-primary-base active:border-primary-highlight active:text-text-contrast active:bg-primary-highlight disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
 
 
 const WordBites = () => {
@@ -181,7 +180,7 @@ const InputSection: React.FC<InputSectionProps> = ({
     setShowSolutions
 }) => {
     return (
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-4 items-center">
             <div className='flex flex-wrap flex-row gap-2 justify-center'>
                 <Input
                     type="text"
@@ -207,22 +206,19 @@ const InputSection: React.FC<InputSectionProps> = ({
             </div>
             {
                 hasSolved &&
-                <div className="flex justify-center">
-                    <BooleanSelector
-                        selected={showSolutions}
-                        label="Show Solutions"
-                        onChange={() => {
-                            setShowSolutions(!showSolutions);
-                        }}
-                    />
-                </div>
+                <BooleanSelector
+                    selected={showSolutions}
+                    label="Show Solutions"
+                    onChange={() => {
+                        setShowSolutions(!showSolutions);
+                    }}
+                />
             }
-            <div className="flex justify-center">
-                <button
-                    onClick={onSolve}
-                    className={`${buttonStyle} w-48`}
-                >Solve</button>
-            </div>
+            <ActionButton
+                label="Solve"
+                onClick={onSolve}
+                className="w-48"
+            />
         </div>
     );
 }
@@ -348,7 +344,7 @@ const LetterTile: React.FC<LetterTileProps> = ({
     tileIndex,
     bufferProps
 }) => {
-    const baseClasses = "flex items-center justify-center text-xl font-bold text-text-base";
+    const baseClasses = "flex items-center justify-center text-xl font-bold text-letter-tile-text";
     const sizeClasses = "w-16 h-16"; // size === 'sm' ? 'w-12 h-12' : 'w-16 h-16';
     const deleteButtonClasses = "bg-background-base text-danger flex items-center justify-center hover:bg-danger hover:text-background-base transition-colors border-danger border-2 rounded-b-md";
     const deleteIconClasses = "w-8 h-8";

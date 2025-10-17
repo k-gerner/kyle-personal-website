@@ -3,12 +3,11 @@ import { twMerge } from 'tailwind-merge';
 
 const defaultStyle = [
     "bg-transparent",
-    "placeholder:text-text-muted",
+    "placeholder:text-text-dull",
     "text-text-base",
     "text-sm",
     "border-2",
-    "border-slate-200",
-    // "border-primary-accent",
+    "border-brd-muted",
     "rounded-md",
     "px-3",
     "py-2",
