@@ -1,24 +1,8 @@
 import React, { useEffect } from "react";
+import { ActionButton } from "../atoms/ActionButton";
 import { LoadingSpinner } from "../atoms/LoadingSpinner";
 import { GoInfo } from "react-icons/go";
 
-const pageButtonStyle = [
-    // General styles
-    "rounded-full", "border", "border-brd-muted", "py-2", "px-4", "text-center", "text-sm",
-    "transition-all", "shadow-sm", "text-text-muted",
-
-    // Hover styles
-    "hover:shadow-lg", "hover:text-text-light", "hover:bg-primary-base", "hover:border-primary-base",
-
-    // Focus styles
-    "focus-visible:text-text-contrast", "focus-visible:bg-primary-highlight", "focus-visible:border-primary-base",
-
-    // Active styles
-    "active:border-primary-highlight", "active:text-text-light", "active:bg-primary-highlight",
-
-    // Disabled styles
-    "disabled:pointer-events-none", "disabled:opacity-50", "disabled:shadow-none",
-].join(" ");
 
 export interface PaginatedSolutionsSectionProps {
     solutions: string[][];
@@ -127,16 +111,18 @@ export const PageButtons: React.FC<PageButtonsProps> = ({
 
     return (
         <div className="w-full flex flex-row py-2 px-6 gap-6 text-text-light">
-            <button
+            <ActionButton
                 disabled={!previousActive}
                 onClick={() => setPageNumber(pageNumber - 1)}
-                className={`${pageButtonStyle} w-full`}
-            >{"< Previous"}</button>
-            <button
+                label="< Previous"
+                className="w-full"
+            />
+            <ActionButton
                 disabled={!nextActive}
                 onClick={() => setPageNumber(pageNumber + 1)}
-                className={`${pageButtonStyle} w-full`}
-            >{"Next >"}</button>
+                label="Next >"
+                className="w-full"
+            />
         </div>
     );
 }
