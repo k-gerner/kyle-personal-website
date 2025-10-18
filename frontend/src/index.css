@@ -72,7 +72,7 @@ code {
 
 }
 
-.theme-light {
+.theme-light-ocean-sun {
   --primary-accent-color: #8ecae6;
   --primary-base-color: #219ebc;
   --primary-highlight-color: #126782;
@@ -95,30 +95,34 @@ code {
   --text-contrast-color: white;
 }
 
-.theme-test {
-  --primary-accent-color: green;
-  --primary-base-color: red;
-  --primary-highlight-color: darkred;
-  --primary-contrast-color: #023047;
+.theme-light-lavender-rose {
+  --primary-accent-color: rgb(220, 201, 255);
+  --primary-base-color: rgb(192, 164, 244);
+  --primary-highlight-color: rgb(141, 118, 225);
+  --primary-contrast-color: rgb(142, 115, 255);
 
-  --secondary-base-color: #ffb703;
-  --secondary-accent-color: #fd9e02;
-  --secondary-contrast-color: #fb8500;
+  --secondary-base-color: rgb(255, 194, 226);
+  --secondary-accent-color: rgb(255, 173, 199);
+  --secondary-contrast-color: rgb(255, 153, 182);
 
-  --background-base-color: #fcefb4;
-  --background-muted-color: #d4d4d4;
-  --background-contrast-color: #023047;
+  --brd-muted-color: rgb(210, 191, 222);
 
-  --text-base-color: rgb(0, 0, 0);
-  --text-muted-color: #727f92;
-  /* slate-400 */
-  --text-contrast-color: white;
+  --background-base-color: rgb(248, 236, 246);
+  --background-muted-color: rgb(221, 219, 228);
+  --background-contrast-color: rgb(27, 9, 97);
+
+  --text-base-color: rgb(48, 25, 115);
+  --text-muted-color: rgb(119, 99, 163);
+  --text-dull-color: rgb(148, 163, 184);
+  --text-light-color: white;
+  --text-dark-color: black;
+  --text-contrast-color: rgb(255, 255, 255);
 }
 
-.theme-dark {
+.theme-dark-ocean-moon {
   --primary-accent-color: rgb(6, 87, 127);
   --primary-base-color: rgb(30, 154, 192);
-  --primary-highlight-color: rgb(39, 171, 204);
+  --primary-highlight-color: rgb(50, 192, 227);
   --primary-contrast-color: rgb(142, 202, 230);
 
   --secondary-base-color: rgb(255 183 3);
@@ -145,6 +149,82 @@ code {
   --sea-battle-ship-inner-color: rgb(31, 41, 55);
   --sea-battle-ship-base-color: rgb(107, 114, 128);
   --sea-battle-ship-border-color: rgb(129, 136, 150);
+}
+
+.theme-dark-halloween {
+  --primary-accent-color: rgb(255, 109, 0);
+  --primary-base-color: rgb(255, 133, 0);
+  --primary-highlight-color: rgb(255, 158, 0);
+  --primary-contrast-color: rgb(255, 215, 0);
+
+  --secondary-base-color: rgb(123, 44, 191);
+  --secondary-accent-color: rgb(90, 24, 154);
+  --secondary-contrast-color: rgb(60, 9, 108);
+
+  --background-base-color: rgb(36, 0, 70);
+  --background-muted-color: rgb(72, 0, 140);
+  --background-contrast-color: rgb(221, 191, 250);
+
+  --text-base-color: rgb(221, 191, 250);
+  --text-muted-color: rgb(179, 137, 220);
+  --text-dull-color: rgb(148, 163, 184);
+  --text-contrast-color: rgb(36, 0, 70);
+
+  --connect-4-board-highlight-color: #c5e1ee;
+
+  --brd-muted-color: rgb(84, 78, 78);
+}
+
+.theme-dark-green-goblin {
+  --primary-accent-color: rgb(32, 139, 58);
+  --primary-base-color: rgb(45, 198, 83);
+  --primary-highlight-color: rgb(74, 214, 109);
+  --primary-contrast-color: rgb(146, 230, 167);
+
+  --secondary-base-color: rgb(139, 57, 210);
+  --secondary-accent-color: rgb(90, 24, 154);
+  --secondary-contrast-color: rgb(60, 9, 108);
+
+  --background-base-color: rgb(36, 0, 70);
+  --background-muted-color: rgb(72, 0, 140);
+  --background-contrast-color: rgb(221, 191, 250);
+
+  --text-base-color: rgb(221, 191, 250);
+  --text-muted-color: rgb(179, 137, 220);
+  --text-dull-color: rgb(148, 163, 184);
+  --text-contrast-color: rgb(36, 0, 70);
+
+  --connect-4-board-highlight-color: #c5e1ee;
+
+  --brd-muted-color: rgb(58, 76, 62);
+}
+
+.theme-dark-midnight-ember {
+  --primary-accent-color: rgb(157, 2, 8);
+  --primary-base-color: rgb(208, 0, 0);
+  --primary-highlight-color: rgb(220, 47, 2);
+  --primary-contrast-color: rgb(232, 93, 4);
+
+  --secondary-base-color: rgb(250, 163, 7);
+  --secondary-accent-color: rgb(255, 186, 8);
+  --secondary-contrast-color: rgb(253, 206, 88);
+
+  --background-base-color: rgb(33, 32, 32);
+  --background-muted-color: rgb(97, 91, 91);
+  --background-contrast-color: white;
+
+  --text-base-color: rgb(255, 204, 188);
+  --text-muted-color: rgb(218, 150, 144);
+  --text-dull-color: rgb(148, 163, 184);
+  --text-contrast-color: rgb(0, 0, 0);
+
+  --connect-4-board-highlight-color: #c5e1ee;
+
+  --brd-muted-color: rgb(87, 61, 61);
+
+  --sea-battle-ship-inner-color: rgb(146, 81, 73);
+  --sea-battle-ship-base-color: rgb(59, 53, 53);
+  --sea-battle-ship-border-color: rgb(80, 71, 71);
 }
 
 .input-box-transition {

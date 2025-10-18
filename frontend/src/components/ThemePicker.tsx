@@ -1,6 +1,9 @@
 import React, { useState, useRef, useEffect } from "react";
 import { MdExpandLess, MdExpandMore, MdOutlineDarkMode } from "react-icons/md";
 import { PiSunHorizon } from "react-icons/pi";
+import { GiGoblinHead, GiPumpkinLantern } from "react-icons/gi";
+import { LuFlower2 } from "react-icons/lu";
+import { VscFlame } from "react-icons/vsc";
 import { twMerge } from 'tailwind-merge';
 
 
@@ -14,15 +17,15 @@ const defaultButtonStyle = [
     "gap-x-2",
     "border",
     "border-brd-muted",
-    "hover:bg-primary-base",
+    "bg-background-base",
     "text-center",
     "text-sm",
     "bg-background-base",
     "text-primary-highlight",
     "transition-all",
     "shadow-sm",
+    "hover:bg-primary-base",
     "hover:shadow-lg",
-    "text-text-muted",
     "hover:text-text-light",
     "hover:bg-primary-base",
     "hover:border-primary-base",
@@ -95,22 +98,39 @@ export const ThemePicker = () => {
             {dropdownOpen && (
                 <div
                     ref={dropdownRef}
-                    className={`absolute mt-2 bg-background-base border border-brd-muted rounded shadow-lg min-w-max animate-dropdown ${alignLeft ? "right-0" : "left-0"
-                        }`}
+                    className={`absolute mt-2 bg-background-base border border-brd-muted rounded shadow-lg min-w-max animate-dropdown z-50 ${alignLeft ? "right-0" : "left-0"}`}
                 >
+                    <div className="px-4 py-2 border-b border-brd-muted font-semibold text-sm text-text-muted">Light Themes</div>
                     <SelectableOption
                         text="Ocean Sun"
                         icon={<PiSunHorizon />}
-                        onClick={() => handleThemeChange("theme-light")}
+                        onClick={() => handleThemeChange("theme-light-ocean-sun")}
                     />
+                    <SelectableOption
+                        text="Lavender Rose"
+                        icon={<LuFlower2 />}
+                        onClick={() => handleThemeChange("theme-light-lavender-rose")}
+                    />
+                    <div className="px-4 py-2 border-b border-brd-muted font-semibold text-sm text-text-muted mt-2">Dark Themes</div>
                     <SelectableOption
                         text="Ocean Moon"
                         icon={<MdOutlineDarkMode />}
-                        onClick={() => handleThemeChange("theme-dark")}
+                        onClick={() => handleThemeChange("theme-dark-ocean-moon")}
                     />
                     <SelectableOption
-                        text="Test"
-                        onClick={() => handleThemeChange("theme-test")}
+                        text="Halloween"
+                        icon={<GiPumpkinLantern />}
+                        onClick={() => handleThemeChange("theme-dark-halloween")}
+                    />
+                    <SelectableOption
+                        text="Green Goblin"
+                        icon={<GiGoblinHead />}
+                        onClick={() => handleThemeChange("theme-dark-green-goblin")}
+                    />
+                    <SelectableOption
+                        text="Midnight Ember"
+                        icon={<VscFlame />}
+                        onClick={() => handleThemeChange("theme-dark-midnight-ember")}
                     />
                 </div>
             )}

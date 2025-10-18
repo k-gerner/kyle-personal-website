@@ -240,7 +240,7 @@ const Mancala = () => {
             <MancalaTitleSection />
             <div className="border border-brd-muted p-4 rounded-lg shadow-lg flex flex-col md:flex-row flex-wrap gap-4 sm:gap-8 items-center justify-center transition duration-500">
                 <div className="flex flex-col items-center gap-4 min-w-fit flex-0 relative min-h-[48rem] sm:min-h-[24rem]">
-                    <div className="text-lg font-semibold text-secondary-base">AI</div>
+                    <div className="text-lg font-bold text-secondary-base">AI</div>
                     <div className="hidden sm:block w-full">
                         <HorizontalArrow pointLeft={true} isActive={currentPlayer === Player.AI} />
                     </div>
@@ -262,7 +262,7 @@ const Mancala = () => {
                     <div className="hidden sm:block w-full">
                         <HorizontalArrow pointLeft={false} isActive={currentPlayer === Player.User} />
                     </div>
-                    <div className="text-lg font-semibold text-primary-base">Player</div>
+                    <div className="text-lg font-bold text-primary-base">Player</div>
                     {currentPlayer === Player.AI && !autoplay
                         ?
                         <div className="absolute left-0 right-0 bottom-0 w-full flex justify-center">
