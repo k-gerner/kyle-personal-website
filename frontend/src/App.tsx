@@ -21,8 +21,8 @@ function App() {
       <div className="px-6 bg-background-base min-h-screen">
         <nav className="flex bg-background-base border-b border-brd-muted justify-between items-center fixed w-full px-8 z-20">
           {/* Left side: Links */}
-          <div className="space-x-4 flex flex-row items-center">
-            <Link to="/about" className="text-primary-highlight hover:underline">About</Link>
+          <div className="space-x-2 flex flex-row items-center">
+            <Link to="/about" className="text-primary-highlight hover:bg-background-muted rounded-lg p-2">About</Link>
             <GameNavigation />
           </div>
 

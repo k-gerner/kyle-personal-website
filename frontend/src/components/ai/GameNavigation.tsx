@@ -31,7 +31,7 @@ const GameNavigation: React.FC = () => {
             <button
                 ref={buttonRef}
                 onClick={() => setDropdownOpen(!dropdownOpen)}
-                className="text-primary-highlight hover:underline"
+                className="text-primary-highlight hover:bg-background-muted rounded-lg p-2"
             >
                 <div className="flex flex-row gap-2 items-center">
                     <span>AI Solvers</span>
