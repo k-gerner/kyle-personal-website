@@ -39,8 +39,9 @@ const GameNavigation: React.FC = () => {
                 </div>
             </button>
             {dropdownOpen && (
-                <div className="absolute left-0 mt-2 bg-background-base border border-brd-muted rounded shadow-lg min-w-[12rem] z-40 flex flex-col py-2" onClick={() => setDropdownOpen(false)} ref={dropdownRef}>
-                    <div className="px-4 py-2 border-b border-brd-muted font-semibold text-sm text-text-muted">Game Pigeon</div>
+                <div className="absolute left-0 mt-2 bg-background-base border border-brd-muted rounded shadow-lg min-w-[12rem] z-40 flex flex-col animate-dropdown" onClick={() => setDropdownOpen(false)} ref={dropdownRef}>
+                    <Link to="/home" className="px-4 py-2 text-primary-highlight hover:bg-primary-base hover:text-text-light rounded transition-colors">Home</Link>
+                    <div className="px-4 py-2 border-b border-brd-muted font-semibold text-sm text-text-muted mt-2">Game Pigeon</div>
                     <Link to="/anagrams" className="px-4 py-2 text-primary-highlight hover:bg-primary-base hover:text-text-light rounded transition-colors">Anagrams</Link>
                     <Link to="/connect4" className="px-4 py-2 text-primary-highlight hover:bg-primary-base hover:text-text-light rounded transition-colors">Connect 4</Link>
                     <Link to="/gomoku" className="px-4 py-2 text-primary-highlight hover:bg-primary-base hover:text-text-light rounded transition-colors">Gomoku</Link>

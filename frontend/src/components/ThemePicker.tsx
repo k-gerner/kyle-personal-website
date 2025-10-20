@@ -4,6 +4,7 @@ import { PiSunHorizon } from "react-icons/pi";
 import { GiGoblinHead, GiPumpkinLantern } from "react-icons/gi";
 import { LuFlower2 } from "react-icons/lu";
 import { VscFlame } from "react-icons/vsc";
+import { GoDotFill } from "react-icons/go";
 import { twMerge } from 'tailwind-merge';
 
 
@@ -41,7 +42,7 @@ export const ThemePicker = () => {
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const [alignLeft, setAlignLeft] = useState(true); // State to track alignment
     const [theme, setTheme] = useState(() => {
-        return localStorage.getItem("theme") || "theme-light";
+        return localStorage.getItem("theme") || "theme-light-ocean-sun";
     });
     const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -105,32 +106,38 @@ export const ThemePicker = () => {
                         text="Ocean Sun"
                         icon={<PiSunHorizon />}
                         onClick={() => handleThemeChange("theme-light-ocean-sun")}
+                        selected={theme === "theme-light-ocean-sun"}
                     />
                     <SelectableOption
                         text="Lavender Rose"
                         icon={<LuFlower2 />}
                         onClick={() => handleThemeChange("theme-light-lavender-rose")}
+                        selected={theme === "theme-light-lavender-rose"}
                     />
                     <div className="px-4 py-2 border-b border-brd-muted font-semibold text-sm text-text-muted mt-2">Dark Themes</div>
                     <SelectableOption
                         text="Ocean Moon"
                         icon={<MdOutlineDarkMode />}
                         onClick={() => handleThemeChange("theme-dark-ocean-moon")}
+                        selected={theme === "theme-dark-ocean-moon"}
                     />
                     <SelectableOption
                         text="Halloween"
                         icon={<GiPumpkinLantern />}
                         onClick={() => handleThemeChange("theme-dark-halloween")}
+                        selected={theme === "theme-dark-halloween"}
                     />
                     <SelectableOption
                         text="Green Goblin"
                         icon={<GiGoblinHead />}
                         onClick={() => handleThemeChange("theme-dark-green-goblin")}
+                        selected={theme === "theme-dark-green-goblin"}
                     />
                     <SelectableOption
                         text="Midnight Ember"
                         icon={<VscFlame />}
                         onClick={() => handleThemeChange("theme-dark-midnight-ember")}
+                        selected={theme === "theme-dark-midnight-ember"}
                     />
                 </div>
             )}
@@ -142,17 +149,20 @@ interface SelectableOptionProps {
     text: string;
     icon?: React.ReactNode;
     onClick: () => void;
+    selected?: boolean;
 }
 
 const SelectableOption: React.FC<SelectableOptionProps> = ({
     text,
     icon,
-    onClick
+    onClick,
+    selected = false
 }) => {
     const contents = icon
         ? (<div className="flex flex-row items-center gap-2">
             {icon}
             <span>{text}</span>
+            {selected && <GoDotFill className="w-3 h-3" />}
         </div>)
         : text;
     const buttonClasses = twMerge(

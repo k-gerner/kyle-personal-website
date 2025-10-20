@@ -236,7 +236,7 @@ const Mancala = () => {
     }, [currentPlayer, winner, autoplay, loading]);
 
     return (
-        <div className="flex flex-col gap-4 bg-background-base min-h-screen items-center">
+        <div className="flex flex-col gap-4 bg-background-base items-center">
             <MancalaTitleSection />
             <div className="border border-brd-muted p-4 rounded-lg shadow-lg flex flex-col md:flex-row flex-wrap gap-4 sm:gap-8 items-center justify-center transition duration-500">
                 <div className="flex flex-col items-center gap-4 min-w-fit flex-0 relative min-h-[48rem] sm:min-h-[24rem]">

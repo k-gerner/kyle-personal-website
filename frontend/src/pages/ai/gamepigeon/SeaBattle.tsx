@@ -146,7 +146,7 @@ const SeaBattle = () => {
 
 
     return (
-        <div className="flex flex-col gap-4 bg-background-base min-h-screen items-center">
+        <div className="flex flex-col gap-4 bg-background-base items-center">
             <SeaBattleTitleSection />
             <div className='border border-brd-muted p-4 rounded-lg shadow-lg w-full flex flex-col items-center md:flex-row gap-8 transition-all duration-500 justify-center'>
                 <div className='flex flex-col gap-2'>
