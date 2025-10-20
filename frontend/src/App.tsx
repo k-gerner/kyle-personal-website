@@ -12,48 +12,42 @@ import Othello from "./pages/ai/gamepigeon/Othello";
 import SeaBattle from "./pages/ai/gamepigeon/SeaBattle";
 import Mancala from "./pages/ai/gamepigeon/Mancala";
 import { ThemePicker } from "./components/ThemePicker";
+import GameNavigation from "./components/ai/GameNavigation";
 import './index.css';
 
 function App() {
   return (
     <Router>
-      <div className="p-6 bg-background-base min-h-screen">
-        <nav className="mb-4 flex justify-between items-center">
+      <div className="px-6 bg-background-base min-h-screen">
+        <nav className="flex bg-background-base border-b border-brd-muted justify-between items-center fixed w-full px-8 z-20">
           {/* Left side: Links */}
-          <div className="space-x-4">
+          <div className="space-x-4 flex flex-row items-center">
             <Link to="/about" className="text-primary-highlight hover:underline">About</Link>
-            <Link to="/spelling_bee" className="text-primary-highlight hover:underline">Spelling Bee</Link>
-            <Link to="/letter_boxed" className="text-primary-highlight hover:underline">Letter Boxed</Link>
-            <Link to="/anagrams" className="text-primary-highlight hover:underline">Anagrams</Link>
-            <Link to="/word_hunt" className="text-primary-highlight hover:underline">Word Hunt</Link>
-            <Link to="/word_bites" className="text-primary-highlight hover:underline">Word Bites</Link>
-            <Link to="/connect4" className="text-primary-highlight hover:underline">Connect 4</Link>
-            <Link to="/gomoku" className="text-primary-highlight hover:underline">Gomoku</Link>
-            <Link to="/othello" className="text-primary-highlight hover:underline">Othello</Link>
-            <Link to="/sea_battle" className="text-primary-highlight hover:underline">Sea Battle</Link>
-            <Link to="/mancala" className="text-primary-highlight hover:underline">Mancala</Link>
+            <GameNavigation />
           </div>
 
           {/* Right side: Theme Picker */}
           <ThemePicker />
         </nav>
 
-        <Routes>
-          <Route path="/" element={<Navigate to="/about" replace />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/spelling_bee" element={<SpellingBee />} />
-          <Route path="/letter_boxed" element={<LetterBoxed />} />
-          <Route path="/anagrams" element={<Anagrams />} />
-          <Route path="/word_hunt" element={<WordHunt />} />
-          <Route path="/word_bites" element={<WordBites />} />
-          <Route path="/connect4" element={<Connect4 />} />
-          <Route path="/gomoku" element={<Gomoku />} />
-          <Route path="/othello" element={<Othello />} />
-          <Route path="/sea_battle" element={<SeaBattle />} />
-          <Route path="/mancala" element={<Mancala />} />
-          {/* Catch-all route for 404 */}
-          <Route path="*" element={<div>Page not found</div>} />
-        </Routes>
+        <div className="pt-16">
+          <Routes>
+            <Route path="/" element={<Navigate to="/about" replace />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/spelling_bee" element={<SpellingBee />} />
+            <Route path="/letter_boxed" element={<LetterBoxed />} />
+            <Route path="/anagrams" element={<Anagrams />} />
+            <Route path="/word_hunt" element={<WordHunt />} />
+            <Route path="/word_bites" element={<WordBites />} />
+            <Route path="/connect4" element={<Connect4 />} />
+            <Route path="/gomoku" element={<Gomoku />} />
+            <Route path="/othello" element={<Othello />} />
+            <Route path="/sea_battle" element={<SeaBattle />} />
+            <Route path="/mancala" element={<Mancala />} />
+            {/* Catch-all route for 404 */}
+            <Route path="*" element={<div>Page not found</div>} />
+          </Routes>
+        </div>
       </div>
     </Router>
   );

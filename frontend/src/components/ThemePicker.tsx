@@ -82,7 +82,7 @@ export const ThemePicker = () => {
     };
 
     return (
-        <div className="relative inline-block">
+        <div className="relative inline-block py-2">
             {/* Parent Button */}
             <button
                 onClick={toggleDropdown}
