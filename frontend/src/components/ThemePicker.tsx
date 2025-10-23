@@ -10,32 +10,19 @@ import { twMerge } from 'tailwind-merge';
 
 
 const defaultButtonStyle = [
-    "rounded-lg",
+    "rounded-full",
     "py-2",
     "px-4",
     "inline-flex",
     "items-center",
     "gap-x-2",
-    "border",
-    "border-brd-muted",
-    "bg-background-base",
     "text-center",
-    "text-sm",
-    "bg-background-base",
-    "text-primary-highlight",
     "transition-all",
-    "shadow-sm",
+    "duration-300",
     "hover:bg-primary-base",
-    "hover:shadow-lg",
     "hover:text-text-light",
     "hover:bg-primary-base",
     "hover:border-primary-base",
-    "focus:text-text-light",
-    "focus:bg-primary-highlight",
-    "focus:border-primary-base",
-    "active:border-primary-highlight",
-    "active:text-text-light",
-    "active:bg-primary-highlight"
 ].join(" ");
 
 export const ThemePicker = () => {
@@ -45,6 +32,7 @@ export const ThemePicker = () => {
         return localStorage.getItem("theme") || "theme-light-ocean-sun";
     });
     const dropdownRef = useRef<HTMLDivElement>(null);
+    const buttonRef = useRef<HTMLButtonElement>(null);
 
     const handleThemeChange = (newTheme: string) => {
         setTheme(newTheme);
@@ -58,18 +46,23 @@ export const ThemePicker = () => {
         document.documentElement.className = theme;
     }, [theme]);
 
+    // Close dropdown when clicking outside
     useEffect(() => {
-        if (dropdownOpen && dropdownRef.current) {
-            const dropdownRect = dropdownRef.current.getBoundingClientRect();
-            const viewportWidth = window.innerWidth;
-
-            // Check if the dropdown overflows the viewport
-            if (dropdownRect.right > viewportWidth) {
-                setAlignLeft(true); // Align left if it overflows
-            } else {
-                setAlignLeft(false); // Align right otherwise
+        if (!dropdownOpen) return;
+        function handleClickOutside(event: MouseEvent) {
+            if (
+                dropdownRef.current &&
+                !dropdownRef.current.contains(event.target as Node) &&
+                buttonRef.current &&
+                !buttonRef.current.contains(event.target as Node)
+            ) {
+                setDropdownOpen(false);
             }
         }
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
     }, [dropdownOpen]);
 
     const toggleDropdown = () => {
@@ -86,6 +79,7 @@ export const ThemePicker = () => {
         <div className="relative inline-block py-2">
             {/* Parent Button */}
             <button
+                ref={buttonRef}
                 onClick={toggleDropdown}
                 className={`${defaultButtonStyle}`}
             >
@@ -99,7 +93,7 @@ export const ThemePicker = () => {
             {dropdownOpen && (
                 <div
                     ref={dropdownRef}
-                    className={`absolute mt-2 bg-background-base border border-brd-muted rounded shadow-lg min-w-max animate-dropdown z-50 ${alignLeft ? "right-0" : "left-0"}`}
+                    className={`absolute mt-2 bg-background-base border border-brd-muted rounded-3xl shadow-lg min-w-max animate-dropdown z-50 ${alignLeft ? "right-0" : "left-0"}`}
                 >
                     <div className="px-4 py-2 border-b border-brd-muted font-semibold text-sm text-text-muted">Light Themes</div>
                     <SelectableOption
@@ -167,7 +161,8 @@ const SelectableOption: React.FC<SelectableOptionProps> = ({
         : text;
     const buttonClasses = twMerge(
         defaultButtonStyle,
-        "block w-full text-left rounded border-none"
+        "block w-full text-left rounded border-none",
+        "first:rounded-t-3xl last:rounded-b-3xl last:pb-3"
     );
     return (
         <button
