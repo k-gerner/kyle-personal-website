@@ -114,7 +114,7 @@ const Gomoku = () => {
 
 
     return (
-        <div className="flex flex-col gap-4 bg-background-base min-h-screen items-center">
+        <div className="flex flex-col gap-4 bg-background-base items-center">
             <GomokuTitleSection />
             <div className="border border-brd-muted p-4 rounded-lg shadow-lg flex flex-col md:flex-row gap-4 w-full">
                 <div className="flex flex-col gap-2 items-center flex-shrink-0 transition-all duration-500 w-full md:w-1/2 transition min-w-fit">

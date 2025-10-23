@@ -6,6 +6,7 @@ import { PageButtons, NoSolutions } from '../../../components/PaginatedSolutions
 import { MdOutlineCancel } from "react-icons/md";
 import { LoadingSpinner } from "../../../atoms/LoadingSpinner";
 import { TitleWithInfo } from '../../../components/TitleWithInfo';
+import { twMerge } from 'tailwind-merge';
 
 
 const INPUT_DELAY_MS = 500; // Delay in milliseconds for input reset
@@ -130,26 +131,28 @@ const WordBites = () => {
                 setShowSolutions={setShowSolutions}
             />
             <div className="relative">
-                <div
-                    className={`transition-opacity duration-500 ${showSolutions ? 'opacity-0 pointer-events-none' : 'opacity-100'
-                        }`}
-                >
-                    <LetterTilesSection
-                        pieces={inputPieces}
-                        deleteInputPiece={deleteInputPiece}
-                    />
-                </div>
-                <div
-                    className={`absolute top-0 left-0 w-full transition-opacity duration-500 ${showSolutions ? 'opacity-100' : 'opacity-0 pointer-events-none'
-                        }`}
-                >
-                    <SolutionsSection
-                        solutions={solutions}
-                        isLoading={false}
-                        pageNumber={pageNumber}
-                        setPageNumber={setPageNumber}
-                    />
-                </div>
+                {
+                    !showSolutions && (
+                        <FadeInSection>
+                            <LetterTilesSection
+                                pieces={inputPieces}
+                                deleteInputPiece={deleteInputPiece}
+                            />
+                        </FadeInSection>
+                    )
+                }
+                {
+                    showSolutions && (
+                        <FadeInSection className="w-full">
+                            <SolutionsSection
+                                solutions={solutions}
+                                isLoading={false}
+                                pageNumber={pageNumber}
+                                setPageNumber={setPageNumber}
+                            />
+                        </FadeInSection>
+                    )
+                }
             </div>
         </div>
     );
@@ -517,7 +520,7 @@ const SolutionsSection: React.FC<SolutionsSectionProps> = ({
                     totalPages={solutions.length} // Since we are showing only one solution at a time
                 />
             </div>
-            <div className={`font-bold bg-primary-base p-4 text-text-contrast min-w-max text-center tracking-widest rounded-lg`}>
+            <div className={`font-bold bg-primary-base p-4 text-text-light min-w-max text-center tracking-widest rounded-lg`}>
                 {solutions[pageNumber].word.toUpperCase()}
             </div>
             <div className="gap-4 flex justify-center items-center overflow-hidden w-screen">
@@ -607,6 +610,21 @@ const WordBitesTitleSection: React.FC = () => {
         />
     );
 }
+
+
+const FadeInSection: React.FC<{ children: React.ReactNode, className?: string }> = ({ children, className }) => {
+    const [isVisible, setIsVisible] = useState(false);
+    useEffect(() => {
+        const timeout = setTimeout(() => setIsVisible(true), 10); // allow mount before transition
+        return () => clearTimeout(timeout);
+    }, []);
+
+    return (
+        <div className={twMerge(`transition-opacity duration-500 ${isVisible ? 'opacity-100' : 'opacity-0'}`, className)}>
+            {children}
+        </div>
+    );
+};
 
 
 function convertBackendResponseToSolutions(response: any): Solution[] {

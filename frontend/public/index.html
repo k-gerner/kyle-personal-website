@@ -4,7 +4,15 @@
 <head>
   <meta charset="utf-8" />
   <script>
-    const theme = localStorage.getItem('theme') || 'theme-light';
+    let theme = localStorage.getItem('theme');
+    if (!theme) {
+      if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        theme = 'theme-dark-ocean-moon';
+      } else {
+        theme = 'theme-light-ocean-sun';
+      }
+    }
+    localStorage.setItem('theme', theme);
     document.documentElement.className = theme;
   </script>
   <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />

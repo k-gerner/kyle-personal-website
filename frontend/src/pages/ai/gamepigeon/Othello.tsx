@@ -173,7 +173,7 @@ const Othello = () => {
 
 
     return (
-        <div className="flex flex-col gap-4 bg-background-base min-h-screen items-center">
+        <div className="flex flex-col gap-4 bg-background-base items-center">
             <OthelloTitleSection />
             <div className="border border-brd-muted p-4 rounded-lg shadow-lg flex items-start flex-col md:flex-row gap-4 w-full">
                 <ScoreBoard
