@@ -9,7 +9,7 @@ import { TitleWithInfo } from '../../../components/TitleWithInfo';
 import { twMerge } from 'tailwind-merge';
 
 
-const INPUT_DELAY_MS = 500; // Delay in milliseconds for input reset
+const INPUT_DELAY_MS = 200; // Delay in milliseconds for input reset
 type PieceType = "single" | "horizontal" | "vertical";
 type Pieces = {
     single: string[];
