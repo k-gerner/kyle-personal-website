@@ -9,6 +9,7 @@ import WordBitesSampleImage from "../assets/ai/word_bites_sample.png";
 import WordHuntSampleImage from "../assets/ai/word_hunt_sample.png";
 import SpellingBeeSampleImage from "../assets/ai/spelling_bee_sample.png";
 import LetterBoxedSampleImage from "../assets/ai/letter_boxed_sample.png";
+import { pageRoutes } from "../utils/urls";
 import React from "react";
 
 
@@ -19,21 +20,21 @@ const GameHome = () => {
             <div className="flex flex-col items-center gap-6 border border-brd-muted rounded-lg p-8 bg-background-muted shadow-lg">
                 <h1 className="text-4xl font-extrabold text-text-base mb-4">Game Pigeon AIs</h1>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-2xl w-full">
-                    <GameLink to="/anagrams" label="Anagrams" image={AnagramsSampleImage} />
-                    <GameLink to="/connect4" label="Connect 4" image={Connect4SampleImage} />
-                    <GameLink to="/gomoku" label="Gomoku" image={GomokuSampleImage} />
-                    <GameLink to="/mancala" label="Mancala" image={MancalaSampleImage} />
-                    <GameLink to="/othello" label="Othello" image={OthelloSampleImage} />
-                    <GameLink to="/sea_battle" label="Sea Battle" image={SeaBattleSampleImage} />
-                    <GameLink to="/word_bites" label="Word Bites" image={WordBitesSampleImage} />
-                    <GameLink to="/word_hunt" label="Word Hunt" image={WordHuntSampleImage} />
+                    <GameLink to={pageRoutes.Anagrams} label="Anagrams" image={AnagramsSampleImage} />
+                    <GameLink to={pageRoutes.Connect4} label="Connect 4" image={Connect4SampleImage} />
+                    <GameLink to={pageRoutes.Gomoku} label="Gomoku" image={GomokuSampleImage} />
+                    <GameLink to={pageRoutes.Mancala} label="Mancala" image={MancalaSampleImage} />
+                    <GameLink to={pageRoutes.Othello} label="Othello" image={OthelloSampleImage} />
+                    <GameLink to={pageRoutes.SeaBattle} label="Sea Battle" image={SeaBattleSampleImage} />
+                    <GameLink to={pageRoutes.WordBites} label="Word Bites" image={WordBitesSampleImage} />
+                    <GameLink to={pageRoutes.WordHunt} label="Word Hunt" image={WordHuntSampleImage} />
                 </div>
             </div>
             <div className="flex flex-col items-center gap-6 border border-brd-muted rounded-lg p-8 bg-background-muted shadow-lg">
                 <h1 className="text-4xl font-extrabold text-text-base mb-4">NYT Mini Game AIs</h1>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-2xl w-full">
-                    <GameLink to="/spelling_bee" label="Spelling Bee" image={SpellingBeeSampleImage} />
-                    <GameLink to="/letter_boxed" label="Letter Boxed" image={LetterBoxedSampleImage} />
+                    <GameLink to={pageRoutes.SpellingBee} label="Spelling Bee" image={SpellingBeeSampleImage} />
+                    <GameLink to={pageRoutes.LetterBoxed} label="Letter Boxed" image={LetterBoxedSampleImage} />
                 </div>
             </div>
             <div className="bg-background-muted shadow-lg rounded-lg p-8 max-w-2xl text-center text-text-base">
