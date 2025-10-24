@@ -1,6 +1,8 @@
 import React, { useState, useRef, useEffect } from "react";
 import { MdExpandLess, MdExpandMore, MdOutlineDarkMode } from "react-icons/md";
 import { PiSunHorizon } from "react-icons/pi";
+import { FiCoffee } from "react-icons/fi";
+import { TiLeaf } from "react-icons/ti";
 import { GiGoblinHead, GiPumpkinLantern } from "react-icons/gi";
 import { LuFlower2 } from "react-icons/lu";
 import { VscFlame } from "react-icons/vsc";
@@ -108,12 +110,24 @@ export const ThemePicker = () => {
                         onClick={() => handleThemeChange("theme-light-lavender-rose")}
                         selected={theme === "theme-light-lavender-rose"}
                     />
+                    <SelectableOption
+                        text="Mint Leaf"
+                        icon={<TiLeaf />}
+                        onClick={() => handleThemeChange("theme-light-mint-leaf")}
+                        selected={theme === "theme-light-mint-leaf"}
+                    />
                     <div className="px-4 py-2 border-b border-brd-muted font-semibold text-sm text-text-muted mt-2">Dark Themes</div>
                     <SelectableOption
                         text="Ocean Moon"
                         icon={<MdOutlineDarkMode />}
                         onClick={() => handleThemeChange("theme-dark-ocean-moon")}
                         selected={theme === "theme-dark-ocean-moon"}
+                    />
+                    <SelectableOption
+                        text="Golden Roast"
+                        icon={<FiCoffee />}
+                        onClick={() => handleThemeChange("theme-dark-golden-roast")}
+                        selected={theme === "theme-dark-golden-roast"}
                     />
                     <SelectableOption
                         text="Halloween"
