@@ -332,7 +332,7 @@ const OthelloBoard: React.FC<OthelloBoardProps> = ({
     const selectedRow = selectedPosition ? selectedPosition[0] : null;
     const selectedCol = selectedPosition ? selectedPosition[1] : null;
     return (
-        <div className="relative bg-othello-board p-5 rounded-3xl max-w-fit">
+        <div className="relative bg-othello-board p-5 rounded-3xl max-w-xs md:max-w-fit aspect-square">
             {board.map((r, rowIndex) => (
                 <div key={rowIndex} className={`flex flex-row`}>
                     {r.map((cell, colIndex) => {
@@ -366,7 +366,7 @@ const OthelloBoard: React.FC<OthelloBoardProps> = ({
                         return (
                             <div
                                 key={`${rowIndex}-${colIndex}`}
-                                className={`relative w-12 h-12 border border-black bg-othello-board flex justify-center items-center
+                                className={`relative w-8 h-8 md:w-12 md:h-12 z-10 flex border border-black bg-othello-board flex justify-center items-center
                                     ${allowInput && locationsContain(validPositions, cellCoords) ? 'cursor-pointer' : ''}
                                     ${borderRadiusClass}`}
                                 onClick={() => {
@@ -382,19 +382,16 @@ const OthelloBoard: React.FC<OthelloBoardProps> = ({
                                     <div key={`${playerTurn}-${rowIndex}-${colIndex}`} className={`absolute inset-0 animate-customPulse ${playerTurn === Player.User ? 'bg-primary-base' : 'bg-secondary-base'} z-0`}></div>
                                 )}
 
-                                {/* Content */}
-                                <div className="relative z-10 w-10 h-10">
-                                    {pieceType !== PieceType.EMPTY ? (
-                                        <Piece
-                                            type={pieceType}
-                                            highlighted={
-                                                isSelected || locationsContain(highlightedPositions, cellCoords)
-                                            }
-                                        />
-                                    ) : (
-                                        <Piece type={PieceType.EMPTY} />
-                                    )}
-                                </div>
+                                {pieceType !== PieceType.EMPTY ? (
+                                    <Piece
+                                        type={pieceType}
+                                        highlighted={
+                                            isSelected || locationsContain(highlightedPositions, cellCoords)
+                                        }
+                                    />
+                                ) : (
+                                    <Piece type={PieceType.EMPTY} />
+                                )}
                             </div>
                             // </div>
                         )
@@ -416,12 +413,16 @@ const ScoreBoard: React.FC<ScoreBoardProps> = ({ playerScore, aiScore }) => {
         <div className="px-10 gap-12 flex flex-row md:flex-col gap-4 justify-center items-center bg-primary-base rounded-3xl max-w-fit max-h-fit py-2 md:py-10 self-center">
             <div className="flex flex-col items-center gap-2">
                 <span className="text-lg font-semibold text-text-light">Player</span>
-                <Piece type={PieceType.PLAYER} />
+                <div className="w-8 h-8 md:w-12 md:h-12 flex items-center justify-center">
+                    <Piece type={PieceType.PLAYER} />
+                </div>
                 <span className="text-2xl font-bold text-text-light">{playerScore}</span>
             </div>
             <div className="flex flex-col items-center gap-2">
                 <span className="text-lg font-semibold text-text-light">AI</span>
-                <Piece type={PieceType.AI} />
+                <div className="w-8 h-8 md:w-12 md:h-12 flex items-center justify-center">
+                    <Piece type={PieceType.AI} />
+                </div>
                 <span className="text-2xl font-bold text-text-light">{aiScore}</span>
             </div>
         </div>
@@ -466,7 +467,7 @@ const Piece: React.FC<PieceProps> = ({
 
     return (
         <div
-            className={`w-10 h-10 ${gradientStr} ${outlineStr} ${shadowStr} rounded-full`}
+            className={`w-[90%] h-[90%] ${gradientStr} ${outlineStr} ${shadowStr} rounded-full`}
         ></div>
     );
 };
