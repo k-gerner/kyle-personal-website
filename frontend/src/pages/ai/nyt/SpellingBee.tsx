@@ -158,9 +158,10 @@ interface LetterProps {
 
 const Letter: React.FC<LetterProps> = ({ letter, isCenter }) => {
     const background = isCenter ? 'bg-my-yellow' : 'bg-background-muted';
+    const textColorClass = isCenter ? "text-black" : "text-text-base"
     return (
-        <div className={`hex ${background} flex items-center justify-center w-20 sm:w-24 md:w-28 lg:w-32 xl:w-40 transition-all duration-300`}>
-            <span className="text-4xl bg-transparent text-black px-3 py-1 rounded font-mono">
+        <div className={`hex ${background} ${textColorClass} flex items-center justify-center w-20 sm:w-24 md:w-28 lg:w-32 xl:w-40 transition-all duration-300`}>
+            <span className="text-4xl bg-transparent px-3 py-1 rounded font-mono">
                 {letter}
             </span>
         </div>
