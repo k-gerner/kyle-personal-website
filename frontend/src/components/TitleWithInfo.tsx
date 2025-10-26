@@ -1,6 +1,6 @@
 import { GoInfo } from "react-icons/go";
-import { MdOutlineCancel } from "react-icons/md";
 import React, { useState } from "react";
+import PopUp from "./PopUp";
 
 export interface TitleWithInfoProps {
     title: string;
@@ -63,7 +63,7 @@ export interface InfoOverlayProps {
     toolInstructions?: string[] | React.ReactNode[];
 }
 
-export const InfoOverlay: React.FC<InfoOverlayProps> = ({
+const InfoOverlay: React.FC<InfoOverlayProps> = ({
     setShowInfo,
     title,
     objective,
@@ -71,38 +71,30 @@ export const InfoOverlay: React.FC<InfoOverlayProps> = ({
     instructionsTitle,
     toolInstructions,
 }) => {
-    return (
-        <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
-            <div className="bg-background-base rounded-lg shadow-lg p-8 max-w-xl w-full relative max-h-[90vh] overflow-y-auto">
-                <button
-                    className="absolute rounded-full top-2 right-2 text-xl font-bold text-danger bg-background-base hover:bg-danger hover:text-background-base transition-colors"
-                    onClick={() => setShowInfo(false)}
-                    aria-label="Close info"
-                >
-                    <MdOutlineCancel className='w-8 h-8' />
-                </button>
-                <h2 className="text-xl text-text-base font-bold mb-2">{title}</h2>
+    const content = (
+        <>
+            <h2 className="text-xl text-text-base font-bold mb-2">{title}</h2>
+            <ul className="list-disc pl-5 mb-2 text-text-muted">
+                <li><b>Objective:</b> {objective}</li>
+                <li><b>Rules:</b></li>
                 <ul className="list-disc pl-5 mb-2 text-text-muted">
-                    <li><b>Objective:</b> {objective}</li>
-                    <li><b>Rules:</b></li>
+                    {rules.map((rule, index) => (
+                        <li key={index}>{rule}</li>
+                    ))}
+                </ul>
+
+            </ul>
+            {toolInstructions && toolInstructions.length > 0 && (
+                <>
+                    <h3 className="text-lg text-text-base font-bold mb-1">{instructionsTitle}</h3>
                     <ul className="list-disc pl-5 mb-2 text-text-muted">
-                        {rules.map((rule, index) => (
-                            <li key={index}>{rule}</li>
+                        {toolInstructions.map((instruction, index) => (
+                            <li key={index}>{instruction}</li>
                         ))}
                     </ul>
-
-                </ul>
-                {toolInstructions && toolInstructions.length > 0 && (
-                    <>
-                        <h3 className="text-lg text-text-base font-bold mb-1">{instructionsTitle}</h3>
-                        <ul className="list-disc pl-5 mb-2 text-text-muted">
-                            {toolInstructions.map((instruction, index) => (
-                                <li key={index}>{instruction}</li>
-                            ))}
-                        </ul>
-                    </>
-                )}
-            </div>
-        </div>
+                </>
+            )}
+        </>
     );
+    return <PopUp setShow={setShowInfo} innerContent={content} />;
 }
