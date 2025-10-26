@@ -1,12 +1,18 @@
 import React, { useEffect, useState } from "react";
 import HeadshotImage from "../assets/headshot.png";
-import { FaComputer } from "react-icons/fa6";
+import YextLogoImage from "../assets/yext_logo.png";
+import VTLogoImage from "../assets/vt_logo.png";
+import CapitalOneLogo from "../assets/capital_one_logo.png"
+import PragmaticsLogo from "../assets/pragmatics_logo.png"
+import TJLogo from "../assets/tjhsst_logo.png"
+import { FaComputer, FaGears } from "react-icons/fa6";
 import { IoSchool } from "react-icons/io5";
-import { FaGears } from "react-icons/fa6";
+import { IoIosArrowDown, IoIosArrowForward } from "react-icons/io";
+import { FaInfo } from "react-icons/fa";
 import { IoCodeSlash } from "react-icons/io5";
 import { LuMapPin } from "react-icons/lu";
 import { IoLogoLinkedin } from "react-icons/io5";
-import { FaGithub } from "react-icons/fa";
+import { FaGithub, FaRegBuilding } from "react-icons/fa";
 import { MdEmail } from "react-icons/md";
 import { externalRoutes, pageRoutes } from "../utils/urls";
 import { FadeSlideIn } from "../utils/animations";
@@ -15,22 +21,26 @@ import { FadeSlideIn } from "../utils/animations";
 const AboutMe = () => {
     return (
         <FadeSlideIn>
-            <div className="min-h-screen flex flex-col items-center gap-6 pt-8 px-4">
-                <Title />
-                <div className="flex flex-col md:flex-row gap-8 max-w-4xl items-center md:items-start">
-                    <img
-                        src={HeadshotImage}
-                        alt="Headshot"
-                        className="w-96 h-128 object-cover rounded-xl"
-                    />
-                    <div className="flex flex-col justify-start">
-                        <span className="text-5xl font-semibold text-text-base">About Me</span>
-                        <hr className="my-4 border-brd-muted" />
-                        <AboutMeBlurb />
-                        <SkillsSection />
-                        <LinkButtonsSection />
+            <div className="min-h-screen flex flex-col gap-16 md:gap-36 items-center pt-8 px-4">
+                <div className="flex flex-col items-center gap-6 overflow-wrap">
+                    <Title />
+                    <div className="flex flex-col md:flex-row gap-8 max-w-4xl items-center md:items-start">
+                        <img
+                            src={HeadshotImage}
+                            alt="Headshot"
+                            className="w-96 h-128 object-cover rounded-xl"
+                        />
+                        <div className="flex flex-col justify-start">
+                            <span className="text-5xl font-semibold text-text-base">About Me</span>
+                            <hr className="my-4 border-brd-muted" />
+                            <AboutMeBlurb />
+                            <SkillsSection />
+                            <LinkButtonsSection />
+                        </div>
                     </div>
                 </div>
+                <Timeline />
+                <ExperienceSection />
                 <WebsiteBlurbSection />
             </div>
         </FadeSlideIn>
@@ -112,7 +122,7 @@ const WebsiteBlurbSection = () => {
 
 const LinkButtonsSection = () => {
     return (
-        <div className="flex flex-row justify-between items-center px-12 text-xl text-text-base w-full max-w-lg mx-auto">
+        <div className="flex flex-row justify-between items-center px-12 gap-3 text-xl text-text-base w-full max-w-lg mx-auto">
             <LinkButton
                 href={externalRoutes.GitHub}
                 icon={<FaGithub className="w-16 h-16" />}
@@ -161,6 +171,191 @@ const SkillsSection = () => {
         </div>
     );
 }
+
+const Timeline = () => {
+    const CapitalOneBlurb = (
+        <>
+            <p className="text-text-base">Worked on various projects using Java and Spring Boot</p>
+        </>
+    )
+    return (
+        <div className="flex flex-col">
+            <h2 className="text-3xl font-bold text-text-base text-center pb-8 lg:pb-0">Career Timeline</h2>
+            <div className="-ml-20 md:-ml-0">
+                <ul className="timeline timeline-vertical lg:timeline-horizontal text-text-base">
+                    <TimelineItem
+                        date={2018}
+                        icon={<IoSchool className="w-8 h-8" />}
+                        label="Graduated from TJHSST"
+                        scrollToId="tjhsst-experience-card"
+                    />
+                    <TimelineItem
+                        date="Summer 2020"
+                        icon={<FaRegBuilding className="w-8 h-8" />}
+                        label="SWE Intern @ Pragmatics"
+                        scrollToId="pragmatics-experience-card"
+                    />
+                    <TimelineItem
+                        date="Summer 2021"
+                        icon={<FaRegBuilding className="w-8 h-8" />}
+                        label="SWE Intern @ Capital One"
+                        scrollToId="capital-one-experience-card"
+                    />
+                    <TimelineItem
+                        date="Dec. 2021"
+                        icon={<IoSchool className="w-8 h-8" />}
+                        label="Graduated from VT"
+                        scrollToId="vt-experience-card"
+                    />
+                    <TimelineItem
+                        date={2022}
+                        icon={<FaRegBuilding className="w-8 h-8" />}
+                        label="Started SWE @ Yext"
+                        scrollToId="yext-experience-card"
+                    />
+                    <li>
+                        <hr className="border-none bg-primary-base h-8 mx-auto lg:h-0.5" />
+                        <div className="timeline-middle">
+                            <IoIosArrowDown className="block lg:hidden w-8 h-8 text-primary-base -mt-5" />
+                            <IoIosArrowForward className="hidden lg:block w-8 h-8 -ml-5 text-primary-base" />
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    );
+}
+
+interface TimelineItemProps {
+    date: string | number;
+    label: React.ReactNode | string;
+    icon: React.ReactNode;
+    scrollToId?: string;
+}
+
+
+const TimelineItem: React.FC<TimelineItemProps> = ({ date, icon, label, scrollToId }) => {
+    return (
+        <li>
+            <hr className="border-none bg-primary-base h-8 mx-auto lg:h-0.5" />
+            <div className="timeline-start">{date}</div>
+            <div className="timeline-middle">{icon}</div>
+            <div className="timeline-end timeline-box bg-background-muted flex flex-col items-center">
+                <span className="text-sm pb-1 text-center">{label}</span>
+                <button
+                    className="rounded-full hover:bg-primary-highlight hover:text-background-base transition-all duration-300"
+                    // onClick={() => setShowInfo(true)}
+                    onClick={() => {
+                        if (!scrollToId) {
+                            return;
+                        }
+                        const el = document.getElementById(scrollToId);
+                        if (el) el.scrollIntoView({ behavior: "smooth" });
+                    }}
+                >
+                    <div className="rounded-full border border-text-base px-8 py-1 transition-all hover:text-background-base hover:border-primary-highlight">
+                        {/* <FaInfo className="w-4 h-4" /> */}
+                        <span className="text-xs font-semibold">Learn More</span>
+                    </div>
+                </button>
+            </div>
+            <hr className="border-none bg-primary-base h-8 mx-auto lg:h-0.5" />
+        </li>
+    );
+}
+
+const ExperienceSection = () => {
+    return (
+        <div className="max-w-4xl flex flex-col gap-4">
+            <div id="yext-experience-card" className="card card-side bg-background-muted shadow-sm scroll-mt-24">
+                <figure className="hidden md:flex md:w-full justify-center items-center p-6">
+                    <img
+                        src={YextLogoImage}
+                        alt="Yext Logo"
+                        className="rounded-xl"
+                    />
+                </figure>
+                <div className="card-body text-text-base">
+                    <div className="flex flex-row gap-2 items-center">
+                        <FaRegBuilding className="text-text-base w-6 h-6 hidden md:flex" />
+                        <h2 className="card-title text-primary-highlight font-semibold text-xl">Full Stack Software Engineer @ Yext</h2>
+                    </div>
+                    <span className="text-sm italic">2022 - Present</span>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Reiciendis, sed aperiam adipisci quidem labore, laboriosam ducimus expedita dignissimos quam suscipit dolorem unde ea. Ratione quidem nobis officiis nulla, quos adipisci! Lorem ipsum dolor sit amet consectetur adipisicing elit. Inventore repudiandae laborum non molestiae, accusamus iure iusto quam consequuntur dolores voluptatum doloribus aliquam quia voluptates exercitationem aut, assumenda ipsa quae earum.</p>
+                </div>
+            </div>
+            <div id="vt-experience-card" className="card card-side bg-background-muted shadow-sm scroll-mt-24">
+                <figure className="hidden md:flex md:w-full justify-center items-center p-6">
+                    <img
+                        src={VTLogoImage}
+                        alt="Virginia Tech Logo"
+                        className="rounded-xl bg-[#660033]"
+                    />
+                </figure>
+                <div className="card-body text-text-base">
+                    <div className="flex flex-row gap-2 items-center">
+                        <IoSchool className="text-text-base w-6 h-6 hidden md:flex" />
+                        <h2 className="card-title text-primary-highlight font-semibold text-xl">Bachelor's in Computer Science @ Virginia Tech</h2>
+                    </div>
+                    <span className="text-sm italic">2018 - Dec. 2021</span>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Reiciendis, sed aperiam adipisci quidem labore, laboriosam ducimus expedita dignissimos quam suscipit dolorem unde ea. Ratione quidem nobis officiis nulla, quos adipisci! Lorem ipsum dolor sit amet consectetur adipisicing elit. Inventore repudiandae laborum non molestiae, accusamus iure iusto quam consequuntur dolores voluptatum doloribus aliquam quia voluptates exercitationem aut, assumenda ipsa quae earum.</p>
+                </div>
+            </div>
+            <div id="capital-one-experience-card" className="card card-side bg-background-muted shadow-sm scroll-mt-24">
+                <figure className="hidden md:flex md:w-full justify-center items-center p-6">
+                    <img
+                        src={CapitalOneLogo}
+                        alt="Capital One Logo"
+                        className="rounded-xl"
+                    />
+                </figure>
+                <div className="card-body text-text-base">
+                    <div className="flex flex-row gap-2 items-center">
+                        <FaRegBuilding className="text-text-base w-6 h-6 hidden md:flex" />
+                        <h2 className="card-title text-primary-highlight font-semibold text-xl">Software Engineer Intern @ Capital One</h2>
+                    </div>
+                    <span className="text-sm italic">Summer 2021</span>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Reiciendis, sed aperiam adipisci quidem labore, laboriosam ducimus expedita dignissimos quam suscipit dolorem unde ea. Ratione quidem nobis officiis nulla, quos adipisci! Lorem ipsum dolor sit amet consectetur adipisicing elit. Inventore repudiandae laborum non molestiae, accusamus iure iusto quam consequuntur dolores voluptatum doloribus aliquam quia voluptates exercitationem aut, assumenda ipsa quae earum.</p>
+                </div>
+            </div>
+            <div id="pragmatics-experience-card" className="card card-side bg-background-muted shadow-sm scroll-mt-24">
+                <figure className="hidden md:flex md:w-full justify-center items-center p-6">
+                    <img
+                        src={PragmaticsLogo}
+                        alt="Pragmatics Logo"
+                        className="rounded-xl"
+                    />
+                </figure>
+                <div className="card-body text-text-base">
+                    <div className="flex flex-row gap-2 items-center">
+                        <FaRegBuilding className="text-text-base w-6 h-6 hidden md:flex" />
+                        <h2 className="card-title text-primary-highlight font-semibold text-xl">Software Engineer Intern @ Pragmatics</h2>
+                    </div>
+                    <span className="text-sm italic">Summer 2020</span>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Reiciendis, sed aperiam adipisci quidem labore, laboriosam ducimus expedita dignissimos quam suscipit dolorem unde ea. Ratione quidem nobis officiis nulla, quos adipisci! Lorem ipsum dolor sit amet consectetur adipisicing elit. Inventore repudiandae laborum non molestiae, accusamus iure iusto quam consequuntur dolores voluptatum doloribus aliquam quia voluptates exercitationem aut, assumenda ipsa quae earum.</p>
+                </div>
+            </div>
+            <div id="tjhsst-experience-card" className="card card-side bg-background-muted shadow-sm scroll-mt-24">
+                <figure className="hidden md:flex md:w-full justify-center items-center p-6">
+                    <img
+                        src={TJLogo}
+                        alt="TJHSST Logo"
+                        className="rounded-xl"
+                    />
+                </figure>
+                <div className="card-body text-text-base">
+                    <div className="flex flex-row gap-2 items-center">
+                        <IoSchool className="text-text-base w-6 h-6 hidden md:flex" />
+                        <h2 className="card-title text-primary-highlight font-semibold text-xl">Thomas Jefferson High School for Science and Technology</h2>
+                    </div>
+                    <span className="text-sm italic">2014 - 2018</span>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Reiciendis, sed aperiam adipisci quidem labore, laboriosam ducimus expedita dignissimos quam suscipit dolorem unde ea. Ratione quidem nobis officiis nulla, quos adipisci! Lorem ipsum dolor sit amet consectetur adipisicing elit. Inventore repudiandae laborum non molestiae, accusamus iure iusto quam consequuntur dolores voluptatum doloribus aliquam quia voluptates exercitationem aut, assumenda ipsa quae earum.</p>
+                </div>
+            </div>
+        </div>
+    );
+}
+
 
 const LinkButton: React.FC<{ href: string; icon: React.ReactNode }> = ({ href, icon }) => {
     return (
