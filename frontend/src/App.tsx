@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { BrowserRouter as Router, Routes, Route, Link, Navigate, useLocation } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Link, Navigate, useLocation, useNavigate } from "react-router-dom";
 import AboutMe from "./pages/AboutMe";
 import GameHome from "./pages/GameHome";
 import Footer from "./components/Footer";
@@ -24,12 +24,7 @@ function App() {
       <ScrollToTop />
       <div className="flex flex-col px-6 bg-background-base min-h-screen">
         <nav className="fixed flex space-x-2 top-2 left-1/2 -translate-x-1/2 z-20 flex justify-between items-center rounded-full backdrop-blur-xl bg-background-base/80 shadow-lg px-4 py-2 w-auto transition-all text-primary-highlight font-semibold">
-          <Link
-            to={pageRoutes.AboutMe}
-            className="text-primary-highlight hover:bg-background-muted rounded-full py-2 px-4 transition-all duration-300 hover:bg-primary-base hover:text-text-light hover:border-primary-base"
-          >
-            Home
-          </Link>
+          <HomeLink />
           <GameNavigation />
           <ThemePicker />
         </nav>
@@ -49,13 +44,37 @@ function App() {
             <Route path={pageRoutes.Othello} element={<Othello />} />
             <Route path={pageRoutes.SeaBattle} element={<SeaBattle />} />
             <Route path={pageRoutes.Mancala} element={<Mancala />} />
-            {/* Catch-all route for 404 */}
-            <Route path="*" element={<div className="text-center text-text-base">Page not found</div>} />
+            {/* Catch-all route for 404 routes to About Me page */}
+            <Route path="*" element={<Navigate to={pageRoutes.AboutMe} replace />} />
           </Routes>
         </main>
         <Footer />
       </div>
     </Router>
+  );
+}
+
+const HomeLink: React.FC = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const handleClick = (e: React.MouseEvent) => {
+    if (location.pathname === pageRoutes.AboutMe) {
+      e.preventDefault();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    } else {
+      navigate(pageRoutes.AboutMe);
+    }
+  };
+
+  return (
+    <a
+      href={pageRoutes.AboutMe}
+      onClick={handleClick}
+      className="text-primary-highlight hover:bg-background-muted rounded-full py-2 px-4 transition-all duration-300 hover:bg-primary-base hover:text-text-light hover:border-primary-base"
+    >
+      Home
+    </a>
   );
 }
 
