@@ -22,7 +22,7 @@ const Anagrams = () => {
         if (inputLetters.length > numLetters) {
             setInputLetters(inputLetters.slice(0, numLetters));
         }
-    }, [numLetters]);
+    }, [numLetters, inputLetters]);
 
     const handleSolve = async () => {
         setHasSolved(true);

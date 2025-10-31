@@ -1,5 +1,5 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { ButtonGroupPicker, ButtonGroupPickerOption } from '../../../components/ButtonGroupPicker';
+import React, { useState, useEffect } from 'react';
+import { ButtonGroupPicker } from '../../../components/ButtonGroupPicker';
 import { BooleanSelector } from '../../../atoms/BooleanSelector';
 import { ActionButton } from '../../../atoms/ActionButton';
 import { RiRobot2Line } from "react-icons/ri";

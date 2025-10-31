@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { BrowserRouter as Router, Routes, Route, Link, Navigate, useLocation, useNavigate } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation, useNavigate } from "react-router-dom";
 import AboutMe from "./pages/AboutMe";
 import GameHome from "./pages/GameHome";
 import Footer from "./components/Footer";

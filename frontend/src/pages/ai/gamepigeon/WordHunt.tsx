@@ -3,7 +3,6 @@ import '../../../App.css'
 import { ActionButton } from '../../../atoms/ActionButton';
 import { ButtonGroupPicker, ButtonGroupPickerOption } from '../../../components/ButtonGroupPicker';
 import { PaginatedSolutionsSection } from '../../../components/PaginatedSolutionsSection';
-import { chunkArray } from '../../../utils/helpers';
 import Input from '../../../atoms/Input';
 import { TitleWithInfo } from '../../../components/TitleWithInfo';
 

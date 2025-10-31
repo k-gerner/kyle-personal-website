@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { VscDebugRestart } from "react-icons/vsc";
 
-import Input from "../../../atoms/Input";
 import { ActionButton } from '../../../atoms/ActionButton';
 import { callEndpoint } from '../../../utils/helpers';
 import { Player } from '../../../utils/classes';
@@ -10,6 +9,12 @@ import { BooleanSelector } from '../../../atoms/BooleanSelector';
 import { TitleWithInfo } from '../../../components/TitleWithInfo';
 
 const BOARD_SIZE = 13;
+
+enum PieceType {
+    EMPTY,
+    PLAYER,
+    AI
+}
 
 const Gomoku = () => {
     // Game settings
@@ -313,13 +318,6 @@ const GomokuBoard: React.FC<GomokuBoardProps> = ({
             ))}
         </div>
     );
-}
-
-
-enum PieceType {
-    EMPTY,
-    PLAYER,
-    AI
 }
 
 interface PieceProps {
