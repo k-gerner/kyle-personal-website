@@ -128,7 +128,4 @@ module.exports = {
     },
   },
   plugins: [require("daisyui")],
-  safelist: [
-    { pattern: /./ }, // temporarily allow all classes to ensure DaisyUI isn't being purged
-  ],
 }
