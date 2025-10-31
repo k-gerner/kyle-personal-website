@@ -239,7 +239,7 @@ const SeaBattleBoard: React.FC<SeaBattleBoardProps> = ({
     } = board;
     const turnNumber = destroyedLocations.length + hitLocations.length + missedLocations.length + clearedLocations.length + 1;
     return (
-        <div className="flex flex-col gap-1 flex-shrink-0 min-w-fit overflow-visible">
+        <div className="flex flex-col gap-1 flex-shrink-0 min-w-fit overflow-visible text-black">
             {Array.from({ length: boardSize }).map((_, row) => (
                 <div key={row} className="flex gap-1">
                     {Array.from({ length: boardSize }).map((_, col) => {
@@ -271,7 +271,7 @@ const SeaBattleBoard: React.FC<SeaBattleBoardProps> = ({
                                 : isCleared
                                     ? '•'
                                     : showDensities && !gameOver
-                                        ? density.toFixed(1)
+                                        ? density.toFixed(0)
                                         : '';
 
                         const pulseClass = locationsContain(bestMoves, [row, col]) ? 'animate-customPulse bg-primary-base' : '';
@@ -279,7 +279,7 @@ const SeaBattleBoard: React.FC<SeaBattleBoardProps> = ({
                             <div
                                 // Use a key with turnNumber to force re-rendering when turn changes to synchronize animations
                                 key={`${row}-${col}-${turnNumber}`}
-                                className={`w-10 h-10 flex items-center justify-center border 
+                                className={`w-7 h-7 md:w-10 md:h-10 text-xs md:text-lg flex items-center justify-center border 
                                     ${cursorClasses}
                                     ${cellStyleClasses}
                                     ${pulseClass}
@@ -367,7 +367,7 @@ const RemainingShipsSection: React.FC<RemainingShipsSectionProps> = ({
     return (
         <div className="flex flex-col gap-2">
             <h2 className="text-lg font-bold text-center text-text-base">Remaining Ships</h2>
-            <div className="flex flex-row gap-6 justify-center">
+            <div className="grid grid-cols-2 gap-4 justify-center md:flex md:flex-row md:gap-6">
                 {Object.entries(shipsRemaining).map(([size, count]) => (
                     <div key={size} className="flex flex-col items-center gap-1">
                         <span className="text-lg text-text-base">x{count}</span>
@@ -405,7 +405,7 @@ const InputSection: React.FC<InputSectionProps> = ({
     )
 
     return (
-        <div className="flex flex-row md:flex-col items-center gap-6">
+        <div className="flex flex-col items-center gap-6">
             <ButtonGroupPicker
                 options={[8, 9, 10]}
                 label="Board Size"
