@@ -294,7 +294,7 @@ const Board: React.FC<BoardProps> = ({
                     return (
                         <div
                             key={`${rowIndex}-${colIndex}`}
-                            className={`flex items-center justify-center rounded-full border-4 border-connect-4-board bg-background-base transition-transform duration-200 ${cellClasses}`}
+                            className={`flex items-center justify-center rounded-full border-2 md:border-4 border-connect-4-board bg-background-base transition-transform duration-200 ${cellClasses}`}
                             style={{
                                 clipPath: "circle(50%)",
                             }}

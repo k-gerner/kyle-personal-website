@@ -431,7 +431,7 @@ const MancalaBoard: React.FC<MancalaBoardProps> = ({
             <div className="flex flex-col sm:flex-row gap-4 items-center bg-mancala-board p-4 rounded-3xl shadow-lg items-stretch">
                 <div
                     key={`ai-score-pocket-${aiScore}`}
-                    className="bg-secondary rounded-3xl bg-mancala-pocket flex items-center justify-center text-3xl font-bold text-white w-full sm:w-16 h-12 sm:h-auto transition animate-secondaryOutlineBounce"
+                    className="rounded-3xl bg-mancala-pocket flex items-center justify-center text-3xl font-bold text-white w-full sm:w-16 h-12 sm:h-auto transition animate-secondaryOutlineBounce"
                 >
                     <span key={`ai-score-${aiScore}`} className="transition animate-enlargeBounceBigger text">
                         {aiScore}
@@ -498,7 +498,7 @@ const MancalaBoard: React.FC<MancalaBoardProps> = ({
                         })}
                     </div>
                 </div>
-                <div key={`player-score-pocket-${playerScore}`} className="bg-secondary rounded-3xl bg-mancala-pocket flex items-center justify-center text-3xl font-bold text-white w-full sm:w-16 h-12 sm:h-auto transition animate-primaryOutlineBounce">
+                <div key={`player-score-pocket-${playerScore}`} className="rounded-3xl bg-mancala-pocket flex items-center justify-center text-3xl font-bold text-white w-full sm:w-16 h-12 sm:h-auto transition animate-primaryOutlineBounce">
                     <span key={`player-score-${playerScore}`} className="transition animate-enlargeBounceBigger">
                         {playerScore}
                     </span>

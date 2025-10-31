@@ -256,7 +256,7 @@ const GomokuBoard: React.FC<GomokuBoardProps> = ({
     const selectedRow = selectedPosition ? selectedPosition[0] : null;
     const selectedCol = selectedPosition ? selectedPosition[1] : null;
     return (
-        <div className="relative bg-gomoku-board pl-5 pt-5 rounded-lg max-w-fit">
+        <div className="relative bg-gomoku-board pl-3 pt-3 md:pl-5 md:pt-5 rounded-lg max-w-[24rem] md:max-w-fit aspect-square">
             {board.map((r, rowIndex) => (
                 // Using negative margins to offset the extra padding caused by having edge row/cols
                 // Without the negative margins, the board would be extra padded on the right/bottom
@@ -280,7 +280,7 @@ const GomokuBoard: React.FC<GomokuBoardProps> = ({
                             <div key={`${rowIndex}-${colIndex}`} className={`relative ${colIndex === BOARD_SIZE - 1 ? '-mr-3' : ''}`}>
                                 {/* Square */}
                                 <div
-                                    className={`w-8 h-8
+                                    className={`w-6 h-6 md:w-8 md:h-8
                                         ${rowIndex === BOARD_SIZE - 1 || colIndex === BOARD_SIZE - 1
                                             ? ''
                                             : 'border border-black bg-gomoku-board'}`}
@@ -288,7 +288,7 @@ const GomokuBoard: React.FC<GomokuBoardProps> = ({
 
                                 {/* Intersection (potential piece position) */}
                                 <div
-                                    className='absolute w-7 h-7'
+                                    className='absolute w-6 h-6 md:w-7 md:h-7'
                                     style={{
                                         top: '0%',
                                         left: '0%',
@@ -357,7 +357,7 @@ const Piece: React.FC<PieceProps> = ({
 
     return (
         <div
-            className={`w-7 h-7 ${gradientStr} ${outlineStr} ${shadowStr} ${cursorStr} rounded-full transform -translate-x-1/2 -translate-y-1/2`}
+            className={`w-5 h-5 md:w-7 md:h-7 ${gradientStr} ${outlineStr} ${shadowStr} ${cursorStr} rounded-full transform -translate-x-1/2 -translate-y-1/2`}
             {...(onClick ? { onClick } : {})}
         ></div>
     );

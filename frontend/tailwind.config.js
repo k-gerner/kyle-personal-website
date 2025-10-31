@@ -58,6 +58,7 @@ const customColors = {
 module.exports = {
   content: [
     "./src/**/*.{js,ts,jsx,tsx}",  // scans all your components
+    "./node_modules/daisyui/dist/**/*.js"
   ],
   theme: {
     extend: {
@@ -127,5 +128,5 @@ module.exports = {
       },
     },
   },
-  plugins: [],
+  plugins: [require("daisyui")],
 }
