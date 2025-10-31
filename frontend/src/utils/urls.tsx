@@ -20,4 +20,5 @@ export const externalRoutes = {
     Email: "mailto:kgerner@vt.edu,kgcoltsfan@gmail.com",
     PhiBetaKappa: 'https://www.pbk.org/',
     Yext: 'https://www.yext.com/',
+    NewsweekTJRanking: 'https://www.newsweek.com/2014/09/19/number-1-high-school-america-offers-real-head-start-268693.html',
 };
