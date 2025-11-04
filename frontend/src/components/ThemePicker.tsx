@@ -39,13 +39,13 @@ export const ThemePicker = () => {
     const handleThemeChange = (newTheme: string) => {
         setTheme(newTheme);
         localStorage.setItem("theme", newTheme);
-        document.documentElement.className = newTheme;
+        document.documentElement.className = newTheme + ' bg-background-base';
         setDropdownOpen(false);
     };
 
     useEffect(() => {
         // Apply the theme from state to the <html> element on component mount
-        document.documentElement.className = theme;
+        document.documentElement.className = theme + ' bg-background-base';
     }, [theme]);
 
     // Close dropdown when clicking outside

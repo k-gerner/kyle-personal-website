@@ -236,7 +236,7 @@ const TimelineItem: React.FC<TimelineItemProps> = ({ date, icon, label, scrollTo
             <hr className="border-none bg-primary-base h-8 mx-auto lg:h-0.5" />
             <div className="timeline-start">{date}</div>
             <div className="timeline-middle">{icon}</div>
-            <div className="timeline-end timeline-box bg-background-muted flex flex-col items-center">
+            <div className="timeline-end timeline-box bg-background-muted flex flex-col items-center border-none">
                 <span className="text-sm pb-1 text-center">{label}</span>
                 <button
                     className="rounded-full hover:bg-primary-highlight hover:text-background-base transition-all duration-300"
