@@ -362,7 +362,7 @@ const ExperienceSection = () => {
                     <p>
                         My second internship was at Capital One, where I built APIs using Python to allow users to request Just-in-Time access
                         to AWS resources. I gained experience working with a microservices architecture and AWS integration. There was also
-                        a focus on scalability and unit testing.
+                        a focus on scalability and unit testing. I was able to secure a full-time return offer as well.
                     </p>
                     <span className="mt-2 font-semibold text-primary-highlight">Key Technologies:</span>
                     <ul className="list-disc pl-5">
