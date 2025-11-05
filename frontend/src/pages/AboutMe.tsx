@@ -1,10 +1,10 @@
 import React from "react";
-import HeadshotImage from "../assets/headshot.png";
-import YextLogoImage from "../assets/yext_logo.png";
-import VTLogoImage from "../assets/vt_logo.png";
-import CapitalOneLogo from "../assets/capital_one_logo.png"
-import PragmaticsLogo from "../assets/pragmatics_logo.png"
-import TJLogo from "../assets/tjhsst_logo.png"
+import HeadshotImage from "../assets-optimized/headshot.webp";
+import YextLogoImage from "../assets-optimized/yext_logo.webp";
+import VTLogoImage from "../assets-optimized/vt_logo.webp";
+import CapitalOneLogo from "../assets-optimized/capital_one_logo.webp"
+import PragmaticsLogo from "../assets-optimized/pragmatics_logo.webp"
+import TJLogo from "../assets-optimized/tjhsst_logo.webp"
 import { FaComputer, FaGears } from "react-icons/fa6";
 import { IoSchool } from "react-icons/io5";
 import { IoIosArrowDown, IoIosArrowForward } from "react-icons/io";

@@ -1,14 +1,14 @@
 import { Link } from "react-router-dom";
-import AnagramsSampleImage from "../assets/ai/anagrams_sample.png";
-import Connect4SampleImage from "../assets/ai/connect4_sample.png";
-import GomokuSampleImage from "../assets/ai/gomoku_sample.png";
-import MancalaSampleImage from "../assets/ai/mancala_sample.png";
-import OthelloSampleImage from "../assets/ai/othello_sample.png";
-import SeaBattleSampleImage from "../assets/ai/sea_battle_sample.png";
-import WordBitesSampleImage from "../assets/ai/word_bites_sample.png";
-import WordHuntSampleImage from "../assets/ai/word_hunt_sample.png";
-import SpellingBeeSampleImage from "../assets/ai/spelling_bee_sample.png";
-import LetterBoxedSampleImage from "../assets/ai/letter_boxed_sample.png";
+import AnagramsSampleImage from "../assets-optimized/ai/anagrams_sample.webp";
+import Connect4SampleImage from "../assets-optimized/ai/connect4_sample.webp";
+import GomokuSampleImage from "../assets-optimized/ai/gomoku_sample.webp";
+import MancalaSampleImage from "../assets-optimized/ai/mancala_sample.webp";
+import OthelloSampleImage from "../assets-optimized/ai/othello_sample.webp";
+import SeaBattleSampleImage from "../assets-optimized/ai/sea_battle_sample.webp";
+import WordBitesSampleImage from "../assets-optimized/ai/word_bites_sample.webp";
+import WordHuntSampleImage from "../assets-optimized/ai/word_hunt_sample.webp";
+import SpellingBeeSampleImage from "../assets-optimized/ai/spelling_bee_sample.webp";
+import LetterBoxedSampleImage from "../assets-optimized/ai/letter_boxed_sample.webp";
 import { pageRoutes } from "../utils/urls";
 import React from "react";
 
