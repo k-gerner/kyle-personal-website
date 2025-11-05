@@ -17,30 +17,18 @@ const defaultLinkButtonClasses = [
     "last:pb-3"
 ].join(" ");
 
-const GameNavigation: React.FC = () => {
+interface GameNavigationProps {
+    onNavigate?: () => void;
+}
+
+const GameNavigation: React.FC<GameNavigationProps> = ({ onNavigate }) => {
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
     const buttonRef = useRef<HTMLButtonElement>(null);
-
-    // Close dropdown when clicking outside
-    useEffect(() => {
-        if (!dropdownOpen) return;
-        function handleClickOutside(event: MouseEvent) {
-            if (
-                dropdownRef.current &&
-                !dropdownRef.current.contains(event.target as Node) &&
-                buttonRef.current &&
-                !buttonRef.current.contains(event.target as Node)
-            ) {
-                setDropdownOpen(false);
-            }
-        }
-        document.addEventListener("mousedown", handleClickOutside);
-        return () => {
-            document.removeEventListener("mousedown", handleClickOutside);
-        };
-    }, [dropdownOpen]);
-
+    const closeAndNavigate = () => {
+        setDropdownOpen(false);
+        onNavigate && onNavigate();
+    };
     return (
         <div className="relative">
             <button
@@ -54,20 +42,21 @@ const GameNavigation: React.FC = () => {
                 </div>
             </button>
             {dropdownOpen && (
-                <div className="absolute left-0 mt-2 bg-background-base border border-brd-muted rounded-3xl shadow-lg min-w-[12rem] z-40 flex flex-col animate-dropdown" onClick={() => setDropdownOpen(false)} ref={dropdownRef}>
-                    <Link to={pageRoutes.GameHome} className={defaultLinkButtonClasses}>Game Home</Link>
+                <div className="absolute left-0 mt-2 bg-background-base border border-brd-muted rounded-3xl shadow-lg min-w-[12rem] z-40 flex flex-col animate-dropdown" ref={dropdownRef}>
+                    <Link to={pageRoutes.GameHome} className={defaultLinkButtonClasses} onClick={closeAndNavigate}>Game Home</Link>
                     <div className="px-4 py-2 border-b border-brd-muted font-semibold text-sm text-text-muted mt-2">Game Pigeon</div>
-                    <Link to={pageRoutes.Anagrams} className={defaultLinkButtonClasses}>Anagrams</Link>
-                    <Link to={pageRoutes.Connect4} className={defaultLinkButtonClasses}>Connect 4</Link>
-                    <Link to={pageRoutes.Gomoku} className={defaultLinkButtonClasses}>Gomoku</Link>
-                    <Link to={pageRoutes.Mancala} className={defaultLinkButtonClasses}>Mancala</Link>
-                    <Link to={pageRoutes.Othello} className={defaultLinkButtonClasses}>Othello</Link>
-                    <Link to={pageRoutes.SeaBattle} className={defaultLinkButtonClasses}>Sea Battle</Link>
-                    <Link to={pageRoutes.WordBites} className={defaultLinkButtonClasses}>Word Bites</Link>
-                    <Link to={pageRoutes.WordHunt} className={defaultLinkButtonClasses}>Word Hunt</Link>
+                    <Link to={pageRoutes.Anagrams} className={defaultLinkButtonClasses} onClick={closeAndNavigate}>Anagrams</Link>
+                    <Link to={pageRoutes.Connect4} className={defaultLinkButtonClasses} onClick={closeAndNavigate}>Connect 4</Link>
+                    <Link to={pageRoutes.Gomoku} className={defaultLinkButtonClasses} onClick={closeAndNavigate}>Gomoku</Link>
+                    <Link to={pageRoutes.Mancala} className={defaultLinkButtonClasses} onClick={closeAndNavigate}>Mancala</Link>
+                    <Link to={pageRoutes.Othello} className={defaultLinkButtonClasses} onClick={closeAndNavigate}>Othello</Link>
+                    <Link to={pageRoutes.SeaBattle} className={defaultLinkButtonClasses} onClick={closeAndNavigate}>Sea Battle</Link>
+                    <Link to={pageRoutes.WordBites} className={defaultLinkButtonClasses} onClick={closeAndNavigate}>Word Bites</Link>
+                    <Link to={pageRoutes.WordHunt} className={defaultLinkButtonClasses} onClick={closeAndNavigate}>Word Hunt</Link>
                     <span className="px-4 py-2 border-b border-brd-muted font-semibold text-sm text-text-muted mt-2">NYT Mini Games</span>
-                    <Link to={pageRoutes.LetterBoxed} className={defaultLinkButtonClasses}>Letter Boxed</Link>
-                    <Link to={pageRoutes.SpellingBee} className={defaultLinkButtonClasses}>Spelling Bee</Link>
+                    <Link to={pageRoutes.LetterBoxed} className={defaultLinkButtonClasses} onClick={closeAndNavigate}>Letter Boxed</Link>
+                    <Link to={pageRoutes.SpellingBee} className={defaultLinkButtonClasses} onClick={closeAndNavigate}>Spelling Bee</Link>
+
                 </div>
             )}
         </div>

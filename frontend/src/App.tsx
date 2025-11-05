@@ -18,18 +18,59 @@ import GameNavigation from "./components/ai/GameNavigation";
 import { pageRoutes } from "./utils/urls";
 import './index.css';
 
+import { useState } from "react";
+import { FiMenu, FiX } from "react-icons/fi";
+
 function App() {
+  const [menuOpen, setMenuOpen] = useState(false);
   return (
     <Router>
       <ScrollToTop />
       <div className="flex flex-col px-6 bg-background-base min-h-screen">
-        <nav className="fixed flex space-x-2 top-2 left-1/2 -translate-x-1/2 z-20 flex justify-between items-center rounded-full backdrop-blur-xl bg-background-base/80 shadow-lg px-4 py-2 w-auto transition-all text-primary-highlight font-semibold">
-          <HomeLink />
-          <GameNavigation />
-          <ThemePicker />
+        {/* Nav bar: left-aligned on mobile, centered on desktop */}
+        <nav
+          className="fixed flex space-x-2 top-2 left-2 md:left-1/2 md:-translate-x-1/2 z-20 flex justify-between items-center rounded-full backdrop-blur-xl bg-background-base/80 shadow-lg px-4 py-2 w-auto md:w-auto transition-all text-primary-highlight font-semibold"
+          style={{ maxWidth: 'calc(100vw - 1rem)' }}
+        >
+          {/* Hamburger for mobile */}
+          <button
+            className="md:hidden flex items-center justify-center p-2 rounded-full hover:bg-background-muted focus:outline-none"
+            aria-label="Open menu"
+            onClick={() => setMenuOpen(true)}
+          >
+            <FiMenu className="w-7 h-7" />
+          </button>
+          {/* Nav links for desktop */}
+          <div className="hidden md:flex space-x-2 items-center">
+            <HomeLink />
+            <GameNavigation />
+            <ThemePicker />
+          </div>
         </nav>
 
-        <main className="pt-24 flex-1 flex flex-col">
+        {/* Mobile popout menu */}
+        {menuOpen && (
+          <div className="fixed inset-0 z-50 bg-black/40 flex md:hidden">
+            <div className="bg-background-base w-64 max-w-full h-full shadow-lg flex flex-col p-6 relative animate-slideInFromLeft text-primary-highlight font-semibold">
+              <button
+                className="absolute top-4 right-4 p-2 rounded-full hover:bg-background-muted focus:outline-none"
+                aria-label="Close menu"
+                onClick={() => setMenuOpen(false)}
+              >
+                <FiX className="w-7 h-7" />
+              </button>
+              <div className="flex flex-col gap-6 mt-12 text-xl">
+                <HomeLink onClick={() => setMenuOpen(false)} />
+                <GameNavigation onNavigate={() => setMenuOpen(false)} />
+                <ThemePicker />
+              </div>
+            </div>
+            {/* Click outside to close */}
+            <div className="flex-1" onClick={() => setMenuOpen(false)} />
+          </div>
+        )}
+
+        <main className="pt-12 md:pt-24 flex-1 flex flex-col">
           <Routes>
             <Route path="/" element={<Navigate to={pageRoutes.AboutMe} replace />} />
             <Route path={pageRoutes.AboutMe} element={<AboutMe />} />
@@ -54,7 +95,10 @@ function App() {
   );
 }
 
-const HomeLink: React.FC = () => {
+interface HomeLinkProps {
+  onClick?: () => void;
+}
+const HomeLink: React.FC<HomeLinkProps> = ({ onClick }) => {
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -64,6 +108,9 @@ const HomeLink: React.FC = () => {
       window.scrollTo({ top: 0, behavior: "smooth" });
     } else {
       navigate(pageRoutes.AboutMe);
+    }
+    if (onClick) {
+      onClick();
     }
   };
 
@@ -76,7 +123,7 @@ const HomeLink: React.FC = () => {
       Home
     </a>
   );
-}
+};
 
 // Scroll to top on route change
 function ScrollToTop() {

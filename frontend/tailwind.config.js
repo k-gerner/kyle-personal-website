@@ -79,6 +79,10 @@ module.exports = {
           '0%': { transform: 'translateY(-100%)', opacity: 0 },
           '100%': { transform: 'translateY(0)', opacity: '1' },
         },
+        slideInFromLeft: {
+          '0%': { transform: 'translateX(-100%)', opacity: 0 },
+          '100%': { transform: 'translateX(0)', opacity: '1' },
+        },
         revealFromTop: {
           '0%': { clipPath: 'inset(0 0 100% 0)' },
           '100%': { clipPath: 'inset(0 0 0 0)' },
@@ -117,6 +121,7 @@ module.exports = {
         dropdown: 'dropdown 0.1s ease-out',
         pop: 'pop 0.3s ease forwards',
         slideInFromTop: 'slideInFromTop 0.3s ease-out forwards',
+        slideInFromLeft: 'slideInFromLeft 0.3s ease-out forwards',
         revealFromTop: 'revealFromTop2 0.5s ease-out forwards',
         enlargeBounce: 'enlargeBounce 1.0s ease-in-out infinite',
         customPulse: 'customPulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite',

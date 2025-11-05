@@ -249,9 +249,9 @@ const TimelineItem: React.FC<TimelineItemProps> = ({ date, icon, label, scrollTo
                         if (el) el.scrollIntoView({ behavior: "smooth" });
                     }}
                 >
-                    <div className="rounded-full border border-text-base px-8 py-1 transition-all hover:text-background-base hover:border-primary-highlight">
+                    <div className="rounded-full border border-text-base px-8 py-1 transition-all hover:text-background-base hover:border-primary-highlight flex items-center justify-center">
                         {/* <FaInfo className="w-4 h-4" /> */}
-                        <span className="text-xs font-semibold">Learn More</span>
+                        <span className="text-xs font-semibold py-1">Learn More</span>
                     </div>
                 </button>
             </div>
