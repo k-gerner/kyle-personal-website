@@ -15,7 +15,7 @@ export const chunkArray = (array: string[], chunkSize: number): string[][] => {
 
 const BACKEND_API_PREFIX = process.env.REACT_APP_LOCAL_DEV === 'true'
     ? 'http://localhost:5001'
-    : 'https://kyle-ai-backends-git-vercel-backend-setup-kyle-gerners-projects.vercel.app';
+    : 'https://kyle-ai-backends.vercel.app';
 /**
  * Call endpoint and return the response as a Promise of a JSON object
  * @param endpoint Endpoint to call, e.g. "api/nyt/spelling_bee"
