@@ -1,5 +1,7 @@
 from typing import Set
 from utils.word_games.words_tree_node import WordsTreeNode
+from utils.read_word_list import load_words
+from utils.word_games.word_start_tree import build_tree
 
 # A set of common English words typically used in word games
 _common_word_set: Set[str] = set()
@@ -15,6 +17,9 @@ def set_common_word_set(words: set) -> None:
     _common_word_set = words
 
 def get_common_word_set() -> set:
+    # if not loaded at startup, load now
+    if len(_common_word_set) == 0:
+        return load_words('../data/common_words.txt')
     return _common_word_set
 
 
@@ -33,6 +38,9 @@ def set_words_tree(tree) -> None:
     _words_tree = tree
 
 def get_words_tree() -> WordsTreeNode:
+    # if not loaded at startup, load now
+    if _words_tree is None:
+        return build_tree(get_common_word_set())
     return _words_tree
 
 

@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 import logging
+import os
 
 from utils.read_word_list import load_words
 from utils.data_store import set_common_word_set, set_words_tree, get_common_word_set, clear_data_store
@@ -18,13 +19,15 @@ async def lifespan(app: FastAPI):
     # Clean up the word lists and release the resources
     clear_data_store()
 
-app = FastAPI(lifespan=lifespan)
+local_dev = os.getenv("LOCAL_DEV") == "true"
+app = FastAPI(lifespan=lifespan if local_dev else None)
 
 origins = [
-    "http://localhost:3000",  # React dev server
+    "http://localhost:3000",  # React dev server (local)
+    "https://kylegerner.vercel.app",  # Production frontend URL
 ]
 
-# Allow frontend on localhost:3000 to talk to backend
+# Allow frontend (localhost:3000 if local) to talk to backend
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,

@@ -13,6 +13,7 @@ pip install -r requirements.txt
 
 In `/frontend` run `npm start`.  
 In `/backend` run `uvicorn main:app --reload --port 5001 --log-level debug`.  
+Also, create a `.env` file with `LOCAL_DEV=true` inside the `/backend` directory. This will enable some efficiencies that are only present when running locally (e.g. certain caches).
 
 You should now be see the UI on `localhost:3000`.
 
