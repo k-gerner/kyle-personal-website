@@ -13,6 +13,9 @@ export const chunkArray = (array: string[], chunkSize: number): string[][] => {
 };
 
 
+const BACKEND_API_PREFIX = process.env.REACT_APP_LOCAL_DEV === 'true'
+    ? 'http://localhost:5001'
+    : 'https://kyle-personal-website-csbf-git-ver-94f176-kyle-gerners-projects.vercel.app';
 /**
  * Call endpoint and return the response as a Promise of a JSON object
  * @param endpoint Endpoint to call, e.g. "api/nyt/spelling_bee"
@@ -20,7 +23,7 @@ export const chunkArray = (array: string[], chunkSize: number): string[][] => {
  * @returns Promise resolving to the JSON response from the endpoint
  */
 export const callEndpoint = async (endpoint: string, body: any): Promise<any> => {
-    const res = await fetch('http://localhost:5001/' + endpoint, {
+    const res = await fetch(BACKEND_API_PREFIX + '/' + endpoint, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
