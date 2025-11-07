@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import '../../../App.css'
 import { ActionButton } from '../../../atoms/ActionButton';
 import { ButtonGroupPicker } from '../../../components/ButtonGroupPicker';
+import { callEndpoint } from '../../../utils/helpers';
 import { PaginatedSolutionsSection } from '../../../components/PaginatedSolutionsSection';
 import { TitleWithInfo } from '../../../components/TitleWithInfo';
 import { chunkArray } from '../../../utils/helpers';
@@ -26,16 +27,11 @@ const Anagrams = () => {
 
     const handleSolve = async () => {
         setHasSolved(true);
-        const res = await fetch('http://localhost:5001/api/game_pigeon/anagrams', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                letters: inputLetters.split(''),
-            })
+        const res = await callEndpoint('api/game_pigeon/anagrams', {
+            letters: inputLetters.split(''),
         });
 
-        const data = await res.json();
-        setSolutions(chunkArray(data.words, WORDS_PER_PAGE));
+        setSolutions(chunkArray(res.words, WORDS_PER_PAGE));
         setPageNumber(0);
     };
     return (

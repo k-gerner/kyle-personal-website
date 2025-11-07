@@ -1,5 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { ActionButton } from '../../../atoms/ActionButton';
+import { callEndpoint } from '../../../utils/helpers';
 import { TitleWithInfo } from '../../../components/TitleWithInfo';
 import { PaginatedSolutionsSection } from '../../../components/PaginatedSolutionsSection';
 import { chunkArray } from '../../../utils/helpers';
@@ -18,17 +19,12 @@ const SpellingBee = () => {
 
     const handleSolve = async () => {
         setHasSolved(true);
-        const res = await fetch('http://localhost:5001/api/nyt/spelling_bee', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                center_letter: centerLetter,
-                outer_letters: outerLetters.split('')
-            })
+        const res = await callEndpoint('api/nyt/spelling_bee', {
+            center_letter: centerLetter,
+            outer_letters: outerLetters.split('')
         });
 
-        const data = await res.json();
-        setSolutions(chunkArray(data.words, WORDS_PER_PAGE));
+        setSolutions(chunkArray(res.words, WORDS_PER_PAGE));
         setPageNumber(0);
     };
 

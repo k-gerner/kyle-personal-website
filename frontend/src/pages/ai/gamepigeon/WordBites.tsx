@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import Input from '../../../atoms/Input';
 import { ActionButton } from '../../../atoms/ActionButton';
 import { BooleanSelector } from '../../../atoms/BooleanSelector';
+import { callEndpoint } from '../../../utils/helpers';
 import { PageButtons, NoSolutions } from '../../../components/PaginatedSolutionsSection';
 import { MdOutlineCancel } from "react-icons/md";
 import { LoadingSpinner } from "../../../atoms/LoadingSpinner";
@@ -52,23 +53,18 @@ const WordBites = () => {
 
     const handleSolve = async () => {
         setHasSolved(true);
-        const res = await fetch('http://localhost:5001/api/game_pigeon/word_bites', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                singlePieces: inputPieces.single,
-                horizontalPieces: inputPieces.horizontal,
-                verticalPieces: inputPieces.vertical,
-                minLength: 3,
-                maxLengthHorizontal: 8,
-                maxLengthVertical: 9
-            })
+        const res = await callEndpoint('api/game_pigeon/word_bites', {
+            singlePieces: inputPieces.single,
+            horizontalPieces: inputPieces.horizontal,
+            verticalPieces: inputPieces.vertical,
+            minLength: 3,
+            maxLengthHorizontal: 8,
+            maxLengthVertical: 9
         });
 
-        const data = await res.json();
         setPageNumber(0);
         setShowSolutions(true);
-        setSolutions(convertBackendResponseToSolutions(data));
+        setSolutions(convertBackendResponseToSolutions(res));
     };
 
     const handleInputChange = (value: string, pieceType: PieceType) => {

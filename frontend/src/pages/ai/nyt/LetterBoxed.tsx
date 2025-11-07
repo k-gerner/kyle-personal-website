@@ -3,6 +3,7 @@ import React, { useState, useRef } from 'react';
 import '../../../App.css'
 import { ActionButton } from '../../../atoms/ActionButton';
 import { ButtonGroupPicker } from '../../../components/ButtonGroupPicker';
+import { callEndpoint } from '../../../utils/helpers';
 import { PaginatedSolutionsSection } from '../../../components/PaginatedSolutionsSection';
 import { TitleWithInfo } from '../../../components/TitleWithInfo';
 import Input from '../../../atoms/Input';
@@ -34,20 +35,15 @@ const LetterBoxed = () => {
     const handleSolve = async () => {
         setHasSolved(true);
         setLoading(true);
-        const res = await fetch('http://localhost:5001/api/nyt/letter_boxed', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                letter_sides: [
-                    ...Object.values(letterSides),
-                ],
-                max_solutions_length: maxSolutionLength
-            })
+        const res = await callEndpoint('api/nyt/letter_boxed', {
+            letter_sides: [
+                ...Object.values(letterSides),
+            ],
+            max_solutions_length: maxSolutionLength
         });
 
-        const data = await res.json();
         setLoading(false);
-        setSolutions(data.solutions);
+        setSolutions(res.solutions);
         setPageNumber(0);
     };
 

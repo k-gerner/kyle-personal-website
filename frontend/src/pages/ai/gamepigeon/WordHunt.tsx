@@ -2,6 +2,7 @@ import React, { useState, useRef } from 'react';
 import '../../../App.css'
 import { ActionButton } from '../../../atoms/ActionButton';
 import { ButtonGroupPicker, ButtonGroupPickerOption } from '../../../components/ButtonGroupPicker';
+import { callEndpoint } from '../../../utils/helpers';
 import { PaginatedSolutionsSection } from '../../../components/PaginatedSolutionsSection';
 import Input from '../../../atoms/Input';
 import { TitleWithInfo } from '../../../components/TitleWithInfo';
@@ -39,19 +40,14 @@ const WordHunt = () => {
 
     const handleSolve = async () => {
         setHasSolved(true);
-        const res = await fetch('http://localhost:5001/api/game_pigeon/word_hunt', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                letters: inputLetters.flat(), //['a', 's', 'e', 'l', 't', 'r', 'o', 'n', 'e', 'p', 'i', 'c', 't', 'p', 'e', 'r'],//inputLetters.split(''),
-                board_type: boardType.toLowerCase(),
-                min_length: 3
-            })
+        const res = await callEndpoint('api/game_pigeon/word_hunt', {
+            letters: inputLetters.flat(),
+            board_type: boardType.toLowerCase(),
+            min_length: 3
         });
 
-        const data = await res.json();
         setSolutions(
-            Object.entries(data.solutions).map(
+            Object.entries(res.solutions).map(
                 ([word, positions]) => ({
                     word,
                     positions,
