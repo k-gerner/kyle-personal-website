@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
+from dotenv import load_dotenv
 import logging
 import os
 
@@ -19,6 +20,7 @@ async def lifespan(app: FastAPI):
     # Clean up the word lists and release the resources
     clear_data_store()
 
+load_dotenv()
 local_dev = os.getenv("LOCAL_DEV") == "true"
 app = FastAPI(lifespan=lifespan if local_dev else None)
 
