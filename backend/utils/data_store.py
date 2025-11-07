@@ -1,4 +1,5 @@
 from typing import Set
+import os
 from utils.word_games.words_tree_node import WordsTreeNode
 from utils.read_word_list import load_words
 from utils.word_games.word_start_tree import build_tree
@@ -19,7 +20,8 @@ def set_common_word_set(words: set) -> None:
 def get_common_word_set() -> set:
     # if not loaded at startup, load now
     if len(_common_word_set) == 0:
-        return load_words('../data/common_words.txt')
+        data_path = os.path.join(os.path.dirname(__file__), '..', 'data', 'common_words.txt')
+        return load_words(os.path.abspath(data_path))
     return _common_word_set
 
 
