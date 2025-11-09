@@ -42,7 +42,13 @@ const GameNavigation: React.FC<GameNavigationProps> = ({ onNavigate }) => {
                 </div>
             </button>
             {dropdownOpen && (
-                <div className="absolute left-0 mt-2 bg-background-base border border-brd-muted rounded-3xl shadow-lg min-w-[12rem] z-40 flex flex-col animate-dropdown" ref={dropdownRef}>
+                <div className="
+                    absolute left-0 mt-2 bg-background-base border border-brd-muted rounded-3xl shadow-lg min-w-[12rem] z-40 flex flex-col animate-dropdown 
+                    max-h-[60vh] overflow-y-auto
+                    md:max-h-none md:overflow-visible
+                    "
+                    ref={dropdownRef}
+                >
                     <Link to={pageRoutes.GameHome} className={defaultLinkButtonClasses} onClick={closeAndNavigate}>Game Home</Link>
                     <div className="px-4 py-2 border-b border-brd-muted font-semibold text-sm text-text-muted mt-2">Game Pigeon</div>
                     <Link to={pageRoutes.Anagrams} className={defaultLinkButtonClasses} onClick={closeAndNavigate}>Anagrams</Link>
