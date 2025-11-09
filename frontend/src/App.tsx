@@ -23,6 +23,10 @@ import { FiMenu, FiX } from "react-icons/fi";
 
 function App() {
   const [menuOpen, setMenuOpen] = useState(false);
+  useEffect(() => {
+    // Prevent background scroll
+    document.body.style.overflow = menuOpen ? "hidden" : "";
+  }, [menuOpen]);
   return (
     <Router>
       <ScrollToTop />
@@ -50,24 +54,7 @@ function App() {
 
         {/* Mobile popout menu */}
         {menuOpen && (
-          <div className="fixed inset-0 z-50 bg-black/40 flex md:hidden">
-            <div className="bg-background-base w-64 max-w-full h-full shadow-lg flex flex-col p-6 relative animate-slideInFromLeft text-primary-highlight font-semibold">
-              <button
-                className="absolute top-4 right-4 p-2 rounded-full hover:bg-background-muted focus:outline-none"
-                aria-label="Close menu"
-                onClick={() => setMenuOpen(false)}
-              >
-                <FiX className="w-7 h-7" />
-              </button>
-              <div className="flex flex-col gap-4 mt-4 text-xl">
-                <HomeLink onClick={() => setMenuOpen(false)} />
-                <GameNavigation onNavigate={() => setMenuOpen(false)} />
-                <ThemePicker />
-              </div>
-            </div>
-            {/* Click outside to close */}
-            <div className="flex-1" onClick={() => setMenuOpen(false)} />
-          </div>
+          <MobilePopOutMenu setMenuOpen={setMenuOpen} />
         )}
 
         <main className="pt-12 md:pt-24 flex-1 flex flex-col">
@@ -122,6 +109,33 @@ const HomeLink: React.FC<HomeLinkProps> = ({ onClick }) => {
     >
       Home
     </a>
+  );
+};
+
+interface MobilePopOutMenuProps {
+  setMenuOpen: (open: boolean) => void;
+}
+
+const MobilePopOutMenu: React.FC<MobilePopOutMenuProps> = ({ setMenuOpen }) => {
+  return (
+    <div className="fixed inset-0 z-50 bg-black/40 flex md:hidden">
+      <div className="bg-background-base w-64 max-w-full h-full shadow-lg flex flex-col p-6 relative animate-slideInFromLeft text-primary-highlight font-semibold">
+        <button
+          className="absolute top-4 right-4 p-2 rounded-full hover:bg-background-muted focus:outline-none"
+          aria-label="Close menu"
+          onClick={() => setMenuOpen(false)}
+        >
+          <FiX className="w-7 h-7" />
+        </button>
+        <div className="flex flex-col gap-4 mt-4 text-xl">
+          <HomeLink onClick={() => setMenuOpen(false)} />
+          <GameNavigation onNavigate={() => setMenuOpen(false)} />
+          <ThemePicker />
+        </div>
+      </div>
+      {/* Click outside to close */}
+      <div className="flex-1" onClick={() => setMenuOpen(false)} />
+    </div>
   );
 };
 
