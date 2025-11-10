@@ -200,6 +200,7 @@ const InputSection: React.FC<InputSectionProps> = ({
                 disabled={letters.flat().length !== rowLengthsByBoardType[boardType].reduce((a, b) => a + b, 0)} label="Solve"
                 onClick={onSolve}
                 className="w-48"
+                debounceMs={1000}
             />
         </div>
     );

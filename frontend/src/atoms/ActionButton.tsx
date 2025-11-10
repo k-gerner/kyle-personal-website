@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { twMerge } from 'tailwind-merge';
 
 const defaultStyle = [
@@ -39,7 +39,9 @@ const defaultStyle = [
 export interface ActionButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
     label: string | React.ReactNode;
     onClick: () => void;
+    disabled?: boolean;
     className?: string;
+    debounceMs?: number;
 }
 
 export const ActionButton: React.FC<ActionButtonProps> = ({
@@ -47,12 +49,23 @@ export const ActionButton: React.FC<ActionButtonProps> = ({
     onClick,
     disabled = false,
     className = "",
+    debounceMs,
     ...props
 }: ActionButtonProps) => {
+    const [lastClicked, setLastClicked] = useState<number>(0);
+
+    const onClickDebounced = () => {
+        const now = Date.now();
+        if (now - lastClicked < (debounceMs || 1000)) {
+            return;
+        }
+        setLastClicked(now);
+        onClick();
+    };
     const combinedClasses = twMerge(defaultStyle, className);
     return (
         <button
-            onClick={onClick}
+            onClick={debounceMs ? onClickDebounced : onClick}
             disabled={disabled}
             className={combinedClasses}
             {...props}

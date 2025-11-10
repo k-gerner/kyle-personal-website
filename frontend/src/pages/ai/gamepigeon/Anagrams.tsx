@@ -103,6 +103,7 @@ const InputSection: React.FC<InputSectionProps> = ({
                 label="Solve"
                 onClick={onSolve}
                 className="w-48"
+                debounceMs={1000}
             />
         </div>
     );
