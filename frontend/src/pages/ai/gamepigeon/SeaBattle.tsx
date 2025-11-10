@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { twMerge } from 'tailwind-merge';
 import { VscDebugRestart } from "react-icons/vsc";
 import { ImCross } from "react-icons/im";
 
@@ -148,7 +149,7 @@ const SeaBattle = () => {
     return (
         <div className="flex flex-col gap-4 bg-background-base items-center">
             <SeaBattleTitleSection />
-            <div className='border border-brd-muted p-4 rounded-lg shadow-lg w-full flex flex-col items-center md:flex-row gap-8 transition-all duration-500 justify-center'>
+            <div className='border border-brd-muted p-4 rounded-lg shadow-lg w-full flex flex-col items-center md:flex-row gap-4 md:gap-8 transition-all duration-500 justify-center'>
                 <div className='flex flex-col gap-2'>
                     <SeaBattleBoard
                         board={boardState}
@@ -262,7 +263,7 @@ const SeaBattleBoard: React.FC<SeaBattleBoardProps> = ({
                                     : isCleared
                                         ? 'bg-sea-battle-board opacity-50'
                                         : isSelected
-                                            ? 'bg-primary-base opacity-50 border-background-contrast border-2 border-primary-contrast'
+                                            ? 'bg-primary-base text-text-contrast border-4 border-primary-contrast'
                                             : 'bg-sea-battle-board';
                         const label = isDestroyed || isHit
                             ? <ImCross className="text-white" />
@@ -277,17 +278,20 @@ const SeaBattleBoard: React.FC<SeaBattleBoardProps> = ({
                         const pulseClass = locationsContain(bestMoves, [row, col]) ? 'animate-customPulse bg-primary-base' : '';
                         return (
                             <div
-                                // Use a key with turnNumber to force re-rendering when turn changes to synchronize animations
                                 key={`${row}-${col}-${turnNumber}`}
-                                className={`w-7 h-7 md:w-10 md:h-10 text-xs md:text-lg flex items-center justify-center border 
-                                    ${cursorClasses}
-                                    ${cellStyleClasses}
-                                    ${pulseClass}
-                        `}
+                                className={`${twMerge(
+                                    "w-7 h-7 md:w-10 md:h-10 text-sm md:text-lg flex items-center justify-center border-0 relative",
+                                    cursorClasses,
+                                    cellStyleClasses
+                                )}`}
                                 onClick={() => selectable && onCellClick(row, col)}
                                 title={`Density: ${density.toFixed(1)}`}
                             >
-                                {label}
+                                {/* Animated background layer */}
+                                {pulseClass && (
+                                    <div className={`absolute inset-0 ${pulseClass} z-0`} />
+                                )}
+                                <span className="opacity-100 relative z-10">{label}</span>
                             </div>
                         );
                     })}
@@ -312,7 +316,7 @@ const BoardMarkingSection: React.FC<BoardMarkingSectionProps> = ({
     onMarkMissed
 }) => {
     return (
-        <div className="flex flex-col gap-2 border border-brd-muted rounded-lg p-2 shadow-lg">
+        <div className="flex flex-col gap-2 border border-brd-muted rounded-lg p-2 shadow-md">
             <h2 className="text-lg font-bold text-center text-text-base">Mark Selected Cell As:</h2>
             <div className="flex flex-row gap-4 justify-center">
                 <ActionButton
