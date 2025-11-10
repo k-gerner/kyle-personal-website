@@ -105,7 +105,7 @@ const HomeLink: React.FC<HomeLinkProps> = ({ onClick }) => {
     <a
       href={pageRoutes.AboutMe}
       onClick={handleClick}
-      className="text-primary-highlight hover:bg-background-muted rounded-full py-2 px-4 transition-all duration-300 hover:bg-primary-base hover:text-text-light hover:border-primary-base"
+      className="text-primary-highlight hover:bg-background-muted rounded-full py-2 px-4 transition-all duration-300 hover:bg-primary-base hover:text-text-contrast hover:border-primary-base"
     >
       Home
     </a>

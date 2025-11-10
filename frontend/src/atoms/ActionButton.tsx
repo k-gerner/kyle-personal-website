@@ -11,20 +11,21 @@ const defaultStyle = [
     "text-sm",
     "transition-all",
     "shadow-sm",
-    "hover:shadow-lg",
-    "text-text-light",
+    "font-semibold",
+    "text-text-contrast",
     "bg-primary-base",
     // hover state styles
-    "hover:text-text-light",
+    "hover:shadow-lg",
+    "hover:text-text-contrast",
     "hover:bg-primary-highlight",
     "hover:border-primary-base",
     // focus state styles
-    "focus-visible:text-text-light",
+    "focus-visible:text-text-contrast",
     "focus-visible:bg-primary-highlight",
     "focus-visible:border-primary-base",
     // active state styles
     "active:border-primary-highlight",
-    "active:text-text-light",
+    "active:text-text-contrast",
     "active:bg-primary-highlight",
     // disabled state styles
     "disabled:pointer-events-none",

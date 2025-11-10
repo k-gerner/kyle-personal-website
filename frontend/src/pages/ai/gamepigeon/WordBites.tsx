@@ -345,7 +345,7 @@ const LetterTile: React.FC<LetterTileProps> = ({
 }) => {
     const baseClasses = "flex items-center justify-center text-xl font-bold text-letter-tile-text";
     const sizeClasses = "w-16 h-16"; // size === 'sm' ? 'w-12 h-12' : 'w-16 h-16';
-    const deleteButtonClasses = "bg-background-base text-danger flex items-center justify-center hover:bg-danger hover:text-background-base transition-colors border-danger border-2 rounded-b-md";
+    const deleteButtonClasses = "bg-background-base text-danger flex items-center justify-center hover:bg-danger hover:text-text-contrast transition-colors border-danger border-2 rounded-b-md";
     const deleteIconClasses = "w-8 h-8";
     const bgColor = "bg-letter-tile";
 

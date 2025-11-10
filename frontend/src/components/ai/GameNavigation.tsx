@@ -8,7 +8,7 @@ const defaultLinkButtonClasses = [
     "py-2",
     "text-primary-highlight",
     "hover:bg-primary-base",
-    "hover:text-text-light",
+    "hover:text-text-contrast",
     "rounded",
     "transition-colors",
     "first:pt-3",
@@ -34,7 +34,7 @@ const GameNavigation: React.FC<GameNavigationProps> = ({ onNavigate }) => {
             <button
                 ref={buttonRef}
                 onClick={() => setDropdownOpen(!dropdownOpen)}
-                className="text-primary-highlight rounded-full py-2 px-4 hover:bg-primary-base hover:text-text-light hover:bg-primary-base hover:border-primary-base transition-all duration-300"
+                className="text-primary-highlight rounded-full py-2 px-4 hover:bg-primary-base hover:text-text-contrast hover:bg-primary-base hover:border-primary-base transition-all duration-300"
             >
                 <div className="flex flex-row gap-2 items-center">
                     <span>AI Solvers</span>

@@ -22,8 +22,7 @@ const defaultButtonStyle = [
     "transition-all",
     "duration-300",
     "hover:bg-primary-base",
-    "hover:text-text-light",
-    "hover:bg-primary-base",
+    "hover:text-text-contrast",
     "hover:border-primary-base",
 ].join(" ");
 

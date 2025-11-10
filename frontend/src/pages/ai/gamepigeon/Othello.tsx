@@ -418,18 +418,18 @@ const ScoreBoard: React.FC<ScoreBoardProps> = ({ playerScore, aiScore }) => {
     return (
         <div className="px-10 gap-12 flex flex-row md:flex-col gap-4 justify-center items-center bg-primary-base rounded-3xl max-w-fit max-h-fit py-2 md:py-10 self-center">
             <div className="flex flex-col items-center gap-2">
-                <span className="text-lg font-semibold text-text-light">Player</span>
+                <span className="text-lg font-semibold text-text-contrast">Player</span>
                 <div className="w-8 h-8 md:w-12 md:h-12 flex items-center justify-center z-10">
                     <Piece type={PieceType.PLAYER} />
                 </div>
-                <span className="text-2xl font-bold text-text-light">{playerScore}</span>
+                <span className="text-2xl font-bold text-text-contrast">{playerScore}</span>
             </div>
             <div className="flex flex-col items-center gap-2">
-                <span className="text-lg font-semibold text-text-light">AI</span>
+                <span className="text-lg font-semibold text-text-contrast">AI</span>
                 <div className="w-8 h-8 md:w-12 md:h-12 flex items-center justify-center z-10">
                     <Piece type={PieceType.AI} />
                 </div>
-                <span className="text-2xl font-bold text-text-light">{aiScore}</span>
+                <span className="text-2xl font-bold text-text-contrast">{aiScore}</span>
             </div>
         </div>
     );

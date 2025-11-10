@@ -239,7 +239,7 @@ const TimelineItem: React.FC<TimelineItemProps> = ({ date, icon, label, scrollTo
             <div className="timeline-end timeline-box bg-background-muted flex flex-col items-center border-none">
                 <span className="text-sm pb-1 text-center">{label}</span>
                 <button
-                    className="rounded-full hover:bg-primary-highlight hover:text-background-base transition-all duration-300"
+                    className="rounded-full hover:bg-primary-base hover:text-text-contrast transition-all duration-300"
                     // onClick={() => setShowInfo(true)}
                     onClick={() => {
                         if (!scrollToId) {
@@ -249,7 +249,7 @@ const TimelineItem: React.FC<TimelineItemProps> = ({ date, icon, label, scrollTo
                         if (el) el.scrollIntoView({ behavior: "smooth" });
                     }}
                 >
-                    <div className="rounded-full border border-text-base px-8 py-1 transition-all hover:text-background-base hover:border-primary-highlight flex items-center justify-center">
+                    <div className="rounded-full border border-text-base px-8 py-1 transition-all hover:text-text-contrast hover:border-primary-base flex items-center justify-center">
                         {/* <FaInfo className="w-4 h-4" /> */}
                         <span className="text-xs font-semibold py-1">Learn More</span>
                     </div>

@@ -64,7 +64,7 @@ const GameLink: React.FC<GameLinkProps> = ({ to, label, image }) => {
     return (
         <Link
             to={to}
-            className="relative flex items-center justify-center aspect-square rounded-xl px-4 py-2 text-text-light hover:bg-primary-base transition-colors transition-transform shadow group transform hover:scale-105 duration-300"
+            className="relative flex items-center justify-center aspect-square rounded-xl px-4 py-2 text-text-light hover:bg-primary-base hover:text-text-contrast transition-colors transition-transform shadow group transform hover:scale-105 duration-300"
         >
             {image && (
                 <img
