@@ -11,6 +11,7 @@ const WORDS_PER_PAGE = 5;
 
 const SpellingBee = () => {
     const [hasSolved, setHasSolved] = useState(false); // if solve has run at least once
+    const [loading, setLoading] = useState(false);
     const [centerLetter, setCenterLetter] = useState('');
     const [outerLetters, setOuterLetters] = useState('');
     const [solutions, setSolutions] = useState<string[][]>([[]]);
@@ -19,12 +20,14 @@ const SpellingBee = () => {
 
     const handleSolve = async () => {
         setHasSolved(true);
+        setLoading(true);
         const res = await callEndpoint('api/nyt/spelling_bee', {
             center_letter: centerLetter,
             outer_letters: outerLetters.split('')
         });
 
         setSolutions(chunkArray(res.words, WORDS_PER_PAGE));
+        setLoading(false);
         setPageNumber(0);
     };
 
@@ -64,7 +67,7 @@ const SpellingBee = () => {
                             solutions={solutions}
                             pageNumber={pageNumber}
                             setPageNumber={setPageNumber}
-                            isLoading={false}
+                            isLoading={loading}
                             includeNumbers={false}
                         />
                     </div>

@@ -25,6 +25,7 @@ const WORDS_PER_PAGE = 1;
 
 const WordHunt = () => {
     const [hasSolved, setHasSolved] = useState(false); // if solve has run at least once
+    const [loading, setLoading] = useState(false);
     const [inputLetters, setInputLetters] = useState<string[][]>([[], [], [], []]);
     const [boardType, setBoardType] = useState<BoardType>("4x4"); // Default board type
     const [solutions, setSolutions] = useState<WordHuntSolution[]>([]);
@@ -40,6 +41,7 @@ const WordHunt = () => {
 
     const handleSolve = async () => {
         setHasSolved(true);
+        setLoading(true);
         const res = await callEndpoint('api/game_pigeon/word_hunt', {
             letters: inputLetters.flat(),
             board_type: boardType.toLowerCase(),
@@ -53,6 +55,7 @@ const WordHunt = () => {
                     positions,
                 } as WordHuntSolution))
         );
+        setLoading(false);
         setPageNumber(0);
     };
 
@@ -99,10 +102,6 @@ const WordHunt = () => {
                         boardType={boardType}
                         currentSolution={solutions.length > 0 ? solutions[WORDS_PER_PAGE * pageNumber] : undefined} // Show first solution if available
                     />
-                    {/* <LettersSection
-                        letters={inputLetters}
-                        numLetters={numLetters}
-                    /> */}
                 </div>
                 {hasSolved && (
                     <div className="w-full md:w-2/5 transition-all duration-300">
@@ -110,7 +109,7 @@ const WordHunt = () => {
                             solutions={transformSolutionsForDisplay(solutions, WORDS_PER_PAGE)} // Convert to 2D array for compatibility
                             pageNumber={pageNumber}
                             setPageNumber={setPageNumber}
-                            isLoading={false}
+                            isLoading={loading}
                             includeNumbers={false}
                         />
                     </div>

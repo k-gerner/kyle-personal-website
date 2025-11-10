@@ -13,6 +13,7 @@ const WORDS_PER_PAGE = 5;
 
 const Anagrams = () => {
     const [hasSolved, setHasSolved] = useState(false); // if solve has run at least once
+    const [loading, setLoading] = useState(false);
     const [inputLetters, setInputLetters] = useState('');
     const [numLetters, setNumLetters] = useState(6);
     const [solutions, setSolutions] = useState<string[][]>([[]]);
@@ -27,11 +28,13 @@ const Anagrams = () => {
 
     const handleSolve = async () => {
         setHasSolved(true);
+        setLoading(true);
         const res = await callEndpoint('api/game_pigeon/anagrams', {
             letters: inputLetters.split(''),
         });
 
         setSolutions(chunkArray(res.words, WORDS_PER_PAGE));
+        setLoading(false);
         setPageNumber(0);
     };
     return (
@@ -57,7 +60,7 @@ const Anagrams = () => {
                             solutions={solutions}
                             pageNumber={pageNumber}
                             setPageNumber={setPageNumber}
-                            isLoading={false}
+                            isLoading={loading}
                             includeNumbers={false}
                         />
                     </div>
