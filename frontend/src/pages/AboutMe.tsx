@@ -76,7 +76,7 @@ const AboutMeBlurb = () => {
                 <li>
                     <IoSchool className="inline w-5 h-5 mb-1 mr-2 text-primary-highlight" />
                     <span className="font-semibold text-primary-base">Virginia Tech Computer Science graduate</span>
-                    <span> (Fall 2021) - ΦΒΚ </span>
+                    <span> (Fall 2021) - ΦΒΚ{" "}</span>
                     <a
                         href={externalRoutes.PhiBetaKappa}
                         className="font-semibold text-primary-base underline-offset-4 transition-all duration-400 underline hover:scale-105 inline-block origin-left"
@@ -102,14 +102,14 @@ const WebsiteBlurbSection = () => {
     return (
         <div className="text-text-base bg-background-muted rounded-lg p-4 shadow mb-4 text-lg">
             <p className="mb-2">
-                This website showcases some of my projects where I've developed
+                This website showcases some of my projects where I've developed{" "}
                 <a
                     href={pageRoutes.GameHome}
-                    className="font-semibold text-primary-highlight underline-offset-4 transition-all duration-400 underline hover:scale-105 inline-block px-2"
+                    className="font-semibold text-primary-highlight underline-offset-4 transition-all duration-400 underline hover:scale-105 inline-block"
                 >
                     AI solutions
                 </a>
-                for some popular games. Please take a look around!
+                {" "}for some popular games. Please take a look around!
             </p>
             <p>
                 <span className="font-semibold text-primary-highlight">Don't hesitate to reach out</span> if you'd like to connect or learn more about my work!
@@ -239,7 +239,7 @@ const TimelineItem: React.FC<TimelineItemProps> = ({ date, icon, label, scrollTo
             <div className="timeline-end timeline-box bg-background-muted flex flex-col items-center border-none">
                 <span className="text-sm pb-1 text-center">{label}</span>
                 <button
-                    className="rounded-full hover:bg-primary-highlight hover:text-background-base transition-all duration-300"
+                    className="rounded-full hover:bg-primary-base hover:text-text-contrast transition-all duration-300"
                     // onClick={() => setShowInfo(true)}
                     onClick={() => {
                         if (!scrollToId) {
@@ -249,7 +249,7 @@ const TimelineItem: React.FC<TimelineItemProps> = ({ date, icon, label, scrollTo
                         if (el) el.scrollIntoView({ behavior: "smooth" });
                     }}
                 >
-                    <div className="rounded-full border border-text-base px-8 py-1 transition-all hover:text-background-base hover:border-primary-highlight flex items-center justify-center">
+                    <div className="rounded-full border border-text-base px-8 py-1 transition-all hover:text-text-contrast hover:border-primary-base flex items-center justify-center">
                         {/* <FaInfo className="w-4 h-4" /> */}
                         <span className="text-xs font-semibold py-1">Learn More</span>
                     </div>
@@ -318,18 +318,22 @@ const ExperienceSection = () => {
                     </div>
                     <span className="text-sm italic">2018 - Dec. 2021</span>
                     <p>
-                        I graduated from Virginia Tech in December 2021 with a Bachelor's degree in Computer Science and a minor in Mathematics.
-                        I graduated with a <span className="font-semibold text-primary-highlight">3.98 GPA</span> and was inducted into the
+                        <span>
+                            I graduated from Virginia Tech in December 2021 with a Bachelor's degree in Computer Science and a minor in Mathematics.
+                            I graduated with a <span className="font-semibold text-primary-highlight">3.98 GPA</span> and was inducted into the{" "}
+                        </span>
                         <a
                             href={externalRoutes.PhiBetaKappa}
-                            className="font-semibold text-primary-highlight underline-offset-4 transition-all duration-400 underline hover:scale-105 inline-block origin-left px-1 hover:pr-2"
+                            className="font-semibold text-primary-highlight underline-offset-4 transition-all duration-400 underline hover:scale-105 inline-block origin-left hover:pr-2"
                             target="_blank"
                             rel="noopener noreferrer"
                         >
                             Phi Beta Kappa
                         </a>
-                        honor society. Additionally, I received scholarships such as the <span className="font-semibold text-primary-highlight">Graduate School Talent Scholarship</span>.
-                        Additionally, I worked two semesters as an undergraduate teaching assistant for a Python course.
+                        <span>
+                            {" "}honor society. Additionally, I received scholarships such as the <span className="font-semibold text-primary-highlight">Graduate School Talent Scholarship</span>.
+                            Additionally, I worked two semesters as an undergraduate teaching assistant for a Python course.
+                        </span>
                         <span> and the </span>
                         <span className="font-semibold text-primary-highlight">Pratt Engineering Scholarship</span>.
                     </p>
@@ -417,16 +421,17 @@ const ExperienceSection = () => {
                     <p>
                         <span>
                             I attended TJHSST from 2014 to 2018, where I developed a strong foundation in computer science and mathematics.
-                            While I was there, TJ was rated the</span>
+                            While I was there, TJ was rated the{" "}
+                        </span>
                         <a
                             href={externalRoutes.NewsweekTJRanking}
-                            className="font-semibold text-primary-highlight underline-offset-4 transition-all duration-400 underline hover:scale-105 inline-block origin-left px-1 hover:pr-3"
+                            className="font-semibold text-primary-highlight underline-offset-4 transition-all duration-400 underline hover:scale-105 inline-block origin-left hover:pr-2"
                             target="_blank"
                             rel="noopener noreferrer"
                         >
                             #1 public high school
                         </a>
-                        <span>in the United States by multiple publications.</span>
+                        <span>{" "}in the United States by multiple publications.</span>
                     </p>
                     <p>
                         During my time at TJ, I balanced a rigorous academic schedule with extracurricular activities,

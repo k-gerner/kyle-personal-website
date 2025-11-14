@@ -6,6 +6,7 @@ const defaultButtonStyle = [
     "inline-flex",
     "items-center",
     "gap-x-2",
+    "font-semibold",
     "first:rounded-s-lg",
     "first:ms-0",
     "last:rounded-e-lg",
@@ -19,16 +20,16 @@ const defaultButtonStyle = [
     "hover:shadow-lg",
     "text-text-muted",
     // hover state styles
-    "hover:text-text-light",
+    "hover:text-text-contrast",
     "hover:bg-primary-base",
     "hover:border-primary-base",
     // focus state styles
-    "focus:text-text-light",
+    "focus:text-text-contrast",
     "focus:bg-primary-highlight",
     "focus:border-primary-base",
     // active state styles
     "active:border-primary-highlight",
-    "active:text-text-light",
+    "active:text-text-contrast",
     "active:bg-primary-highlight",
     // disabled state styles
     "disabled:pointer-events-none",
@@ -74,7 +75,7 @@ export const ButtonGroupPicker = <T extends string | number>({
                     ?
                     options.map((option) => {
                         const dynamicClasses = `${selectedValue === option
-                            ? 'bg-primary-highlight text-text-light'
+                            ? 'bg-primary-highlight text-text-contrast'
                             : 'bg-background-base text-text-muted'}
                                 ${showSelectedOnDisabled
                                 ? ''
@@ -96,7 +97,7 @@ export const ButtonGroupPicker = <T extends string | number>({
                     :
                     optionsWithLabels?.map(({ value, label }) => {
                         const dynamicClasses = `${selectedValue === value
-                            ? 'bg-primary-highlight text-text-light'
+                            ? 'bg-primary-highlight text-text-contrast'
                             : 'bg-background-base text-text-muted'}
                                 ${showSelectedOnDisabled
                                 ? ''

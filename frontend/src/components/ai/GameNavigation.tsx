@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef } from "react";
 import { MdExpandLess, MdExpandMore } from "react-icons/md";
 import { Link } from "react-router-dom";
 import { pageRoutes } from "../../utils/urls";
@@ -8,7 +8,7 @@ const defaultLinkButtonClasses = [
     "py-2",
     "text-primary-highlight",
     "hover:bg-primary-base",
-    "hover:text-text-light",
+    "hover:text-text-contrast",
     "rounded",
     "transition-colors",
     "first:pt-3",
@@ -34,7 +34,7 @@ const GameNavigation: React.FC<GameNavigationProps> = ({ onNavigate }) => {
             <button
                 ref={buttonRef}
                 onClick={() => setDropdownOpen(!dropdownOpen)}
-                className="text-primary-highlight rounded-full py-2 px-4 hover:bg-primary-base hover:text-text-light hover:bg-primary-base hover:border-primary-base transition-all duration-300"
+                className="text-primary-highlight rounded-full py-2 px-4 hover:bg-primary-base hover:text-text-contrast hover:bg-primary-base hover:border-primary-base transition-all duration-300"
             >
                 <div className="flex flex-row gap-2 items-center">
                     <span>AI Solvers</span>
@@ -42,7 +42,13 @@ const GameNavigation: React.FC<GameNavigationProps> = ({ onNavigate }) => {
                 </div>
             </button>
             {dropdownOpen && (
-                <div className="absolute left-0 mt-2 bg-background-base border border-brd-muted rounded-3xl shadow-lg min-w-[12rem] z-40 flex flex-col animate-dropdown" ref={dropdownRef}>
+                <div className="
+                    absolute left-0 mt-2 bg-background-base border border-brd-muted rounded-3xl shadow-lg min-w-[12rem] z-40 flex flex-col animate-dropdown 
+                    max-h-[60vh] overflow-y-auto
+                    md:max-h-none md:overflow-visible
+                    "
+                    ref={dropdownRef}
+                >
                     <Link to={pageRoutes.GameHome} className={defaultLinkButtonClasses} onClick={closeAndNavigate}>Game Home</Link>
                     <div className="px-4 py-2 border-b border-brd-muted font-semibold text-sm text-text-muted mt-2">Game Pigeon</div>
                     <Link to={pageRoutes.Anagrams} className={defaultLinkButtonClasses} onClick={closeAndNavigate}>Anagrams</Link>

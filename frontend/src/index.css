@@ -44,7 +44,7 @@ code {
   /* slate-400 */
   --text-light-color: white;
   --text-dark-color: black;
-  --text-contrast-color: white;
+  --text-contrast-color: var(--background-base-color, white);
 
   --brd-muted-color: rgb(209, 213, 219);
   /** border */
@@ -93,7 +93,7 @@ code {
 
   --text-base-color: rgb(0, 0, 0);
   --text-muted-color: rgb(71, 85, 105);
-  --text-contrast-color: white;
+  --text-contrast-color: var(--background-base-color, white);
 }
 
 .theme-light-lavender-rose {
@@ -117,7 +117,7 @@ code {
   --text-dull-color: rgb(148, 163, 184);
   --text-light-color: white;
   --text-dark-color: black;
-  --text-contrast-color: rgb(255, 255, 255);
+  --text-contrast-color: var(--background-base-color, white);
 }
 
 .theme-light-mint-leaf {
@@ -140,7 +140,7 @@ code {
   --text-dull-color: rgb(45, 106, 79);
   --text-light-color: white;
   --text-dark-color: black;
-  --text-contrast-color: rgb(255, 255, 255);
+  --text-contrast-color: var(--background-base-color, white);
 }
 
 .theme-dark-ocean-moon {
@@ -164,7 +164,7 @@ code {
   --text-base-color: white;
   --text-muted-color: rgb(148, 163, 184);
   --text-dull-color: rgb(103, 123, 150);
-  --text-contrast-color: rgb(0, 0, 0);
+  --text-contrast-color: var(--background-contrast-color, black);
 
   --brd-muted-color: rgb(84, 78, 78);
 
@@ -192,7 +192,7 @@ code {
   --text-base-color: rgb(236, 213, 173);
   --text-muted-color: rgb(156, 129, 85);
   --text-dull-color: rgb(135, 109, 67);
-  --text-contrast-color: rgb(93, 70, 33);
+  --text-contrast-color: var(--background-base-color, black);
 
   --connect-4-board-highlight-color: rgb(197, 225, 238);
 
@@ -220,7 +220,7 @@ code {
   --text-base-color: rgb(221, 191, 250);
   --text-muted-color: rgb(179, 137, 220);
   --text-dull-color: rgb(148, 163, 184);
-  --text-contrast-color: rgb(36, 0, 70);
+  --text-contrast-color: var(--background-base-color, black);
 
   --connect-4-board-highlight-color: rgb(197, 225, 238);
 
@@ -244,7 +244,7 @@ code {
   --text-base-color: rgb(221, 191, 250);
   --text-muted-color: rgb(179, 137, 220);
   --text-dull-color: rgb(148, 163, 184);
-  --text-contrast-color: rgb(36, 0, 70);
+  --text-contrast-color: var(--background-base-color, black);
 
   --connect-4-board-highlight-color: rgb(197, 225, 238);
 
@@ -253,7 +253,7 @@ code {
 
 .theme-dark-midnight-ember {
   --primary-accent-color: rgb(157, 2, 8);
-  --primary-base-color: rgb(208, 0, 0);
+  --primary-base-color: rgb(208, 76, 0);
   --primary-highlight-color: rgb(220, 47, 2);
   --primary-contrast-color: rgb(232, 93, 4);
 
@@ -268,7 +268,7 @@ code {
   --text-base-color: rgb(255, 204, 188);
   --text-muted-color: rgb(218, 150, 144);
   --text-dull-color: rgb(148, 163, 184);
-  --text-contrast-color: rgb(0, 0, 0);
+  --text-contrast-color: var(--background-contrast-color, white);
 
   --connect-4-board-highlight-color: rgb(197, 225, 238);
 
