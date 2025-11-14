@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef } from "react";
 import { MdExpandLess, MdExpandMore } from "react-icons/md";
 import { Link } from "react-router-dom";
 import { pageRoutes } from "../../utils/urls";

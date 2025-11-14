@@ -127,7 +127,7 @@ const MobilePopOutMenu: React.FC<MobilePopOutMenuProps> = ({ setMenuOpen }) => {
         >
           <FiX className="w-7 h-7" />
         </button>
-        <div className="flex flex-col gap-4 mt-4 text-xl">
+        <div className="flex flex-col gap-4 mt-6 text-xl">
           <HomeLink onClick={() => setMenuOpen(false)} />
           <GameNavigation onNavigate={() => setMenuOpen(false)} />
           <ThemePicker />
