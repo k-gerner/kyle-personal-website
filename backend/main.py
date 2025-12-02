@@ -1,5 +1,4 @@
 from fastapi import FastAPI
-from fastapi.responses import PlainTextResponse
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 from dotenv import load_dotenv
@@ -28,7 +27,8 @@ app = FastAPI(lifespan=lifespan if local_dev else None)
 origins = [
     "http://localhost:3000",  # React dev server (local)
     "https://kylegerner.vercel.app",  # Alternate production frontend URL
-    "https://kylegerner.dev",      # Production frontend URL
+    "https://kylegerner.dev",      # Production frontend URL (bare domain)
+    "https://www.kylegerner.dev",  # Production frontend URL (with www)
 ]
 
 # Allow frontend (localhost:3000 if local) to talk to backend
@@ -39,10 +39,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-@app.options("/{path:path}")
-async def options_handler(path: str):
-    return PlainTextResponse("ok")
 
 # Include the grouped routers
 app.include_router(nyt_mini_games.router, prefix="/api/nyt", tags=["NYT Mini Games"])
