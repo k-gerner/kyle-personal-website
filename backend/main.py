@@ -26,7 +26,8 @@ app = FastAPI(lifespan=lifespan if local_dev else None)
 
 origins = [
     "http://localhost:3000",  # React dev server (local)
-    "https://kylegerner.vercel.app",  # Production frontend URL
+    "https://kylegerner.vercel.app",  # Alternate production frontend URL
+    "https://kylegerner.dev",      # Production frontend URL
 ]
 
 # Allow frontend (localhost:3000 if local) to talk to backend
