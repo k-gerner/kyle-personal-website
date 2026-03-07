@@ -19,4 +19,6 @@ PlayerBoardSpace = Literal[
     BoardSpace.RED_KING
 ]
 
-Board = List[List[BoardSpace]]
+class Color(Enum):
+    RED = 'red'
+    BLACK = 'black'
