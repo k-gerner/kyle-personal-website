@@ -11,8 +11,12 @@ import ai.game_pigeon.othello.othello as othello
 import ai.game_pigeon.sea_battle.sea_battle as sea_battle
 import ai.game_pigeon.mancala.capture.mancala_capture as mancala_capture
 import ai.game_pigeon.mancala.avalanche.mancala_avalanche as mancala_avalanche
+import ai.game_pigeon.checkers.checkers as checkers
 from ai.game_pigeon.mancala.capture.mancala_capture import MancalaCaptureBoardState
 from ai.game_pigeon.mancala.avalanche.mancala_avalanche import MancalaAvalancheBoardState
+from ai.game_pigeon.checkers.move import MoveOutcome
+from ai.game_pigeon.checkers.board import BoardState
+from ai.game_pigeon.checkers.enums import Color as CheckersColor
 from utils.ai_runner import run
 from utils.error import BackendError
 from utils.model import CamelAliasModel
@@ -646,7 +650,7 @@ class MancalaAvalanchePlayerMoveOutput(CamelAliasModel):
 @router.post("/mancala_avalanche/player_move")
 async def evaluate_player_move_mancala_avalanche(input: MancalaAvalanchePlayerMoveInput) -> MancalaAvalanchePlayerMoveOutput:
     """
-    Evaluate a player's move in the Mancala Avalanche game and return the resulting board state.
+    Evaluate a player's move in the Maxcala Avalanche game and return the resulting board state.
     """
     try :
         board_state = run(
@@ -663,3 +667,103 @@ async def evaluate_player_move_mancala_avalanche(input: MancalaAvalanchePlayerMo
         logging.error("Unexpected error in mancala avalanche player move:", exc_info=True)
         raise HTTPException(status_code=500, detail="An unexpected error occurred.")
     return MancalaAvalanchePlayerMoveOutput(board_state=board_state)
+
+############
+# Checkers #
+############
+
+class CheckersInput(CamelAliasModel):
+    board:BoardState
+    max_search_depth: int = 6  # Default search depth
+    player_color: CheckersColor # Color of the player. Either 'red' or 'black'
+    
+    @validator("player_color", pre=True)
+    def ensure_valid_player_color(cls, value:str) -> str:
+        if not any(value == color.value for color in CheckersColor):
+            raise ValueError(f"Invalid player color. Must be one of: {', '.join([c.value for c in CheckersColor])}")
+        return value
+    
+class CheckersOutput(CamelAliasModel):
+    moves: List[MoveOutcome]
+    board:BoardState
+
+@router.post("/checkers")
+async def solve_checkers(input: CheckersInput) -> CheckersOutput:
+    """
+    Solve the Checkers puzzle with the provided player and opponent locations.
+    """
+    try:
+        board_state, moves = run(
+            checkers.run, 
+            board_state=input.board,
+            player_color=input.player_color,
+            max_search_depth=input.max_search_depth
+        )
+    except BackendError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        logging.error("Unexpected error in checkers:", exc_info=True)
+        raise HTTPException(status_code=500, detail="An unexpected error occurred.")
+    return CheckersOutput(
+        moves=moves,
+        board=board_state
+    )
+
+class CheckersAvailableMovesInput(CamelAliasModel):
+    board:BoardState
+    player_color: CheckersColor
+    is_chain: bool=False # whether this is the middle of the jump chain
+    starting_location: Optional[Tuple[int, int]] = None # coordinate to search from. Must be present if is_chain is True
+
+    @validator("player_color", pre=True)
+    def ensure_valid_player_color(cls, value:str) -> str:
+        if not any(value == color.value for color in CheckersColor):
+            raise ValueError(f"Invalid player color. Must be one of: {', '.join([c.value for c in CheckersColor])}")
+        return value
+    
+
+class CheckersAvailableMovesOutput(CamelAliasModel):
+    moves: List[MoveOutcome]
+
+@router.post("/checkers/available_moves")
+async def get_available_moves(input: CheckersAvailableMovesInput) -> CheckersAvailableMovesOutput:
+    try:
+        moves = run(
+            checkers.get_available_moves,
+            board_state=input.board,
+            player_color=input.player_color,
+            is_chain=input.is_chain,
+            starting_coord=input.starting_location
+        )
+    except BackendError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        logging.error("Unexpected error in checkers:", exc_info=True)
+        raise HTTPException(status_code=500, detail="An unexpected error occurred.")
+    return CheckersAvailableMovesOutput(moves=moves)
+
+
+class ChackersPerformMoveInput(CamelAliasModel):
+    move: MoveOutcome
+    board: BoardState
+
+class CheckersPerformMoveOutput(CamelAliasModel):
+    board: BoardState
+
+
+@router.post("/checkers/perform_move")
+async def perform_move(input:ChackersPerformMoveInput) -> CheckersPerformMoveOutput:
+    try:
+        board_state = run(
+            checkers.perform_move,
+            move=input.move,
+            board_state=input.board
+        )
+    except BackendError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        logging.error("Unexpected error in checkers:", exc_info=True)
+        raise HTTPException(status_code=500, detail="An unexpected error occurred.")
+    return CheckersPerformMoveOutput(
+        board=board_state
+    )

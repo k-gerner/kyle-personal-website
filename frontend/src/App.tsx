@@ -13,6 +13,7 @@ import Gomoku from "./pages/ai/gamepigeon/Gomoku";
 import Othello from "./pages/ai/gamepigeon/Othello";
 import SeaBattle from "./pages/ai/gamepigeon/SeaBattle";
 import Mancala from "./pages/ai/gamepigeon/Mancala";
+import Checkers from "./pages/ai/gamepigeon/Checkers";
 import { ThemePicker } from "./components/ThemePicker";
 import GameNavigation from "./components/ai/GameNavigation";
 import { pageRoutes } from "./utils/urls";
@@ -72,6 +73,7 @@ function App() {
             <Route path={pageRoutes.Othello} element={<Othello />} />
             <Route path={pageRoutes.SeaBattle} element={<SeaBattle />} />
             <Route path={pageRoutes.Mancala} element={<Mancala />} />
+            <Route path={pageRoutes.Checkers} element={<Checkers />} />
             {/* Catch-all route for 404 routes to About Me page */}
             <Route path="*" element={<Navigate to={pageRoutes.AboutMe} replace />} />
           </Routes>

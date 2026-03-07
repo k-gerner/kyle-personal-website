@@ -52,6 +52,7 @@ const GameNavigation: React.FC<GameNavigationProps> = ({ onNavigate }) => {
                     <Link to={pageRoutes.GameHome} className={defaultLinkButtonClasses} onClick={closeAndNavigate}>Game Home</Link>
                     <div className="px-4 py-2 border-b border-brd-muted font-semibold text-sm text-text-muted mt-2">Game Pigeon</div>
                     <Link to={pageRoutes.Anagrams} className={defaultLinkButtonClasses} onClick={closeAndNavigate}>Anagrams</Link>
+                    <Link to={pageRoutes.Checkers} className={defaultLinkButtonClasses} onClick={closeAndNavigate}>Checkers</Link>
                     <Link to={pageRoutes.Connect4} className={defaultLinkButtonClasses} onClick={closeAndNavigate}>Connect 4</Link>
                     <Link to={pageRoutes.Gomoku} className={defaultLinkButtonClasses} onClick={closeAndNavigate}>Gomoku</Link>
                     <Link to={pageRoutes.Mancala} className={defaultLinkButtonClasses} onClick={closeAndNavigate}>Mancala</Link>

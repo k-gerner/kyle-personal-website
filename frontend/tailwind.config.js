@@ -46,6 +46,9 @@ const customColors = {
   'othello-piece-black': 'var(--othello-piece-black-color)',
   'othello-piece-white': 'var(--othello-piece-white-color)',
 
+  'checkers-board-light': 'var(--checkers-board-light-color)',
+  'checkers-board-dark': 'var(--checkers-board-dark-color)',
+
   'sea-battle-board': 'var(--sea-battle-board-color)',
   'sea-battle-ship-inner': 'var(--sea-battle-ship-inner-color)',
   'sea-battle-ship-base': 'var(--sea-battle-ship-base-color)',
