@@ -12,6 +12,7 @@ export const pageRoutes = {
     Othello: '/ai/othello',
     SeaBattle: '/ai/sea-battle',
     Mancala: '/ai/mancala',
+    Checkers: '/ai/checkers',
 };
 
 export const externalRoutes = {

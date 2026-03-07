@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import AnagramsSampleImage from "../assets-optimized/ai/anagrams_sample.webp";
+import CheckersSampleImage from "../assets-optimized/ai/checkers_sample.webp";
 import Connect4SampleImage from "../assets-optimized/ai/connect4_sample.webp";
 import GomokuSampleImage from "../assets-optimized/ai/gomoku_sample.webp";
 import MancalaSampleImage from "../assets-optimized/ai/mancala_sample.webp";
@@ -17,10 +18,11 @@ import React from "react";
 const GameHome = () => {
     return (
         <div className="min-h-screen flex flex-col items-center gap-4 pt-4">
-            <div className="flex flex-col items-center gap-6 border border-brd-muted rounded-lg p-8 bg-background-muted shadow-lg">
+            <div className="w-full max-w-2xl flex flex-col items-center gap-6 border border-brd-muted rounded-lg p-8 bg-background-muted shadow-lg">
                 <h1 className="text-4xl font-extrabold text-text-base mb-4">Game Pigeon AIs</h1>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-2xl w-full">
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-6 w-full">
                     <GameLink to={pageRoutes.Anagrams} label="Anagrams" image={AnagramsSampleImage} />
+                    <GameLink to={pageRoutes.Checkers} label="Checkers" image={CheckersSampleImage} />
                     <GameLink to={pageRoutes.Connect4} label="Connect 4" image={Connect4SampleImage} />
                     <GameLink to={pageRoutes.Gomoku} label="Gomoku" image={GomokuSampleImage} />
                     <GameLink to={pageRoutes.Mancala} label="Mancala" image={MancalaSampleImage} />
@@ -30,9 +32,9 @@ const GameHome = () => {
                     <GameLink to={pageRoutes.WordHunt} label="Word Hunt" image={WordHuntSampleImage} />
                 </div>
             </div>
-            <div className="flex flex-col items-center gap-6 border border-brd-muted rounded-lg p-8 bg-background-muted shadow-lg">
+            <div className="w-full max-w-2xl flex flex-col items-center gap-6 border border-brd-muted rounded-lg p-8 bg-background-muted shadow-lg">
                 <h1 className="text-4xl font-extrabold text-text-base mb-4">NYT Mini Game AIs</h1>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-2xl w-full">
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-6 w-full">
                     <GameLink to={pageRoutes.SpellingBee} label="Spelling Bee" image={SpellingBeeSampleImage} />
                     <GameLink to={pageRoutes.LetterBoxed} label="Letter Boxed" image={LetterBoxedSampleImage} />
                 </div>

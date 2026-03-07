@@ -65,6 +65,9 @@ code {
   --othello-piece-black-color: black;
   --othello-piece-white-color: white;
 
+  --checkers-board-light-color: rgb(240, 217, 181);
+  --checkers-board-dark-color: rgb(181, 136, 99);
+
   --sea-battle-board-color: rgb(148, 222, 252);
   --sea-battle-ship-inner-color: rgb(107, 114, 128);
   --sea-battle-ship-base-color: rgb(31, 41, 55);
