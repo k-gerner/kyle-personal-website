@@ -563,6 +563,7 @@ const Checkers = () => {
                             allowInput={playerTurn === Player.User && !winner}
                             highlightedMove={recentAiMove}
                             validMoves={validMoves}
+                            selectablePieces={uniqueCoords(availableMoves.map((move) => move.move.startCoord))}
                             playerTurn={playerTurn}
                         />
                         <ActionButton
@@ -678,6 +679,7 @@ interface CheckersBoardProps {
     allowInput: boolean;
     highlightedMove: CheckersMove | null;
     validMoves: Array<[number, number]>;
+    selectablePieces: Array<[number, number]>;
     playerTurn: Player;
 }
 
@@ -690,6 +692,7 @@ const CheckersBoard: React.FC<CheckersBoardProps> = ({
     allowInput,
     highlightedMove,
     validMoves,
+    selectablePieces,
     playerTurn
 }) => {
     const board = Array.from({ length: BOARD_SIZE }, () => Array(BOARD_SIZE).fill(null));
@@ -710,6 +713,10 @@ const CheckersBoard: React.FC<CheckersBoardProps> = ({
 
     const isValidMove = (row: number, col: number): boolean => {
         return validMoves.some(([r, c]) => r === row && c === col);
+    };
+
+    const isSelectablePiece = (row: number, col: number): boolean => {
+        return selectablePieces.some(([r, c]) => r === row && c === col);
     };
 
     const isHighlighted = (row: number, col: number): boolean => {
@@ -738,6 +745,10 @@ const CheckersBoard: React.FC<CheckersBoardProps> = ({
                         const highlighted = isHighlighted(rowIndex, colIndex);
                         const selected = isSelected(rowIndex, colIndex);
                         const validMove = isValidMove(rowIndex, colIndex);
+                        const selectablePiece = isSelectablePiece(rowIndex, colIndex);
+                        const isSelectableDestination = selectedPiece !== null && validMove;
+                        const canClickSquare = allowInput && isDarkSquare && (selectablePiece || isSelectableDestination);
+                        const cursorClass = canClickSquare ? 'cursor-pointer' : 'cursor-not-allowed';
 
                         let borderRadiusClass = '';
                         if (rowIndex === 0 && colIndex === 0) {
@@ -756,10 +767,10 @@ const CheckersBoard: React.FC<CheckersBoardProps> = ({
                             <div
                                 key={`${rowIndex}-${colIndex}`}
                                 className={`relative w-8 h-8 md:w-12 md:h-12 z-10 flex border border-gray-400 ${squareColor} flex justify-center items-center
-                                    ${allowInput && isDarkSquare ? 'cursor-pointer' : ''}
+                                    ${cursorClass}
                                     ${borderRadiusClass}`}
                                 onClick={() => {
-                                    if (allowInput && isDarkSquare) {
+                                    if (canClickSquare) {
                                         onSquareClick([rowIndex, colIndex]);
                                     }
                                 }}
@@ -857,9 +868,9 @@ const CheckersPiece: React.FC<CheckersPieceProps> = ({
     }
 
     const outlineStr = highlighted
-        ? `outline outline-2 ${type === PieceType.PLAYER || type === PieceType.PLAYER_KING
-            ? 'outline-secondary-base'
-            : 'outline-primary-base'}`
+        ? `outline outline-2 ${type === PieceType.PLAYER
+            ? 'outline-primary-base'
+            : 'outline-secondary-base'}`
         : '';
 
     const selectedStr = selected ? 'ring-4 ring-yellow-400' : '';
