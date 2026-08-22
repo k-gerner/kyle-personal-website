@@ -103,12 +103,10 @@ class GomokuStrategy(GomokuPlayer):
 
 	def is_coordinate_in_board_range(self, coord: Tuple[int, int]) -> bool:
 		"""Checks if the coordinate is valid on the board"""
-		row_num = coord[0]
-		col_num = coord[1]
-		if row_num % BOARD_DIMENSION == row_num and col_num % BOARD_DIMENSION == col_num:
-			return True
-		else:
-			return False
+		return (
+			0 <= coord[0] < BOARD_DIMENSION
+			and 0 <= coord[1] < BOARD_DIMENSION
+		)
 
 	def check_if_move_caused_game_over(
 			self, 
