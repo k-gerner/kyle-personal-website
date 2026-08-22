@@ -8,8 +8,8 @@ from ai.game_pigeon.gomoku.gomoku_strategy import GomokuStrategy, find_winner, p
 from utils.error import BackendError
 
 
-AI_PIECE = BoardSpace.BLACK  # AI will always be BLACK
-USER_PIECE = BoardSpace.WHITE  # User will always be WHITE
+AI_PIECE = BoardSpace.BLACK.value  # AI will always be BLACK
+USER_PIECE = BoardSpace.WHITE.value  # User will always be WHITE
 
 
 def _build_board_matrix(
@@ -26,7 +26,7 @@ def _build_board_matrix(
     Returns:
         List[List[BoardSpace]]: A 2D list representing the game board.
     """
-    board = [[BoardSpace.EMPTY for _ in range(BOARD_DIMENSION)] for _ in range(BOARD_DIMENSION)]
+    board = [[BoardSpace.EMPTY.value for _ in range(BOARD_DIMENSION)] for _ in range(BOARD_DIMENSION)]
     for row, col in player_locations:
         board[row][col] = USER_PIECE
     for row, col in ai_locations:
