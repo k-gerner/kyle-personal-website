@@ -1,7 +1,7 @@
 from enum import Enum
 from typing import Literal
 
-class BoardSpace(Enum):
+class BoardSpace(str, Enum):
     EMPTY = '.'
     BLACK = 'X'
     WHITE = 'O'
