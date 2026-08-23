@@ -266,14 +266,20 @@ class GomokuStrategy(GomokuPlayer):
 			move_score = 0
 			for direction_vector in direction_vectors_list:
 				forward_score, backward_score = 0, 0
-				if self.is_coordinate_in_board_range([move[0] + direction_vector[0], move[1] + direction_vector[1]]):
+				if (
+					0 <= move[0] + direction_vector[0] < BOARD_DIMENSION
+					and 0 <= move[1] + direction_vector[1] < BOARD_DIMENSION
+				):
 					forward_check_still_valid = True
 					forward_piece_color = board[move[0] + direction_vector[0]][move[1] + direction_vector[1]]  # looks at first piece in forward direction
 				else:
 					forward_check_still_valid = False
 					forward_piece_color = None
 
-				if self.is_coordinate_in_board_range([move[0] - direction_vector[0], move[1] - direction_vector[1]]):
+				if (
+					0 <= move[0] - direction_vector[0] < BOARD_DIMENSION
+					and 0 <= move[1] - direction_vector[1] < BOARD_DIMENSION
+				):
 					backward_check_still_valid = True
 					backward_piece_color = board[move[0] - direction_vector[0]][move[1] - direction_vector[1]]  # looks at first piece in backward direction
 				else:
@@ -281,7 +287,8 @@ class GomokuStrategy(GomokuPlayer):
 					backward_piece_color = None
 
 				num_forward_player_pieces, num_backward_player_pieces = 0, 0  # number of the piece we have seen in a direction
-				curr_coordinates_forward, curr_coordinates_backward = move.copy(), move.copy()
+				curr_row_forward, curr_col_forward = move
+				curr_row_backward, curr_col_backward = move
 				outward_spaces_checked = 0
 				forward_distance_reached, backward_distance_reached = 0, 0  # how many spots until a block
 				num_forward_empties_before_piece, num_backward_empties_before_piece = 0, 0  # number of BoardSpace.EMPTY spots before seeing a player piece
@@ -292,9 +299,10 @@ class GomokuStrategy(GomokuPlayer):
 					outward_spaces_checked += 1
 					if forward_check_still_valid:
 						# keep looking in the forward direction
-						curr_coordinates_forward = [a + b for a, b in zip(curr_coordinates_forward, direction_vector)]  # adds the direction vector
-						if self.is_coordinate_in_board_range(curr_coordinates_forward):
-							curr_piece = board[curr_coordinates_forward[0]][curr_coordinates_forward[1]]
+						curr_row_forward += direction_vector[0]
+						curr_col_forward += direction_vector[1]
+						if 0 <= curr_row_forward < BOARD_DIMENSION and 0 <= curr_col_forward < BOARD_DIMENSION:
+							curr_piece = board[curr_row_forward][curr_col_forward]
 							
 							if forward_piece_color == BoardSpace.EMPTY:
 								# if we have not found a player piece yet
@@ -329,9 +337,10 @@ class GomokuStrategy(GomokuPlayer):
 
 					if backward_check_still_valid:
 						# keep looking in the backward direction
-						curr_coordinates_backward = [a - b for a, b in zip(curr_coordinates_backward, direction_vector)]  # subtracts the direction vector
-						if self.is_coordinate_in_board_range(curr_coordinates_backward):
-							curr_piece = board[curr_coordinates_backward[0]][curr_coordinates_backward[1]]
+						curr_row_backward -= direction_vector[0]
+						curr_col_backward -= direction_vector[1]
+						if 0 <= curr_row_backward < BOARD_DIMENSION and 0 <= curr_col_backward < BOARD_DIMENSION:
+							curr_piece = board[curr_row_backward][curr_col_backward]
 							
 							if backward_piece_color == BoardSpace.EMPTY:
 								# if we have not found a player piece yet
