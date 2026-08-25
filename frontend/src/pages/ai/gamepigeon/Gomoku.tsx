@@ -9,6 +9,7 @@ import { BooleanSelector } from '../../../atoms/BooleanSelector';
 import { TitleWithInfo } from '../../../components/TitleWithInfo';
 
 const BOARD_SIZE = 13;
+const BOARD_AREA = BOARD_SIZE * BOARD_SIZE;
 
 enum PieceType {
     EMPTY,
@@ -43,10 +44,13 @@ const Gomoku = () => {
         const selectedColumn = res.column;
         const newAiLocation = [selectedRow, selectedColumn];
         const newAiLocations = [...aiLocations, newAiLocation];
-        if (res.isWin) {
+        const boardIsFull = playerLocations.length + newAiLocations.length >= BOARD_AREA;
+        if (res.isWin || boardIsFull) {
             const gameOverResponse = await checkGameOver(playerLocations, newAiLocations);
-            setWinningLocations(gameOverResponse.winningLocations);
-            setWinner(Player.AI);
+            if (gameOverResponse.isOver) {
+                setWinningLocations(gameOverResponse.winningLocations);
+                setWinner(gameOverResponse.isDraw ? Player.NEITHER : Player.AI);
+            }
         }
         setRecentAiMove(newAiLocation);
         setAiLocations(newAiLocations);
@@ -86,7 +90,7 @@ const Gomoku = () => {
             const gameOverResponse = await checkGameOver(playerLocations, aiLocations);
             if (gameOverResponse.isOver) {
                 setWinningLocations(gameOverResponse.winningLocations);
-                setWinner(gameOverResponse.aiWins ? Player.AI : Player.User);
+                setWinner(gameOverResponse.isDraw ? Player.NEITHER : gameOverResponse.aiWins ? Player.AI : Player.User);
             }
             else {
                 setPlayerTurn(Player.AI);
@@ -368,11 +372,19 @@ interface WinnerSectionProps {
 }
 
 const WinnerSection: React.FC<WinnerSectionProps> = ({ winner, onReset }) => {
-    const backgroundColor = winner === Player.User ? "bg-success" : "bg-danger";
+    const backgroundColor = winner === Player.NEITHER
+        ? "bg-warning"
+        : winner === Player.User
+            ? "bg-success"
+            : "bg-danger";
     return (
         <div className={`border border-brd-muted p-4 rounded-lg flex flex-col items-center justify-center gap-4 ${backgroundColor}`}>
             <h2 className="text-2xl font-bold text-text-light">
-                {winner === Player.User ? "You Win!" : "AI Wins!"}
+                {winner === Player.NEITHER
+                    ? "It's a Tie!"
+                    : winner === Player.User
+                        ? "You Win!"
+                        : "AI Wins!"}
             </h2>
             <ActionButton
                 label="Play Again"

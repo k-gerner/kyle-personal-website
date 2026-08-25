@@ -75,7 +75,7 @@ def run(
 def check_game_over(
 		player_locations: List[Tuple[int, int]],
 		ai_locations: List[Tuple[int, int]]
-) -> Tuple[bool, List[Tuple[int, int]]]:
+) -> Tuple[bool, bool, List[Tuple[int, int]]]:
 	"""
 	Check if the game is over and if there is a winner.
 
@@ -91,4 +91,9 @@ def check_game_over(
 	"""
 	board = _build_board_matrix(player_locations, ai_locations)
 	winner, winning_locations = find_winner(board)
-	return winner is not None, winner == AI_PIECE, winning_locations
+	is_draw = winner is None and all(
+		space != BoardSpace.EMPTY.value
+		for row in board
+		for space in row
+	)
+	return winner is not None or is_draw, winner == AI_PIECE, winning_locations

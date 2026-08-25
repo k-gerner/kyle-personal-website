@@ -265,6 +265,7 @@ class GomokuGameOverInput(CamelAliasModel):
 class GomokuGameOverOutput(CamelAliasModel):
     is_over: bool  # True if the game is over, False otherwise
     ai_wins: bool  # True if the AI has won, False if the player has won or no winner
+    is_draw: bool  # True if the board is full and neither player won
     winning_locations: List[Tuple[int, int]] = []  # Locations of the winning pieces, if any
 
 
@@ -280,7 +281,7 @@ async def check_game_over_gomoku(input: GomokuGameOverInput) -> GomokuGameOverOu
         GomokuGameOverOutput: The game over status, winner, and winning locations.
     """
     try:
-        is_win, ai_wins, winning_locations = run(
+        is_over, ai_wins, winning_locations = run(
             gomoku.check_game_over, 
             player_locations=input.player_locations, 
             ai_locations=input.ai_locations
@@ -291,8 +292,9 @@ async def check_game_over_gomoku(input: GomokuGameOverInput) -> GomokuGameOverOu
         logging.error("Unexpected error in gomoku:", exc_info=True)
         raise HTTPException(status_code=500, detail="An unexpected error occurred.")
     return GomokuGameOverOutput(
-        is_over=is_win, 
+        is_over=is_over,
         ai_wins=ai_wins, 
+        is_draw=is_over and not winning_locations,
         winning_locations=winning_locations
     )
 
